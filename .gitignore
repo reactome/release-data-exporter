@@ -2,6 +2,7 @@ config.properties
 target/
 logs/
 archive/
+output/
 
 # Ignore IntelliJ files
 .idea/
