@@ -40,7 +40,7 @@
 
 		<apache-commons-version>3.9</apache-commons-version>
 		<neo4j-java-driver.version>1.7.5</neo4j-java-driver.version>
-		<reactome-release-common-lib.version>1.2.1-SNAPSHOT</reactome-release-common-lib.version>
+		<reactome-release-common-lib.version>1.2.0</reactome-release-common-lib.version>
 
 		<hamcrest.version>2.2</hamcrest.version>
 		<junit.version>5.5.2</junit.version>
