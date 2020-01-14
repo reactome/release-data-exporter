@@ -35,8 +35,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<apache-commons-version>3.9</apache-commons-version>
 		<neo4j-java-driver.version>1.7.5</neo4j-java-driver.version>
@@ -141,9 +139,15 @@
 				</configuration>
 			</plugin>
 
-			<!-- allows 'mvn clean compile assembly:single' command to create a jar with dependencies -->
+			<!--
+			allows 'mvn clean compile assembly:single' command to create a jar with dependencies
+
+			execution section also allows 'mvn clean package' command to create two jars - with/without dependencies
+			-->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -165,7 +169,10 @@
 				</executions>
 			</plugin>
 
-			<!-- allows 'mvn release' command to create a new release of the project -->
+			<!--
+			allows 'mvn release' command to create a new release of the project
+			https://maven.apache.org/maven-release/maven-release-plugin/
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
