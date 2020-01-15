@@ -1,5 +1,9 @@
 config.properties
-.idea/
 target/
 logs/
 archive/
+output/
+
+# Ignore IntelliJ files
+.idea/
+data-exporter.iml
