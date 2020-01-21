@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ReactomeEvent {
 	private static Map<String, String> namePatternToReplacement;
 	private static Map<Session, Map<Long, ReactomeEvent>> eventCache = new HashMap<>();
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LogManager.getLogger("mainLog");
 
 	private long dbId;
 	private String name;

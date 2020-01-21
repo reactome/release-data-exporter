@@ -9,7 +9,7 @@
 			<PatternLayout pattern="${logPattern}" />
 		</Console>
 		<RollingFile
-			name="LogFile"
+			name="mainLogFile"
 			fileName="${baseDir}/Main-${date:MM-dd-yyyy_HH.mm.ss}.log"
 			filePattern="${baseDir}/Main-%d{MM-dd-yyyy_HH.mm.ss}.log"
 		>
@@ -48,8 +48,10 @@
 	<Loggers>
 		<Root level="debug">
 			<AppenderRef ref="Console" level="debug"/>
-			<AppenderRef ref="LogFile" level="info"/>
 		</Root>
+		<Logger name="mainLog" level="debug" additivity="false">
+			<AppenderRef ref="mainLogFile"/>
+		</Logger>
 		<Logger name="warningsLog" level="warn" additivity="false">
 			<AppenderRef ref="warningsLogFile"/>
 		</Logger>

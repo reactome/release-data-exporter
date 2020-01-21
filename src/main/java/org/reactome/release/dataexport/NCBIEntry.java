@@ -17,7 +17,7 @@ import java.util.*;
  * @author jweiser
  */
 public class NCBIEntry implements Comparable<NCBIEntry> {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private static int linkId = 1;
 

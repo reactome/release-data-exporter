@@ -24,7 +24,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.*;
  * @author jweiser
  */
 public class EuropePMC {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 	private static final String rootTag = "links";
 	private static final int reactomeProviderID = 1925;
 

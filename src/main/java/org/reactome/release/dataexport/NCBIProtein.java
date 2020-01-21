@@ -22,7 +22,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.deleteAndCreat
  * @author jweiser
  */
 public class NCBIProtein {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private List<NCBIEntry> ncbiEntries;
 	private String outputDir;

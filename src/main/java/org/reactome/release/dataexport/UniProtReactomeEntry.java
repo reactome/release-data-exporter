@@ -44,7 +44,7 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 	private static Map<Session, Map<UniProtReactomeEntry, Set<Long>>>
 		uniprotReactomeEntryToReactionLikeEventIdCache = new HashMap<>();
 
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LogManager.getLogger("mainLog");
 
 	private long dbId;
 	private String accession;
