@@ -21,7 +21,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.deleteAndCreat
  * @author jweiser
  */
 public class UCSC {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private Set<UniProtReactomeEntry> ucscUniProtReactomeEntries;
 	private int version;

@@ -18,7 +18,7 @@ import java.util.Properties;
  * @author jweiser
  */
 public class DataExporterStep extends ReleaseStep {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	/**
 	 * Queries the Reactome Neo4J Graph Database for the current release version and

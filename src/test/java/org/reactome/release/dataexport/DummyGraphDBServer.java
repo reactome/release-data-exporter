@@ -1,6 +1,9 @@
 package org.reactome.release.dataexport;
 
+import java.util.logging.Level;
 import org.junit.jupiter.api.TestInstance;
+import org.neo4j.driver.internal.logging.JULogging;
+import org.neo4j.driver.v1.Config;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.harness.ServerControls;
@@ -28,7 +31,10 @@ public class DummyGraphDBServer {
 
 	public void initializeNeo4j() {
 		ServerControls embeddedDatabaseServer = TestServerBuilders.newInProcessBuilder().newServer();
-		this.session = GraphDatabase.driver(embeddedDatabaseServer.boltURI()).session();
+		this.session = GraphDatabase.driver(
+			embeddedDatabaseServer.boltURI(),
+			Config.build().withLogging(new JULogging(Level.OFF)).toConfig()
+		).session();
 	}
 
 	public void populateDummyGraphDB() {

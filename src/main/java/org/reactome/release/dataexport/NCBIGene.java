@@ -22,7 +22,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.*;
  * @author jweiser
  */
 public class NCBIGene {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 	private static final Logger ncbiGeneLogger = LogManager.getLogger("ncbiGeneLog");
 
 	private static final String rootTag = "LinkSet";

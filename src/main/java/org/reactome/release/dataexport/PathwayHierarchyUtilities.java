@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @author jweiser
  */
 public class PathwayHierarchyUtilities {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private static Map<Session, Map<Long, Set<Long>>> rleToPathwayIdCache = new HashMap<>();
 	private static Map<Session, Map<Long, Set<Long>>> pathwayHierarchyCache = new HashMap<>();
