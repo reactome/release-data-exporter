@@ -64,5 +64,5 @@ echo "port=$port" >> $config_file
 echo "reactomeVersion=$reactome_version" >> $config_file
 echo "outputDir=$output_directory" >> $config_file
 
-# Change permissions to read/write for user only
-chmod 600 $config_file
+# Change permissions to read/write for user and group only
+chmod 660 $config_file
