@@ -50,5 +50,6 @@ else
 fi
 
 ## Link and run the jar file
-ln -sf target/data-exporter-1.1.2-jar-with-dependencies.jar $jar_file
-java -jar data-exporter.jar $config_file
+jar_path=$(ls target/data-exporter*-jar-with-dependencies.jar) # Relative path of the jar file -- the * allows matching regardless of the version number and will return only one result since the command is performed after a "mvn clean"
+ln -sf $jar_path $jar_file
+java -jar $jar_file $config_file
