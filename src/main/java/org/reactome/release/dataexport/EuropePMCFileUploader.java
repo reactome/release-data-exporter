@@ -257,6 +257,7 @@ public class EuropePMCFileUploader {
 				"Successfully uploaded '" + fileToUpload + "' to EuropePMC FTP server " +
 					getEuropePMCServerHostName()
 			);
+			return true;
 		} else {
 			logger.error(
 				"There was a problem uploading '" + fileToUpload + "' to the EuropePMC FTP server " +
