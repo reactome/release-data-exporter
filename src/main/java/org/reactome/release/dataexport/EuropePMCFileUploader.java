@@ -82,24 +82,9 @@ public class EuropePMCFileUploader {
 		}
 
 		for (String fileToUpload : filesToUpload) {
-			logger.info(
-				"Uploading file '" + fileToUpload + "' to EuropePMC FTP server " + getEuropePMCServerHostName()
-			);
-
-			InputStream fileToUploadInputStream = new FileInputStream(fileToUpload);
-
-			if (ftpClientConnectionToEuropePMCServer.storeFile(fileToUpload, fileToUploadInputStream)) {
-				logger.info(
-					"Successfully uploaded '" + fileToUpload + "' to EuropePMC FTP server " +
-						getEuropePMCServerHostName()
-				);
-			} else {
-				logger.error(
-					"There was a problem uploading '" + fileToUpload + "' to the EuropePMC FTP server " +
-						getEuropePMCServerHostName() + ". " + ftpClientConnectionToEuropePMCServer.getStatus()
-				);
-				return false; // File failed to upload - indicate not all files were uploaded successfully
-			}
+			if (!uploadFileToEuropePMCServer(fileToUpload)) {
+				return false;
+			};
 		}
 
 		return true; // All files uploaded successfully
@@ -260,8 +245,25 @@ public class EuropePMCFileUploader {
 			.anyMatch(fileOnServer -> fileOnServer.equals(fileName));
 	}
 
-	private boolean uploadFileToEuropePMCServer() {
+	private boolean uploadFileToEuropePMCServer(String fileToUpload) throws IOException {
+		logger.info(
+			"Uploading file '" + fileToUpload + "' to EuropePMC FTP server " + getEuropePMCServerHostName()
+		);
 
+		InputStream fileToUploadInputStream = new FileInputStream(fileToUpload);
+
+		if (ftpClientConnectionToEuropePMCServer.storeFile(fileToUpload, fileToUploadInputStream)) {
+			logger.info(
+				"Successfully uploaded '" + fileToUpload + "' to EuropePMC FTP server " +
+					getEuropePMCServerHostName()
+			);
+		} else {
+			logger.error(
+				"There was a problem uploading '" + fileToUpload + "' to the EuropePMC FTP server " +
+					getEuropePMCServerHostName() + ". " + ftpClientConnectionToEuropePMCServer.getStatus()
+			);
+			return false; // File failed to upload - indicate not all files were uploaded successfully
+		}
 	}
 
 	private boolean deleteOldFileFromEuropePMCServer(String fileToDelete) throws IOException {
