@@ -83,7 +83,7 @@ public class EuropePMCFileUploader {
 
 		for (String fileToUpload : filesToUpload) {
 			if (!uploadFileToEuropePMCServer(fileToUpload)) {
-				return false;
+				return false; // File failed to upload - indicate not all files were uploaded successfully
 			};
 		}
 
@@ -263,7 +263,7 @@ public class EuropePMCFileUploader {
 				"There was a problem uploading '" + fileToUpload + "' to the EuropePMC FTP server " +
 					getEuropePMCServerHostName() + ". " + ftpClientConnectionToEuropePMCServer.getStatus()
 			);
-			return false; // File failed to upload - indicate not all files were uploaded successfully
+			return false;
 		}
 	}
 
