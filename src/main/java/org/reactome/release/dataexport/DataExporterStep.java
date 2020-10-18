@@ -85,10 +85,10 @@ public class DataExporterStep extends ReleaseStep {
 	 * @return Driver for the graph database being run by the Neo4J server
 	 */
 	private static Driver getGraphDBDriver(Properties props) {
-		String host = props.getProperty("host","localhost");
-		String port = props.getProperty("port", Integer.toString(7687));
-		String user = props.getProperty("user", "neo4j");
-		String password = props.getProperty("password", "root");
+		String host = props.getProperty("neo4jHostName","localhost");
+		String port = props.getProperty("neo4jPort", Integer.toString(7687));
+		String user = props.getProperty("neo4jUserName", "neo4j");
+		String password = props.getProperty("neo4jPassword", "root");
 
 		return GraphDatabase.driver("bolt://" + host + ":" + port, AuthTokens.basic(user, password));
 	}
