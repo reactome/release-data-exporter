@@ -1,5 +1,6 @@
 package org.reactome.release.dataexport;
 
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.neo4j.driver.v1.AuthTokens;
@@ -40,10 +41,10 @@ public class DataExporterStep extends ReleaseStep {
 	 * Europe PMC Link File
 	 *     "Link" XML nodes describing Reactome Pathways connected to PubMed literature references
 	 * @param props Configuration options for connecting to the graph database and writing output files
-	 * @throws Exception Thrown if creation of the output directory
+	 * @throws IOException Thrown if unable to create the output directory or write files
 	 */
 	@Override
-	public void executeStep(Properties props) throws Exception {
+	public void executeStep(Properties props) throws IOException {
 		logger.info("Beginning NCBI, UCSC, and Europe PMC export step...");
 
 		int version = Integer.parseInt(props.getProperty("reactomeVersion"));
@@ -68,6 +69,12 @@ public class DataExporterStep extends ReleaseStep {
 			// Write Europe PMC Profile and Link Files
 			EuropePMC.getInstance(outputDir, version).writeEuropePMCFiles(graphDBSession);
 		}
+
+		// Upload Europe PMC Profile and Link Files (and delete previous release Europe PMC Profile and Link Files)
+		EuropePMCFileUploader.getInstance(props).updateFilesOnServer();
+
+		// Upload NCBI Gene and Protein Files (and delete previous release NCBI Gene and Protein Files)
+		NCBIFileUploader.getInstance(props).updateFilesOnServer();
 
 		logger.info("Finished NCBI, UCSC, and Europe PMC export step");
 	}
