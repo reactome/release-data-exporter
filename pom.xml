@@ -42,6 +42,11 @@
 	<dependencies>
 		<!-- Main dependencies -->
 
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.78</version>
+		</dependency>
 		<!-- required for javax.annotation.Nonnull -->
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
