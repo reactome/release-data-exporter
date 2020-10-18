@@ -9,6 +9,10 @@ while (( "$#" )); do
 			build_jar=1
 			shift
 			;;
+		-c|--overwrite_config_file)
+			overwrite_config_file="--overwrite_config_file"
+			shift
+			;;
 		--) # end argument parsing
 			shift
 			break
@@ -35,12 +39,6 @@ cd $DIR
 echo "Updating data-release-pipeline repository from GitHub"
 git pull
 
-config_file=config.properties
-## If the config file does not exist, run configuration script
-if [ ! -f $config_file ]; then
-	./configureDataExporter.sh
-fi
-
 jar_file="data-exporter.jar"
 ## Generate the jar file if it doesn't exist or a re-build is requested
 if [ ! -f $jar_file ] || [ ! -z $build_jar ]; then
@@ -50,6 +48,8 @@ else
 fi
 
 ## Link and run the jar file
-jar_path=$(ls target/data-exporter*-jar-with-dependencies.jar) # Relative path of the jar file -- the * allows matching regardless of the version number and will return only one result since the command is performed after a "mvn clean"
+# Relative path of the jar file -- the * allows matching regardless of the version number and will return only one
+# result since the command is performed after a "mvn clean"
+jar_path=$(ls target/data-exporter*-jar-with-dependencies.jar)
 ln -sf $jar_path $jar_file
-java -jar $jar_file $config_file
+java -jar $jar_file $overwrite_config_file
