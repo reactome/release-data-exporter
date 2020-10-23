@@ -173,14 +173,39 @@ class PasswordConfigurationEntry extends ConfigurationEntry {
 	@Override
 	protected String getValueFromUserInput() {
 		String password;
-		do {
-			password = readPassword("Enter " + getUserPromptValueName() + ": ");
-		} while(password.isEmpty());
+		String passwordConfirmation;
+
+		while(true) {
+			password = askUserForPasswordUntilReceived();
+			passwordConfirmation = askUserForPasswordConfirmationUntilReceived();
+
+			if (password.equals(passwordConfirmation)) {
+				break;
+			}
+
+			System.out.println("Error: Passwords entered do not match.  Please re-enter password.");
+		}
 
 		return password;
 	}
 
-	private String readPassword(String prompt) {
+	private String askUserForPasswordUntilReceived() {
+		return promptForPasswordUntilReceived("Enter " + getUserPromptValueName() + ": ");
+	}
+
+	private String askUserForPasswordConfirmationUntilReceived() {
+		return promptForPasswordUntilReceived("Confirm " + getUserPromptValueName() + ": ");
+	}
+
+	private String promptForPasswordUntilReceived(String promptMessage) {
+		String password;
+		do {
+			password = promptForPassword(promptMessage);
+		} while (password.isEmpty());
+		return password;
+	}
+
+	private String promptForPassword(String prompt) {
 		System.out.print(prompt);
 		Console console = System.console();
 		char[] password = console.readPassword();
