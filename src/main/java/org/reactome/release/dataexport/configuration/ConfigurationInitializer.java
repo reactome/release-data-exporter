@@ -44,7 +44,7 @@ public class ConfigurationInitializer {
 			if (!configurationFileExists()) {
 				System.out.println(
 					"The configuration file " + CONFIGURATION_FILE_NAME + " does not exist.  "
-						+ "Please provide the following property value.");
+						+ "Please provide the following property values.");
 			} else if (!configurationFileIsValid()) {
 				System.out.println(
 					"The configuration file " + CONFIGURATION_FILE_NAME + " does not have all the required property "
