@@ -8,3 +8,5 @@ output/
 # Ignore IntelliJ files
 .idea/
 data-exporter.iml
+
+src/test/resources/real_config.properties
