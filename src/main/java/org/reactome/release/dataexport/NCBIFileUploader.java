@@ -51,7 +51,32 @@ public class NCBIFileUploader extends FTPFileUploader {
 	 *
 	 */
 	public static NCBIFileUploader getInstance(Properties props) throws IOException {
-		return new NCBIFileUploader(props);
+		final boolean initializeFTPServerConnection = true;
+		return getInstance(props, initializeFTPServerConnection);
+	}
+
+	/**
+	 * Returns a new instance of this class responsible for uploading files to the NCBI FTP Server. See
+	 * getInstance(Properties) method for details.
+	 *
+	 * @param props Properties object which contains the key value pairs needed to connect and upload files to the
+	 * NCBI FTP Server
+	 * @param initializeFTPServerConnection <code>true</code> if a connection should attempt to be established to the
+	 * NCBI FTP Server;<code>false</code> otherwise
+	 * @return NCBIFileUploader object to update files on the NCBI FTP Server
+	 * @throws IOException Thrown if unable to make a connection to the NCBI FTP Server
+	 * @throws IllegalStateException Thrown if the properties object provided as a parameter is missing any required
+	 * property keys
+	 * @see #getInstance(Properties)
+	 */
+	static NCBIFileUploader getInstance(Properties props, boolean initializeFTPServerConnection)
+		throws IOException {
+
+		NCBIFileUploader ncbiFileUploader = new NCBIFileUploader(props);
+		if (initializeFTPServerConnection) {
+			ncbiFileUploader.initializeFTPConnectionToServer();
+		}
+		return ncbiFileUploader;
 	}
 
 	private NCBIFileUploader(Properties props) throws IOException {

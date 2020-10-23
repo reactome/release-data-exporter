@@ -39,16 +39,42 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	 *
 	 * @param props Properties object which contains the key value pairs needed to connect and upload files to the
 	 * EuropePMC FTP Server
+	 * @return EuropePMCFTPFileUploader object to update files on the EuropePMC FTP Server
 	 * @throws IOException Thrown if unable to make a connection to the EuropePMC FTP Server
 	 * @throws IllegalStateException Thrown if the properties object provided as a parameter is missing any required
 	 * property keys
 	 *
 	 */
 	public static EuropePMCFileUploader getInstance(Properties props) throws IOException {
-		return new EuropePMCFileUploader(props);
+		final boolean initializeFTPServerConnection = true;
+		return getInstance(props, initializeFTPServerConnection);
 	}
 
-	private EuropePMCFileUploader(Properties props) throws IOException {
+	/**
+	 * Returns a new instance of this class responsible for uploading files to the EuropePMC FTP Server. See
+	 * getInstance(Properties) method for details.
+	 *
+	 * @param props Properties object which contains the key value pairs needed to connect and upload files to the
+	 * EuropePMC FTP Server
+	 * @param initializeFTPServerConnection <code>true</code> if a connection should attempt to be established to the
+	 * EuropePMC FTP Server;<code>false</code> otherwise
+	 * @return EuropePMCFileUploader object to update files on the EuropePMC FTP Server
+	 * @throws IOException Thrown if unable to make a connection to the EuropePMC FTP Server
+	 * @throws IllegalStateException Thrown if the properties object provided as a parameter is missing any required
+	 * property keys
+	 * @see #getInstance(Properties)
+	 */
+	static EuropePMCFileUploader getInstance(Properties props, boolean initializeFTPServerConnection)
+		throws IOException {
+
+		EuropePMCFileUploader europePMCFileUploader = new EuropePMCFileUploader(props);
+		if (initializeFTPServerConnection) {
+			europePMCFileUploader.initializeFTPConnectionToServer();
+		}
+		return europePMCFileUploader;
+	}
+
+	private EuropePMCFileUploader(Properties props) {
 		super(props);
 	}
 

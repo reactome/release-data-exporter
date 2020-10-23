@@ -16,8 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Class for updating Reactome export files on an FTP Server.  Classes which extend this abstract class will connect to
- * the FTP Server on instantiation and provides methods to:
+ * Class for updating Reactome export files on an FTP Server.  Classes which extend this abstract class will provide
+ * methods to:
  *
  * 1) Upload new (i.e. current Reactome release) files, created by classes in this project
  * 2) Delete old (i.e previous Reactome release) files
@@ -38,13 +38,10 @@ public abstract class FTPFileUploader {
 	 *
 	 * @param props The properties object with the key/value pairs providing connection and path information for
 	 * uploading to the FTP Server
-	 * @throws IOException Thrown if unable to connect to the FTP Server
 	 */
-	protected FTPFileUploader(Properties props) throws IOException {
+	protected FTPFileUploader(Properties props) {
 		this.props = props;
 		throwIllegalStateExceptionUnlessRequiredPropsPresent();
-
-		initializeFTPConnectionToServer();
 	}
 
 	/**
@@ -53,8 +50,36 @@ public abstract class FTPFileUploader {
 	 *
 	 * @return Logger object for logging class activity
 	 */
-	protected static Logger getLogger() {
+	protected Logger getLogger() {
 		return logger;
+	}
+
+	/**
+	 * Initialization for the FTP Server does the following:
+	 *
+	 * 1) Connects to the FTP Server
+	 * 2) Enters local passive mode
+	 * 3) Logs into the FTP Server with the username and password from getUserName() and getPassword() methods,
+	 * respectively
+	 * 4) Changes to the working directory obtained from the getReactomeDirectoryPathOnFTPServer() method
+	 *
+	 * @throws IOException Thrown if unable, for the FTP Server, to connect, log in, or change working directory
+	 * @see #getUserName()
+	 * @see #getPassword()
+	 * @see #getReactomeDirectoryPathOnFTPServer()
+	 */
+	public void initializeFTPConnectionToServer() throws IOException {
+		getFtpClientToServer().connect(getServerHostName());
+
+		getFtpClientToServer().enterLocalPassiveMode();
+
+		if (loginToFTPServer()) {
+			logger.info("Login successful to " + getServerHostName());
+		} else {
+			logger.error("Login to " + getServerHostName() + " failed");
+		}
+
+		getFtpClientToServer().changeWorkingDirectory(getReactomeDirectoryPathOnFTPServer());
 	}
 
 	/**
@@ -112,8 +137,9 @@ public abstract class FTPFileUploader {
 	 * outdated Reactome data on the FTP Server.  Returns true if and only if all files are successfully deleted; false
 	 * otherwise.
 	 *
-	 * @return <code>true</code> if all old files intended to be deleted from the FTP Server are successfully deleted,
-	 * <code>false</code> otherwise (including if some files are successfully deleted, but at least one was not)
+	 * @return <code>true</code> if all old files intended to be deleted from the FTP Server are successfully deleted
+	 * or were found to already not exist on the server, <code>false</code> otherwise (including if some files are
+	 * successfully deleted, but at least one was not)
 	 * @throws IOException Thrown if unable to
 	 *  1) Get the names of the files from the remote FTP Server to delete
 	 *  2) Get the names of all Reactome specific files that currently exist on the remote FTP Server (before any files
@@ -163,9 +189,9 @@ public abstract class FTPFileUploader {
 			" server:"
 		);
 
-		Arrays.stream(getFtpClientToServer().listFiles())
-			.map(FTPFile::toFormattedString)
-			.forEach(logger::info);
+		for (String fileListing : getListingOfReactomeFilesPresentOnServer()) {
+			logger.info(fileListing);
+		}
 	}
 
 	/**
@@ -232,6 +258,13 @@ public abstract class FTPFileUploader {
 		return getAllFilesOnServer()
 			.stream()
 			.anyMatch(fileOnServer -> fileOnServer.equals(fileName));
+	}
+
+	protected List<String> getListingOfReactomeFilesPresentOnServer() throws IOException {
+		return Arrays
+			.stream(getFtpClientToServer()
+			.listFiles())
+			.map(FTPFile::toFormattedString).collect(Collectors.toList());
 	}
 
 	/**
@@ -308,6 +341,9 @@ public abstract class FTPFileUploader {
 	 * @return FTPClient to the FTP Server
 	 */
 	protected FTPClient getFtpClientToServer() {
+		if (this.ftpClientConnectionToServer == null) {
+			this.ftpClientConnectionToServer = new FTPClient();
+		}
 		return this.ftpClientConnectionToServer;
 	}
 
@@ -383,21 +419,6 @@ public abstract class FTPFileUploader {
 					missingRequiredProperties
 			);
 		}
-	}
-
-	private void initializeFTPConnectionToServer() throws IOException {
-		ftpClientConnectionToServer = new FTPClient();
-		ftpClientConnectionToServer.connect(getServerHostName());
-
-		ftpClientConnectionToServer.enterLocalPassiveMode();
-
-		if (loginToFTPServer()) {
-			logger.info("Login successful to " + getServerHostName());
-		} else {
-			logger.error("Login to " + getServerHostName() + " failed");
-		}
-
-		ftpClientConnectionToServer.changeWorkingDirectory(getReactomeDirectoryPathOnFTPServer());
 	}
 
 	private boolean uploadFileToServer(String fileToUpload) throws IOException {
