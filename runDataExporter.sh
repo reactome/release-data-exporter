@@ -44,7 +44,14 @@ jar_file="data-exporter.jar"
 if [ ! -f $jar_file ] || [ ! -z $build_jar ]; then
 	mvn clean package
 else
-	echo "Executing existing $jar_file file.  To force a rebuild, $0 -b"
+	echo ""
+	echo "Executing existing $jar_file file.  To force a rebuild, $0 -b or --build_jar"
+fi
+
+if [ -z $overwrite_config_file ]; then
+	echo "Attempting to use existing configuration file.  \
+To force overwrite of the configuration file, $0 -c or --overwrite_config_file"
+	echo ""
 fi
 
 ## Link and run the jar file
