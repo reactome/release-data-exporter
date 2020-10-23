@@ -1,28 +1,33 @@
 package org.reactome.release.dataexport.utilities;
 
-import java.io.FileInputStream;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
+
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.List;
 
 public class EuropePMCFileUploaderTestUtils {
-	public static Properties getTestPropertiesObject() throws IOException {
-		String pathToResources =
-			Objects.requireNonNull(
-				EuropePMCFileUploaderTestUtils.class.getClassLoader().getResource("sample_config.properties")
-			).getPath();
-
-		Properties props = new Properties();
-		props.load(new FileInputStream(pathToResources));
-		props.setProperty("outputDir", getMockOutputDirectory());
-		return props;
+	public static List<String> getCurrentEuropePMCFilePathsInMockOutputDirectory() throws IOException {
+		return FTPFileUploaderTestUtils.getPathsForCurrentFilesInMockOutputDirectory("europe_pmc");
 	}
 
-	public static String getMockOutputDirectory() {
-		return Objects.requireNonNull(
-			EuropePMCFileUploaderTestUtils.class
-				.getClassLoader()
-				.getResource("mock_uploader_local_files")
-		).getPath();
+	public static List<String> getPreviousEuropePMCFilePathsInMockOutputDirectory() throws IOException {
+		return FTPFileUploaderTestUtils.getPathsForPreviousFilesInMockOutputDirectory("europe_pmc");
+	}
+
+	public static String getCurrentEuropePMCProfileFileName() throws IOException {
+		return "europe_pmc_profile_reactome_" + getCurrentReactomeVersion() + ".xml";
+	}
+
+	public static String getPreviousEuropePMCProfileFileName() throws IOException {
+		return "europe_pmc_profile_reactome_" + getPreviousReactomeVersion() + ".xml";
+	}
+
+	public static String getCurrentEuropePMCLinksFileName() throws IOException {
+		return "europe_pmc_links_reactome_" + getCurrentReactomeVersion() + ".xml";
+	}
+
+	public static String getPreviousEuropePMCLinksFileName() throws IOException {
+		return "europe_pmc_links_reactome_" + getPreviousReactomeVersion() + ".xml";
 	}
 }

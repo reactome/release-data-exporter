@@ -8,12 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCFilePathsInMockOutputDirectory;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCLinksFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCProfileFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCLinksFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCProfileFileName;
-
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getMockTestPropertiesObject;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
@@ -22,6 +16,10 @@ import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExceptOne;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploaded;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploadedExceptOne;
+
+import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIFilePathsInMockOutputDirectory;
+import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
+import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getPreviousNCBIProteinFileName;
 
 import java.io.IOException;
 
@@ -43,50 +41,50 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-public class EuropePMCFileUploaderTest {
+public class NCBIFileUploaderTest {
 	private Properties props;
 
 	@Mock
 	private FTPClient ftpClientConnectionToServer;
 
 	@InjectMocks
-	private EuropePMCFileUploader europePMCFileUploader;
+	private NCBIFileUploader ncbiFileUploader;
 
 	@BeforeEach
-	public void initializeEuropePMCFileUploader() throws IOException {
+	public void initializeNCBIFileUploader() throws IOException {
 		final boolean initializeFTPServerConnection = false;
 
 		this.props = getMockTestPropertiesObject();
-		this.europePMCFileUploader = Mockito.spy(
-			EuropePMCFileUploader.getInstance(props, initializeFTPServerConnection)
+		this.ncbiFileUploader = Mockito.spy(
+			NCBIFileUploader.getInstance(props, initializeFTPServerConnection)
 		);
 		MockitoAnnotations.initMocks(this);
-		Mockito.doReturn(ftpClientConnectionToServer).when(europePMCFileUploader).getFtpClientToServer();
+		Mockito.doReturn(ftpClientConnectionToServer).when(ncbiFileUploader).getFtpClientToServer();
 	}
 
 	@Test
-	public void getInstanceThrowsIllegalStateExceptionWhenRequiredPropertyIsMissing() throws IOException {
+	public void getInstanceThrowsIllegalStateExceptionWhenRequiredPropertyIsMissing() {
 		final boolean initializeFTPServerConnection = false;
 
 		Properties propertiesObjectWithMissingRequiredProperty = new Properties(this.props);
-		propertiesObjectWithMissingRequiredProperty.remove(this.europePMCFileUploader.getRequiredProperties().get(0));
+		propertiesObjectWithMissingRequiredProperty.remove(this.ncbiFileUploader.getRequiredProperties().get(0));
 
 		assertThrows(
 			IllegalStateException.class,
-			() -> EuropePMCFileUploader.getInstance(
+			() -> NCBIFileUploader.getInstance(
 				propertiesObjectWithMissingRequiredProperty, initializeFTPServerConnection
 			),
-			"Expected creation of a EuropePMCFileUploader object with a properties object missing a required " +
-			" property to throw an IllegalStateException, but it didn't"
+			"Expected creation of a NCBIFileUploader object with a properties object missing a required" +
+				" property to throw an IllegalStateException, but it didn't"
 		);
 	}
 
 	@Test
 	public void deleteOldFilesFromServerReturnsFalseWhenNoFilesToDelete() throws IOException {
-		Mockito.doReturn(Collections.emptyList()).when(europePMCFileUploader).getRemoteFileNamesToDelete();
+		Mockito.doReturn(Collections.emptyList()).when(ncbiFileUploader).getRemoteFileNamesToDelete();
 
 		assertThat(
-			europePMCFileUploader.deleteOldFilesFromServer(),
+			ncbiFileUploader.deleteOldFilesFromServer(),
 			is(equalTo(false))
 		);
 	}
@@ -95,13 +93,13 @@ public class EuropePMCFileUploaderTest {
 	public void deleteOldFilesFromServerReturnsFalseWhenOneFileIsNotDeleted() throws IOException {
 		final List<String> mockFileNamesToDelete = Arrays.asList("file1", "file2", "file3");
 
-		Mockito.doReturn(true).when(europePMCFileUploader).existsOnServer(anyString());
-		Mockito.doReturn(mockFileNamesToDelete).when(europePMCFileUploader).getRemoteFileNamesToDelete();
+		Mockito.doReturn(true).when(ncbiFileUploader).existsOnServer(anyString());
+		Mockito.doReturn(mockFileNamesToDelete).when(ncbiFileUploader).getRemoteFileNamesToDelete();
 
 		mockAllFilesSuccessfullyDeletedExceptOne(mockFileNamesToDelete.get(0), ftpClientConnectionToServer);
 
 		assertThat(
-			europePMCFileUploader.deleteOldFilesFromServer(),
+			ncbiFileUploader.deleteOldFilesFromServer(),
 			is(equalTo(false))
 		);
 	}
@@ -110,13 +108,13 @@ public class EuropePMCFileUploaderTest {
 	public void deleteOldFilesFromServerReturnsFalseWhenMultipleFilesAreNotDeleted() throws IOException {
 		final List<String> mockFileNamesToDelete = Arrays.asList("file1", "file2", "file3");
 
-		Mockito.doReturn(true).when(europePMCFileUploader).existsOnServer(anyString());
-		Mockito.doReturn(mockFileNamesToDelete).when(europePMCFileUploader).getRemoteFileNamesToDelete();
+		Mockito.doReturn(true).when(ncbiFileUploader).existsOnServer(anyString());
+		Mockito.doReturn(mockFileNamesToDelete).when(ncbiFileUploader).getRemoteFileNamesToDelete();
 
 		mockAllFilesSuccessfullyDeletedExcept(mockFileNamesToDelete.subList(0,2), ftpClientConnectionToServer);
 
 		assertThat(
-			europePMCFileUploader.deleteOldFilesFromServer(),
+			ncbiFileUploader.deleteOldFilesFromServer(),
 			is(equalTo(false))
 		);
 	}
@@ -125,11 +123,11 @@ public class EuropePMCFileUploaderTest {
 	public void deleteOldFilesFromServerReturnsTrueWhenNoneOfTheFilesToDeleteExistOnTheServer() throws IOException {
 		final List<String> mockFileNamesToDelete = Arrays.asList("file1", "file2", "file3");
 
-		Mockito.doReturn(false).when(europePMCFileUploader).existsOnServer(anyString());
-		Mockito.doReturn(mockFileNamesToDelete).when(europePMCFileUploader).getRemoteFileNamesToDelete();
+		Mockito.doReturn(false).when(ncbiFileUploader).existsOnServer(anyString());
+		Mockito.doReturn(mockFileNamesToDelete).when(ncbiFileUploader).getRemoteFileNamesToDelete();
 
 		assertThat(
-			europePMCFileUploader.deleteOldFilesFromServer(),
+			ncbiFileUploader.deleteOldFilesFromServer(),
 			is(equalTo(true))
 		);
 	}
@@ -138,51 +136,51 @@ public class EuropePMCFileUploaderTest {
 	public void deleteOldFilesFromServerReturnsTrueWhenAllFilesAreDeleted() throws IOException {
 		final List<String> mockFileNamesToDelete = Arrays.asList("file1", "file2", "file3");
 
-		Mockito.doReturn(true).when(europePMCFileUploader).existsOnServer(anyString());
-		Mockito.doReturn(mockFileNamesToDelete).when(europePMCFileUploader).getRemoteFileNamesToDelete();
+		Mockito.doReturn(true).when(ncbiFileUploader).existsOnServer(anyString());
+		Mockito.doReturn(mockFileNamesToDelete).when(ncbiFileUploader).getRemoteFileNamesToDelete();
 
 		mockAllFilesSuccessfullyDeleted(ftpClientConnectionToServer);
 
 		assertThat(
-			europePMCFileUploader.deleteOldFilesFromServer(),
+			ncbiFileUploader.deleteOldFilesFromServer(),
 			is(equalTo(true))
 		);
 	}
 
 	@Test
 	public void uploadFilesToServerReturnsFalseWhenNoFilesToUpload() throws IOException {
-		Mockito.doReturn(Collections.emptyList()).when(europePMCFileUploader).getLocalFileNamesToUpload();
+		Mockito.doReturn(Collections.emptyList()).when(ncbiFileUploader).getLocalFileNamesToUpload();
 
 		assertThat(
-			europePMCFileUploader.uploadFilesToServer(),
+			ncbiFileUploader.uploadFilesToServer(),
 			is(equalTo(false))
 		);
 	}
 
 	@Test
 	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException {
-		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
 
-		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
+		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
 
 		mockAllFilesSuccessfullyUploadedExceptOne(mockFileNamesToUpload.get(0), ftpClientConnectionToServer);
 
 		assertThat(
-			europePMCFileUploader.uploadFilesToServer(),
+			ncbiFileUploader.uploadFilesToServer(),
 			is(equalTo(false))
 		);
 	}
 
 	@Test
 	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException {
-		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
 
-		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
+		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
 
 		mockAllFilesSuccessfullyUploaded(ftpClientConnectionToServer);
 
 		assertThat(
-			europePMCFileUploader.uploadFilesToServer(),
+			ncbiFileUploader.uploadFilesToServer(),
 			is(equalTo(true))
 		);
 	}
@@ -193,7 +191,7 @@ public class EuropePMCFileUploaderTest {
 		Mockito.doNothing().when(ftpClientConnectionToServer).disconnect();
 
 		assertThat(
-			europePMCFileUploader.closeFTPConnectionToServer(),
+			ncbiFileUploader.closeFTPConnectionToServer(),
 			is(equalTo(true))
 		);
 	}
@@ -204,7 +202,7 @@ public class EuropePMCFileUploaderTest {
 		Mockito.doNothing().when(ftpClientConnectionToServer).disconnect();
 
 		assertThat(
-			europePMCFileUploader.closeFTPConnectionToServer(),
+			ncbiFileUploader.closeFTPConnectionToServer(),
 			is(equalTo(false))
 		);
 	}
@@ -215,7 +213,7 @@ public class EuropePMCFileUploaderTest {
 		Mockito.doThrow(IOException.class).when(ftpClientConnectionToServer).disconnect();
 
 		assertThat(
-			europePMCFileUploader.closeFTPConnectionToServer(),
+			ncbiFileUploader.closeFTPConnectionToServer(),
 			is(equalTo(false))
 		);
 	}
@@ -225,7 +223,7 @@ public class EuropePMCFileUploaderTest {
 		String expectedLocalOutputDirectory = props.getProperty("outputDir");
 
 		assertThat(
-			europePMCFileUploader.getLocalOutputDirectoryPath(),
+			ncbiFileUploader.getLocalOutputDirectoryPath(),
 			is(equalTo(expectedLocalOutputDirectory))
 		);
 	}
@@ -233,123 +231,123 @@ public class EuropePMCFileUploaderTest {
 	@Test
 	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseVersion() throws IOException {
 		assertThat(
-			europePMCFileUploader.getLocalFileNamesToUpload(),
-			is(equalTo((getCurrentEuropePMCFilePathsInMockOutputDirectory())))
+			ncbiFileUploader.getLocalFileNamesToUpload(),
+			is(equalTo((getCurrentNCBIFilePathsInMockOutputDirectory())))
 		);
 	}
 
 	@Test
 	public void getUserNameReturnsExpectedValue() {
-		String expectedEuropePMCUserName = props.getProperty("europePMCFTPUserName");
+		String expectedNCBIUserName = props.getProperty("ncbiFTPUserName");
 
 		assertThat(
-			europePMCFileUploader.getUserName(),
-			is(equalTo(expectedEuropePMCUserName))
+			ncbiFileUploader.getUserName(),
+			is(equalTo(expectedNCBIUserName))
 		);
 	}
 
 	@Test
 	public void getPasswordReturnsExpectedValue() {
-		String expectedEuropePMCPassword = props.getProperty("europePMCFTPPassword");
+		String expectedNCBIPassword = props.getProperty("ncbiFTPPassword");
 
 		assertThat(
-			europePMCFileUploader.getPassword(),
-			is(equalTo(expectedEuropePMCPassword))
+			ncbiFileUploader.getPassword(),
+			is(equalTo(expectedNCBIPassword))
 		);
 	}
 
 	@Test
 	public void getReactomeDirectoryPathOnFTPServerPathReturnsExpectedValue() {
-		String expectedEuropePMCReactomeFolderPath = props.getProperty("europePMCFTPReactomeFolderPath");
+		String expectedNCBIReactomeFolderPath = props.getProperty("ncbiFTPReactomeFolderPath");
 
 		assertThat(
-			europePMCFileUploader.getReactomeDirectoryPathOnFTPServer(),
-			is(equalTo(expectedEuropePMCReactomeFolderPath))
+			ncbiFileUploader.getReactomeDirectoryPathOnFTPServer(),
+			is(equalTo(expectedNCBIReactomeFolderPath))
 		);
 	}
 
 	@Test
 	public void getServerHostNameReturnsExpectedValue() {
-		String expectedEuropePMCHostName = props.getProperty("europePMCFTPHostName");
+		String expectedNCBIHostName = props.getProperty("ncbiFTPHostName");
 
 		assertThat(
-			europePMCFileUploader.getServerHostName(),
-			is(equalTo(expectedEuropePMCHostName))
+			ncbiFileUploader.getServerHostName(),
+			is(equalTo(expectedNCBIHostName))
 		);
 	}
 
 	@Test
-	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentNCBIFileMethod() throws IOException {
 		assertThat(
-			europePMCFileUploader.isCurrentFile(Paths.get(getCurrentEuropePMCProfileFileName())),
+			ncbiFileUploader.isCurrentFile(Paths.get(getCurrentNCBIProteinFileName())),
 			is(equalTo(true))
 		);
 	}
 
 	@Test
-	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
 		final Path incorrectCurrentProfileFileName =
-			Paths.get("europe_pmc_profile_react_" + getCurrentReactomeVersion() + ".xml");
+			Paths.get("protein_react" + getCurrentReactomeVersion() + ".ft");
 
 		assertThat(
-			europePMCFileUploader.isCurrentFile(incorrectCurrentProfileFileName),
+			ncbiFileUploader.isCurrentFile(incorrectCurrentProfileFileName),
 			is(equalTo(false))
 		);
 	}
 
 	@Test
-	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentNCBIFileMethod() throws IOException {
 		assertThat(
-			europePMCFileUploader.isCurrentFile(Paths.get(getCurrentEuropePMCLinksFileName())),
+			ncbiFileUploader.isCurrentFile(Paths.get(getCurrentNCBIProteinFileName())),
 			is(equalTo(true))
 		);
 	}
 
 	@Test
-	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
 		final Path incorrectCurrentLinksFileName =
-			Paths.get("europe_pmc_links_react_" + getCurrentReactomeVersion() + ".xml");
+			Paths.get("protein_react" + getCurrentReactomeVersion() + ".ft");
 
 		assertThat(
-			europePMCFileUploader.isCurrentFile(incorrectCurrentLinksFileName),
+			ncbiFileUploader.isCurrentFile(incorrectCurrentLinksFileName),
 			is(equalTo(false))
 		);
 	}
 
 	@Test
-	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousNCBIFileMethod() throws IOException {
 		assertThat(
-			europePMCFileUploader.isPreviousFile(Paths.get(getPreviousEuropePMCProfileFileName())),
+			ncbiFileUploader.isPreviousFile(Paths.get(getPreviousNCBIProteinFileName())),
 			is(equalTo(true))
 		);
 	}
 
 	@Test
-	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
 		final Path incorrectPreviousProfileFileName =
-			Paths.get("europe_pmc_profile_react_" + getPreviousReactomeVersion() + ".xml");
+			Paths.get("protein_react" + getPreviousReactomeVersion() + ".ft");
 
 		assertThat(
-			europePMCFileUploader.isPreviousFile(incorrectPreviousProfileFileName),
+			ncbiFileUploader.isPreviousFile(incorrectPreviousProfileFileName),
 			is(equalTo(false))
 		);
 	}
 
 	@Test
-	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousNCBIFileMethod() throws IOException {
 		assertThat(
-			europePMCFileUploader.isPreviousFile(Paths.get(getPreviousEuropePMCLinksFileName())),
+			ncbiFileUploader.isPreviousFile(Paths.get(getPreviousNCBIProteinFileName())),
 			is(equalTo(true))
 		);
 	}
 
 	@Test
-	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
 		final Path incorrectPreviousLinksFileName =
-			Paths.get("europe_pmc_links_react_" + getPreviousReactomeVersion() + ".xml");
+			Paths.get("protein_react" + getPreviousReactomeVersion() + ".ft");
 
 		assertThat(
-			europePMCFileUploader.isPreviousFile(incorrectPreviousLinksFileName),
+			ncbiFileUploader.isPreviousFile(incorrectPreviousLinksFileName),
 			is(equalTo(false))
 		);
 	}
