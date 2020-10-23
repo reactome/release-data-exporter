@@ -14,9 +14,13 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reactome.release.dataexport.Main;
 
 public class ConfigurationInitializer {
+	private static final Logger logger = LogManager.getLogger("mainLog");
+
 	private static final String CONFIGURATION_FILE_NAME = "config.properties";
 	private ConfigurationEntryCreator configurationEntryCreator;
 
@@ -54,6 +58,26 @@ public class ConfigurationInitializer {
 			}
 			writeConfigurationFile();
 		}
+	}
+
+	/**
+	 * Stop git tracking on original/sample configuration file to prevent committing and pushing if any sensitive
+	 * information is mistakenly added.  If the system command to stop git tracking the configuration file returns a
+	 * non-zero exit value, a warning indicating this will be logged.
+	 *
+	 * @throws IOException Thrown if the system command to stop git tracking produces an I/O Error
+	 */
+	public void stopGitTrackingOriginalSampleConfigurationFile() throws IOException {
+		String originalConfigurationFilePath = getPathToOriginalSampleConfigurationFile();
+		String stopGitTrackingCommand = "git update-index --assume-unchanged " + originalConfigurationFilePath;
+
+		Process stopGitTrackingProcess = Runtime.getRuntime().exec(stopGitTrackingCommand);
+		if (stopGitTrackingProcess.exitValue() != 0) {
+			logger.warn(
+				"Exit value for command to stop git tracking for file " + originalConfigurationFilePath + " was " +
+				stopGitTrackingProcess.exitValue()
+			);
+		};
 	}
 
 	/**
@@ -182,15 +206,5 @@ public class ConfigurationInitializer {
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
 		Runtime.getRuntime().exec("chmod 660 " + CONFIGURATION_FILE_NAME);
-	}
-
-	//Stop git tracking on original/sample configuration file to prevent committing and pushing if any sensitive
-	//information is mistakenly added
-	private boolean stopGitTrackingOriginalSampleConfigurationFile() throws IOException {
-		String originalConfigurationFilePath = getPathToOriginalSampleConfigurationFile();
-		String stopGitTrackingCommand = "git update-index --assume-unchanged " + originalConfigurationFilePath;
-
-		Process stopGitTrackingProcess = Runtime.getRuntime().exec(stopGitTrackingCommand);
-		return stopGitTrackingProcess.exitValue() == 0;
 	}
 }
