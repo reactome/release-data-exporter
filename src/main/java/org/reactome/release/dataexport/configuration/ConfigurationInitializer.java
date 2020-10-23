@@ -21,14 +21,33 @@ import org.reactome.release.dataexport.Main;
 public class ConfigurationInitializer {
 	private static final Logger logger = LogManager.getLogger("mainLog");
 
-	private static final String CONFIGURATION_FILE_NAME = "config.properties";
+	private static final String DEFAULT_CONFIGURATION_FILE_NAME = "config.properties";
+
+	private String configFileName;
 	private ConfigurationEntryCreator configurationEntryCreator;
+
+	/**
+	 * Creates a ConfigurationInitializer object using the default configuration file name of "config.properties"
+	 */
+	public ConfigurationInitializer() {
+		this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
+	}
+
+	/**
+	 * Creates a ConfigurationInitializer object using the provided configuration file name
+	 *
+	 * @param configFileName Name of the configuration file name to check and potentially create/overwrite
+	 */
+	ConfigurationInitializer(String configFileName) {
+		this.configFileName = configFileName;
+	}
 
 	/**
 	 * Creates a property configuration file with the needed property values for the data exporter project.  The file
 	 * will be (re)created if the "overwriteExistingFile" parameter is true.  Otherwise, the file will only be
 	 * created if the file does not already exist or if the existing file is not valid (i.e. it does not have one or
-	 * more of the needed property values for the project).
+	 * more of the needed property values for the project).  If the file is (re)created, the file permissions will be
+	 * set to 660 to allow read and write access to the user and group only.
 	 *
 	 * @param overwriteExistingFile <code>true</code> if the file should be (re)created regardless if it already exists
 	 * or is valid;<code>false</code> otherwise
@@ -47,11 +66,11 @@ public class ConfigurationInitializer {
 		if (overwriteExistingFile || !configurationFileExistsAndIsValid()) {
 			if (!configurationFileExists()) {
 				System.out.println(
-					"The configuration file " + CONFIGURATION_FILE_NAME + " does not exist.  "
+					"The configuration file " + getConfigFileName() + " does not exist.  "
 						+ "Please provide the following property values.");
 			} else if (!configurationFileIsValid()) {
 				System.out.println(
-					"The configuration file " + CONFIGURATION_FILE_NAME + " does not have all the required property "
+					"The configuration file " + getConfigFileName() + " does not have all the required property "
 						+ "values.  Please provide the following property values and the configuration file will be "
 						+ "recreated"
 				);
@@ -90,7 +109,7 @@ public class ConfigurationInitializer {
 	public Properties getProps() throws IOException {
 		Properties props = new Properties();
 
-		props.load(new FileInputStream(CONFIGURATION_FILE_NAME));
+		props.load(new FileInputStream(getConfigFileName()));
 
 		return props;
 	}
@@ -108,6 +127,10 @@ public class ConfigurationInitializer {
 
 	private void initializeConfigurationEntryCreator() {
 		this.configurationEntryCreator = new ConfigurationEntryCreator();
+	}
+
+	private String getConfigFileName() {
+		return this.configFileName;
 	}
 
 	private ConfigurationEntryCreator getConfigurationEntryCreator() {
@@ -173,13 +196,13 @@ public class ConfigurationInitializer {
 	}
 
 	private boolean configurationFileExists() {
-		return new File(CONFIGURATION_FILE_NAME).exists();
+		return new File(getConfigFileName()).exists();
 	}
 
 	private boolean configurationFileIsValid() throws IOException {
 		List<String> requiredConfigurationKeys = getConfigurationEntryCreator().getConfigurationEntryKeys();
 		List<String> existingFileConfigurationKeys =
-			Files.readAllLines(Paths.get(CONFIGURATION_FILE_NAME))
+			Files.readAllLines(Paths.get(getConfigFileName()))
 				.stream()
 				.map(this::getConfigurationKeyFromConfigurationEntry)
 				.collect(Collectors.toList());
@@ -192,7 +215,7 @@ public class ConfigurationInitializer {
 	}
 
 	private void writeConfigurationFile() throws IOException {
-		Path configurationFilePath = Paths.get(CONFIGURATION_FILE_NAME);
+		Path configurationFilePath = Paths.get(getConfigFileName());
 
 		Files.deleteIfExists(configurationFilePath);
 		Files.write(
@@ -205,6 +228,6 @@ public class ConfigurationInitializer {
 	}
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
-		Runtime.getRuntime().exec("chmod 660 " + CONFIGURATION_FILE_NAME);
+		Runtime.getRuntime().exec("chmod 660 " + getConfigFileName());
 	}
 }
