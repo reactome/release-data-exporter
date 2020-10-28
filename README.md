@@ -45,7 +45,7 @@ this option.
 The `-sit or --skip_integration_tests` option can be provided to skip integration tests which require connection to the
 NCBI and EuropePMC FTP Servers to test code related to interaction with them.  By default, these tests are run and 
 require a configuration file with the file path "src/test/resources/real_config.properties" (see 
-[Integration Tests](#Integration Tests) section for more information)
+[Integration Tests](#integration-tests) section for more information)
 
 Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-sit|--skip_integration_tests]`
 
@@ -58,7 +58,7 @@ maven and a full JDK to compile.
 
 The option "-DskipITs=true" is optional and allows for running only of unit tests and not integration tests, if 
 desired, since integration tests require actual connection parameters be present in a test configuration file added
-by the user at the file path "src/test/resources/real_config.properties" (see [Integration Tests](#Integration Tests)
+by the user at the file path "src/test/resources/real_config.properties" (see [Integration Tests](#integration-tests)
 section for more information).
 
 If the manual compilation was successful, you should see a JAR file in the `target` directory, with a name like 
@@ -113,7 +113,7 @@ The integration tests can be skipped if desired:
 option (see the [Compiling & Running](#Compiling & Running) section for this shell script's usage)
 
 2) When a build is done manually by the command `mvn clean package` by using the `-DSkipITs=true` option (see the
-[To run the application manually](#To run the application manually) section).
+[To run the application manually](#to-run-the-application-manually) section).
 
 ## Logging
 
