@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,10 +20,19 @@ import java.util.stream.Collectors;
 import org.apache.commons.net.ftp.FTPClient;
 import org.mockito.Mockito;
 
-
 public class FTPFileUploaderTestUtils {
-	public static Properties getITTestPropertiesObject() throws IOException {
-		return getTestPropertiesObject("real_config.properties");
+	public static Properties getITTestPropertiesObject() {
+		final String realConfigPropertiesFileName = "real_config.properties";
+		try {
+			return getTestPropertiesObject(realConfigPropertiesFileName);
+		} catch (IOException e) {
+			throw new RuntimeException(
+				"ERROR!  To successfully run integration tests, a configuration file with real values for the "
+					+ "EuropePMC and NCBI server configuration values must be provided in this project with the file"
+					+ "path src/test/resources/" + realConfigPropertiesFileName + ".  For a sample configuration "
+					+ "file, see src/main/resources/sample_config.properties.", e
+			);
+		}
 	}
 
 	public static Properties getMockTestPropertiesObject() throws IOException {
@@ -30,13 +40,13 @@ public class FTPFileUploaderTestUtils {
 	}
 
 	public static Properties getTestPropertiesObject(String configResourceFileName) throws IOException {
-		String pathToResources =
-			Objects.requireNonNull(
-				FTPFileUploaderTestUtils.class.getClassLoader().getResource(configResourceFileName)
-			).getPath();
+		URL urlToConfigResource = FTPFileUploaderTestUtils.class.getClassLoader().getResource(configResourceFileName);
+		if (urlToConfigResource == null) {
+			throw new IOException("Unable to find resource " + configResourceFileName);
+		}
 
 		Properties props = new Properties();
-		props.load(new FileInputStream(pathToResources));
+		props.load(new FileInputStream(urlToConfigResource.getPath()));
 		props.setProperty("outputDir", getMockOutputDirectory());
 		return props;
 	}
@@ -82,7 +92,6 @@ public class FTPFileUploaderTestUtils {
 	public static int getPreviousReactomeVersion() throws IOException {
 		return getCurrentReactomeVersion() - 1;
 	}
-
 
 	public static List<String> getFileNamesInFileListings(List<String> fileListings) {
 		return fileListings
