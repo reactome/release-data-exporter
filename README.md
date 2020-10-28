@@ -36,20 +36,30 @@ files will be uploaded (using the values provided in the configuration file to c
 The program can be run by invoking the script `runDataExporter.sh` at the root directory of this project.
 
 The `-b or --build_jar` option can also be provided to force `data-exporter.jar` to be re-built.  The jar file
-will be built if it does not exist, regardless of specifying this option, .
+will be built if it does not exist, regardless of specifying this option.
 
-To force resetting of the configuration values, the `-c or --overwrite_config_file` option can be provided, but
+The `-c or --overwrite_config_file` option can be provided to force resetting of the configuration values, but
 configuration values will be prompted for if a configuration file is missing or incomplete, regardless of specifying 
 this option.
 
-Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file]`
+The `-sit or --skip_integration_tests` option can be provided to skip integration tests which require connection to the
+NCBI and EuropePMC FTP Servers to test code related to interaction with them.  By default, these tests are run and 
+require a configuration file with the file path "src/test/resources/real_config.properties" (see 
+[Integration Tests](#Integration Tests) section for more information)
+
+Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-sit|--skip_integration_tests]`
 
 NOTE: This script is building and invoking a Java application which requires a Java 8+ environment. You will need 
 maven and a full JDK to compile.
 
 ### To run the application manually:
 
-1. Compile the jar file: `mvn clean package`
+1. Compile the jar file: `mvn clean package [-DskipITs=true]`
+
+The option "-DskipITs=true" is optional and allows for running only of unit tests and not integration tests, if 
+desired, since integration tests require actual connection parameters be present in a test configuration file added
+by the user at the file path "src/test/resources/real_config.properties" (see [Integration Tests](#Integration Tests)
+section for more information).
 
 If the manual compilation was successful, you should see a JAR file in the `target` directory, with a name like 
 `data-exporter-VERSION_NUMBER-jar-with-dependencies.jar`. This is the file you will run with a command like the 
@@ -61,7 +71,7 @@ prompts from the user for new values).
 ## Configuration
 
 **NOTE: Configuration is done when calling the main script `runDataExporter.sh` for the first time (via invocation of
-the `data-exporter.jar`), so this section is if set values need to be changed and for general reference.**
+the `data-exporter.jar`), so this section is if set values need to be changed as well as for general reference.**
 
 The configuration file produced will be at the root directory of this project and named `config.properties`.  It can 
 be viewed and edited directly if desired.
@@ -75,7 +85,7 @@ neo4jPassword=root
 neo4jHostName=localhost
 neo4jPort=7687
 
-reactomeVersion=71
+reactomeVersion=74
 outputDir=output
 
 ncbiFTPUserName=ncbi_ftp_reactome_account_user_name
@@ -88,6 +98,22 @@ europePMCFTPPassword=europe_pmc_reactome_account_password
 europePMCFTPHostName=europe_pmc_ftp_server_host_name
 europePMCFTPDirectory=path/to/reactome/files/on/europe_pmc/ftp/server
 ```
+
+## Integration Tests
+
+The source code for this program has integration tests which require connection to the NCBI and EuropePMC FTP Servers 
+to test code related to interaction with them.  By default, these tests are run when the maven test lifecycle is run
+during a build of this project and the integration tests require a configuration file with the file path 
+**"src/test/resources/real_config.properties"** containing actual values for EuropePMC and NCBI FTP related
+configuration keys (see the [Configuration](#configuration) section for information about the configuration file).
+
+The integration tests can be skipped if desired:
+ 
+1) When a build is run through the `runDataExporter.sh` shell script by using the `-sit or --skip_integration_tests`
+option (see the [Compiling & Running](#Compiling & Running) section for this shell script's usage)
+
+2) When a build is done manually by the command `mvn clean package` by using the `-DSkipITs=true` option (see the
+[To run the application manually](#To run the application manually) section).
 
 ## Logging
 
