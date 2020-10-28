@@ -13,6 +13,10 @@ while (( "$#" )); do
 			overwrite_config_file="--overwrite_config_file"
 			shift
 			;;
+		-sit|--skip_integration_tests)
+			skip_integration_tests="-DskipITs=true"
+			shift
+			;;
 		--) # end argument parsing
 			shift
 			break
@@ -42,7 +46,8 @@ git pull
 jar_file="data-exporter.jar"
 ## Generate the jar file if it doesn't exist or a re-build is requested
 if [ ! -f $jar_file ] || [ ! -z $build_jar ]; then
-	mvn clean package
+	# Based on command-line options, $skip_integration_tests may be empty or have the switch to skip integration tests
+	mvn clean package $skip_integration_tests
 else
 	echo ""
 	echo "Executing existing $jar_file file.  To force a rebuild, $0 -b or --build_jar"
@@ -59,4 +64,5 @@ fi
 # result since the command is performed after a "mvn clean"
 jar_path=$(ls target/data-exporter*-jar-with-dependencies.jar)
 ln -sf $jar_path $jar_file
+
 java -jar $jar_file $overwrite_config_file
