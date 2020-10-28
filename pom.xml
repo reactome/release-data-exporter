@@ -35,13 +35,16 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		<!--
+		integration tests run by default when running the command "mvn verify"; can be overridden using the option
+		"-DskipITs=true"
+		-->
+		<skipITs>false</skipITs>
 		<junit.version>5.5.2</junit.version>
 	</properties>
 
 	<dependencies>
 		<!-- Main dependencies -->
-
 		<dependency>
 			<groupId>com.beust</groupId>
 			<artifactId>jcommander</artifactId>
@@ -174,6 +177,29 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.22.2</version>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<!--
+							Default value is defined in the <properties> section and will be applied to integration
+							tests when running the command "mvn verify", but can be overwritten to either skip
+							or run integration tests with the command "mvn verify -DskipITs=[true|false]"
+							-->
+							<skipTests>${skipITs}</skipTests>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
