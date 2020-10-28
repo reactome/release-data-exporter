@@ -16,30 +16,45 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reactome.release.dataexport.Main;
 
+/**
+ * Class to create, validate, query, and/or manipulate (e.g. change permissions, stop git tracking) the configuration
+ * file
+ * @author jweiser
+ */
 public class ConfigurationInitializer {
 	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private static final String DEFAULT_CONFIGURATION_FILE_NAME = "config.properties";
 
 	private String configFileName;
-	private ConfigurationEntryCreator configurationEntryCreator;
+	private ConfigurationEntryCollection configurationEntryCollection;
 
 	/**
-	 * Creates a ConfigurationInitializer object using the default configuration file name of "config.properties"
+	 * Creates a ConfigurationInitializer object using the default configuration file name of "config.properties".
 	 */
 	public ConfigurationInitializer() {
 		this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
 	}
 
 	/**
-	 * Creates a ConfigurationInitializer object using the provided configuration file name
+	 * Creates a ConfigurationInitializer object using the provided configuration file name.
 	 *
 	 * @param configFileName Name of the configuration file name to check and potentially create/overwrite
 	 */
 	ConfigurationInitializer(String configFileName) {
 		this.configFileName = configFileName;
+	}
+
+	/**
+	 * Obtains and returns the path to the sample configuration file included in this project's resources.
+	 *
+	 * @return The file path to the sample configuration file in this project as a String
+	 */
+	public static String getPathToOriginalSampleConfigurationFile() {
+		return Objects.requireNonNull(
+			ConfigurationInitializer.class.getClassLoader().getResource("sample_config.properties")
+		).getPath();
 	}
 
 	/**
@@ -51,11 +66,18 @@ public class ConfigurationInitializer {
 	 *
 	 * @param overwriteExistingFile <code>true</code> if the file should be (re)created regardless if it already exists
 	 * or is valid;<code>false</code> otherwise
+	 * @return <code>true</code> if the configuration file is (re)created because the file does not exist, is not
+	 * valid, or was requested to be overwritten;<code>false</code> otherwise (i.e the configuration file already
+	 * exists, is valid, and was not requested to be overwritten)
 	 * @throws IOException  Thrown if unable to read an existing configuration file or if unable to write a new
 	 * configuration file if one needs to be recreated (this includes an exception from deleting an existing file,
 	 * writing a new file, or setting its file system permissions appropriately).
 	 */
-	public void createConfigurationFile(boolean overwriteExistingFile) throws IOException {
+	public boolean createConfigurationFile(boolean overwriteExistingFile) throws IOException {
+		if (!overwriteExistingFile && configurationFileExistsAndIsValid()) {
+			return false;
+		}
+
 		initializeConfigurationEntryCreator();
 
 		addNeo4jDatabaseConfigurationEntries();
@@ -63,20 +85,21 @@ public class ConfigurationInitializer {
 		addEuropePMCFTPServerConfigurationEntries();
 		addNCBIFTPServerConfigurationEntries();
 
-		if (overwriteExistingFile || !configurationFileExistsAndIsValid()) {
-			if (!configurationFileExists()) {
-				System.out.println(
-					"The configuration file " + getConfigFileName() + " does not exist.  "
-						+ "Please provide the following property values.");
-			} else if (!configurationFileIsValid()) {
-				System.out.println(
-					"The configuration file " + getConfigFileName() + " does not have all the required property "
-						+ "values.  Please provide the following property values and the configuration file will be "
-						+ "recreated"
-				);
-			}
-			writeConfigurationFile();
+		if (!configurationFileExists()) {
+			System.out.println(
+				"The configuration file " + getConfigFileName() + " does not exist.  "
+					+ "Please provide the following property values.");
+		} else if (!configurationFileIsValid()) {
+			System.out.println(
+				"The configuration file " + getConfigFileName() + " does not have all the required property "
+					+ "values.  Please provide the following property values and the configuration file will be "
+					+ "recreated"
+			);
 		}
+
+		writeConfigurationFile();
+
+		return true;
 	}
 
 	/**
@@ -115,92 +138,42 @@ public class ConfigurationInitializer {
 	}
 
 	/**
-	 * Obtains and returns the path to the sample configuration file included in this project's resources.
+	 * Writes a new configuration file (deleting the old configuration file at the path getConfigFileName() if it
+	 * exists).  The permissions of the newly written configuration file are also set to 660 (read and write only for
+	 * user and group).
 	 *
-	 * @return The file path to the sample configuration file in this project as a String
+	 * @throws IOException Thrown if unable to one of the following:
+	 *  1) Delete old configuration file if it exists
+	 *  2) Write the new configuration file
+	 *  3) Change the new configuration file's permissions to 600 (read and write only for user and group)
 	 */
-	public static String getPathToOriginalSampleConfigurationFile() {
-		return Objects.requireNonNull(
-			Main.class.getClassLoader().getResource("sample_config.properties")
-		).getPath();
+	void writeConfigurationFile() throws IOException {
+		Path configurationFilePath = Paths.get(getConfigFileName());
+
+		Files.deleteIfExists(configurationFilePath);
+		Files.write(
+			configurationFilePath,
+			getConfigurationEntryCollection().getConfigurationEntriesJoinedByNewLines().getBytes(),
+			StandardOpenOption.CREATE
+		);
+
+		makeFileReadAndWriteForUserAndGroupOnly();
 	}
 
-	private void initializeConfigurationEntryCreator() {
-		this.configurationEntryCreator = new ConfigurationEntryCreator();
-	}
-
-	private String getConfigFileName() {
-		return this.configFileName;
-	}
-
-	private ConfigurationEntryCreator getConfigurationEntryCreator() {
-		return this.configurationEntryCreator;
-	}
-
-	private void addNeo4jDatabaseConfigurationEntries() {
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"Neo4j Username", "neo4jUserName"
-		);
-		configurationEntryCreator.addPasswordConfigurationEntry(
-			"Neo4j Password", "neo4jPassword"
-		);
-		configurationEntryCreator.addOptionalConfigurationEntry(
-			"Neo4j Host Server Name", "neo4jHostName", "localhost"
-		);
-		configurationEntryCreator.addOptionalConfigurationEntry(
-			"Neo4j Bolt Port", "neo4jPort", "7687"
-		);
-	}
-
-	private void addReactomeSpecificConfigurationEntries() {
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"Reactome Version", "reactomeVersion"
-		);
-		configurationEntryCreator.addOptionalConfigurationEntry(
-			"Path to Local File Output Directory", "outputDir", "output"
-		);
-	}
-
-	private void addEuropePMCFTPServerConfigurationEntries() {
-		configurationEntryCreator.addOptionalConfigurationEntry(
-			"EuropePMC FTP Server Username", "europePMCFTPUserName", "elinks"
-		);
-		configurationEntryCreator.addPasswordConfigurationEntry(
-			"EuropePMC FTP Server Password", "europePMCFTPPassword")
-		;
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"EuropePMC FTP Server Hostname URL", "europePMCFTPHostName"
-		);
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"Path to the Reactome folder on the EuropePMC FTP Server", "europePMCFTPReactomeFolderPath"
-		);
-	}
-
-	private void addNCBIFTPServerConfigurationEntries() {
-		configurationEntryCreator.addOptionalConfigurationEntry(
-			"NCBI FTP Server Username", "ncbiFTPUserName", "reactome"
-		);
-		configurationEntryCreator.addPasswordConfigurationEntry(
-			"NCBI FTP Server Password", "ncbiFTPPassword"
-		);
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"NCBI FTP Server Hostname URL", "ncbiFTPHostName"
-		);
-		configurationEntryCreator.addRequiredConfigurationEntry(
-			"Path to the Reactome folder on the NCBI FTP Server", "ncbiFTPReactomeFolderPath"
-		);
-	}
-
-	private boolean configurationFileExistsAndIsValid() throws IOException {
-		return configurationFileExists() && configurationFileIsValid();
-	}
-
-	private boolean configurationFileExists() {
-		return new File(getConfigFileName()).exists();
-	}
-
-	private boolean configurationFileIsValid() throws IOException {
-		List<String> requiredConfigurationKeys = getConfigurationEntryCreator().getConfigurationEntryKeys();
+	/**
+	 * Checks to see if an already existing configuration file's contents are valid or not.  The configuration file
+	 * is valid if the configuration entries, in this ConfigurationInitializer object, already are present in the
+	 * existing configuration file.
+	 *
+	 * @return <code>true</code> if all required configuration keys (those added in the
+	 * ConfigurationEntryCollection object for checking/writing the configuration file) are present in an already
+	 * existing configuration file (NOTE: this method is not called if the configuration file does not exist);
+	 * <code>false</code> otherwise
+	 * @throws IOException Thrown if unable to read the configuration file (which should exist when this method is
+	 * called)
+	 */
+	boolean configurationFileIsValid() throws IOException {
+		List<String> requiredConfigurationKeys = getConfigurationEntryCollection().getConfigurationEntryKeys();
 		List<String> existingFileConfigurationKeys =
 			Files.readAllLines(Paths.get(getConfigFileName()))
 				.stream()
@@ -210,21 +183,89 @@ public class ConfigurationInitializer {
 		return existingFileConfigurationKeys.containsAll(requiredConfigurationKeys);
 	}
 
-	private String getConfigurationKeyFromConfigurationEntry(String configurationEntry) {
-		return configurationEntry.split("=")[0];
+	/**
+	 * Returns the ConfigurationEntryCollection object managing the configuration entries for writing/checking the
+	 * configuration file.
+	 *
+	 * @return ConfigurationEntryCollection object holding/managing the configuration entries
+	 * @see ConfigurationEntryCollection
+	 */
+	ConfigurationEntryCollection getConfigurationEntryCollection() {
+		return this.configurationEntryCollection;
 	}
 
-	private void writeConfigurationFile() throws IOException {
-		Path configurationFilePath = Paths.get(getConfigFileName());
+	private void initializeConfigurationEntryCreator() {
+		this.configurationEntryCollection = new ConfigurationEntryCollection();
+	}
 
-		Files.deleteIfExists(configurationFilePath);
-		Files.write(
-			configurationFilePath,
-			getConfigurationEntryCreator().getConfigurationEntriesJoinedByNewLines().getBytes(),
-			StandardOpenOption.CREATE
+	private String getConfigFileName() {
+		return this.configFileName;
+	}
+
+	private void addNeo4jDatabaseConfigurationEntries() {
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"Neo4j Username", "neo4jUserName"
 		);
+		configurationEntryCollection.addPasswordConfigurationEntry(
+			"Neo4j Password", "neo4jPassword"
+		);
+		configurationEntryCollection.addOptionalConfigurationEntry(
+			"Neo4j Host Server Name", "neo4jHostName", "localhost"
+		);
+		configurationEntryCollection.addOptionalConfigurationEntry(
+			"Neo4j Bolt Port", "neo4jPort", "7687"
+		);
+	}
 
-		makeFileReadAndWriteForUserAndGroupOnly();
+	private void addReactomeSpecificConfigurationEntries() {
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"Reactome Version", "reactomeVersion"
+		);
+		configurationEntryCollection.addOptionalConfigurationEntry(
+			"Path to Local File Output Directory", "outputDir", "output"
+		);
+	}
+
+	private void addEuropePMCFTPServerConfigurationEntries() {
+		configurationEntryCollection.addOptionalConfigurationEntry(
+			"EuropePMC FTP Server Username", "europePMCFTPUserName", "elinks"
+		);
+		configurationEntryCollection.addPasswordConfigurationEntry(
+			"EuropePMC FTP Server Password", "europePMCFTPPassword")
+		;
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"EuropePMC FTP Server Hostname URL", "europePMCFTPHostName"
+		);
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"Path to the Reactome folder on the EuropePMC FTP Server", "europePMCFTPReactomeFolderPath"
+		);
+	}
+
+	private void addNCBIFTPServerConfigurationEntries() {
+		configurationEntryCollection.addOptionalConfigurationEntry(
+			"NCBI FTP Server Username", "ncbiFTPUserName", "reactome"
+		);
+		configurationEntryCollection.addPasswordConfigurationEntry(
+			"NCBI FTP Server Password", "ncbiFTPPassword"
+		);
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"NCBI FTP Server Hostname URL", "ncbiFTPHostName"
+		);
+		configurationEntryCollection.addRequiredConfigurationEntry(
+			"Path to the Reactome folder on the NCBI FTP Server", "ncbiFTPReactomeFolderPath"
+		);
+	}
+
+	private boolean configurationFileExists() {
+		return new File(getConfigFileName()).exists();
+	}
+
+	private boolean configurationFileExistsAndIsValid() throws IOException {
+		return configurationFileExists() && configurationFileIsValid();
+	}
+
+	private String getConfigurationKeyFromConfigurationEntry(String configurationEntry) {
+		return configurationEntry.split("=")[0];
 	}
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
