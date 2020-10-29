@@ -90,10 +90,12 @@ public abstract class FTPFileUploader {
 	 * from the FTP server, provide the listing of files on the FTP Server after the update is complete
 	 */
 	public void updateFilesOnServer() throws IOException {
-		if (!uploadFilesToServer()) {
-			return;
+		if (uploadFilesToServer()) {
+			deleteOldFilesFromServer();
+		} else {
+			getLogger().error("Unable to upload at least some files to the {} FTP server.  Old Files were not deleted",
+				getServerHostName());
 		}
-		deleteOldFilesFromServer();
 
 		logListingOfReactomeFilesPresentOnServer();
 		closeFTPConnectionToServer();
