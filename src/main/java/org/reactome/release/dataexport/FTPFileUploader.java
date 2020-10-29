@@ -74,9 +74,9 @@ public abstract class FTPFileUploader {
 		getFtpClientToServer().enterLocalPassiveMode();
 
 		if (loginToFTPServer()) {
-			logger.info("Login successful to " + getServerHostName());
+			getLogger().info("Login successful to {}", getServerHostName());
 		} else {
-			logger.error("Login to " + getServerHostName() + " failed");
+			getLogger().error("Login to {} failed", getServerHostName());
 		}
 
 		getFtpClientToServer().changeWorkingDirectory(getReactomeDirectoryPathOnFTPServer());
@@ -116,10 +116,9 @@ public abstract class FTPFileUploader {
 		List<String> filesToUpload = getLocalFileNamesToUpload();
 
 		if (filesToUpload.isEmpty()) {
-			getLogger().error(
-				"No files were found in the directory '" + getLocalOutputDirectoryPath() +
-					"' which should be uploaded to " + getServerHostName())
-			;
+			getLogger().error("No files were found in the directory '{}' which should be uploaded to {}",
+				getLocalOutputDirectoryPath(), getServerHostName());
+
 			return false;
 		}
 
@@ -152,8 +151,8 @@ public abstract class FTPFileUploader {
 		List<String> filesToDelete = getRemoteFileNamesToDelete();
 		if (filesToDelete.isEmpty()) {
 			int previousReactomeVersion = getReactomeReleaseVersion() - 1;
-			getLogger().info("No files from Reactome version " + previousReactomeVersion +
-				" to delete on the FTP server " + getServerHostName()
+			getLogger().info("No files from Reactome version {} to delete on the FTP server {}",
+				previousReactomeVersion, getServerHostName()
 			);
 			return false;
 		}
@@ -163,9 +162,8 @@ public abstract class FTPFileUploader {
 
 		for (String fileToDelete : filesToDelete) {
 			if (!existsOnServer(fileToDelete)) {
-				getLogger().warn(
-					"File to delete '" + fileToDelete + "' was not found on the FTP server " + getServerHostName()
-				);
+				getLogger().warn("File to delete '{}' was not found on the FTP server {}",
+					filesToDelete, getServerHostName());
 				continue;
 			}
 
@@ -184,13 +182,11 @@ public abstract class FTPFileUploader {
 	 * @throws IOException Thrown if unable to list files on the FTP Server
 	 */
 	public void logListingOfReactomeFilesPresentOnServer() throws IOException {
-		logger.info(
-			"The following files are in the directory designated for Reactome on the " + getServerHostName() +
-			" server:"
-		);
+		getLogger().info("The following files are in the directory designated for Reactome on the {} server:",
+			getServerHostName());
 
 		for (String fileListing : getListingOfReactomeFilesPresentOnServer()) {
-			logger.info(fileListing);
+			getLogger().info(fileListing);
 		}
 	}
 
@@ -203,15 +199,12 @@ public abstract class FTPFileUploader {
 	 * <code>false</code> otherwise
 	 */
 	public boolean closeFTPConnectionToServer() {
-		final String ftpCloseConnectionErrorMessage = "Unable to close connection to FTP Server " +
-			getServerHostName();
-
 		try {
 			getFtpClientToServer().logout();
 			getFtpClientToServer().disconnect();
 			return true;
 		} catch (IOException e) {
-			logger.error(ftpCloseConnectionErrorMessage, e);
+			getLogger().error("Unable to close connection to FTP Server {}", getServerHostName(), e);
 			return false;
 		}
 	}
@@ -415,47 +408,33 @@ public abstract class FTPFileUploader {
 
 		if (!missingRequiredProperties.isEmpty()) {
 			throw new IllegalStateException(
-				"The following required properties are missing from the properties object: " +
-					missingRequiredProperties
+				"The following required properties are missing from the properties object: " + missingRequiredProperties
 			);
 		}
 	}
 
 	private boolean uploadFileToServer(String fileToUpload) throws IOException {
-		getLogger().info(
-			"Uploading file '" + fileToUpload + "' to server " + getServerHostName()
-		);
+		getLogger().info("Uploading file '{}' to server {}", fileToUpload, getServerHostName());
 
 		InputStream fileToUploadInputStream = new FileInputStream(fileToUpload);
 
 		if (getFtpClientToServer().storeFile(fileToUpload, fileToUploadInputStream)) {
-			getLogger().info(
-				"Successfully uploaded '" + fileToUpload + "' to server " +
-					getServerHostName()
-			);
+			getLogger().info("Successfully uploaded '{}' to server {}", fileToUpload, getServerHostName());
 			return true;
 		} else {
-			getLogger().error(
-				"There was a problem uploading '" + fileToUpload + "' to the server " +
-					getServerHostName() + ". " + getFtpClientToServer().getStatus()
-			);
+			getLogger().error("Unable to upload '{}' to the server {}", fileToUpload, getServerHostName());
 			return false;
 		}
 	}
 
 	private boolean deleteOldFileFromServer(String fileToDelete) throws IOException {
-		getLogger().info(
-			"Deleting file '" + fileToDelete + "' from FTP server " + getServerHostName()
-		);
+		getLogger().info("Deleting file '{}' from FTP server {}", fileToDelete, getServerHostName());
 
 		if (getFtpClientToServer().deleteFile(fileToDelete)) {
-			getLogger().info("Successfully deleted '" + fileToDelete + "' from FTP server " + getServerHostName());
+			getLogger().info("Successfully deleted '{}' from FTP server {}", fileToDelete, getServerHostName());
 			return true;
 		} else {
-			getLogger().error(
-				"There was a problem deleting '" + fileToDelete + "' from the FTP server " +
-					getServerHostName() + ": " + getFtpClientToServer().getStatus()
-			);
+			getLogger().error("Unable to delete '{}' from the FTP server {}", fileToDelete, getServerHostName());
 			return false;
 		}
 	}

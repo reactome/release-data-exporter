@@ -91,7 +91,7 @@ public class NCBIGene {
 
 		Set<String> ncbiGeneXMLNodeStrings = new LinkedHashSet<>();
 		for (NCBIEntry ncbiEntry : ncbiEntries) {
-			ncbiGeneLogger.info("Working on " + ncbiEntry.getUniprotAccession());
+			ncbiGeneLogger.info("Working on {}", ncbiEntry.getUniprotAccession());
 
 			Set<ReactomeEvent> topLevelPathways = ncbiEntry.getTopLevelPathways(graphDBSession);
 			if (topLevelPathways.isEmpty()) {
@@ -111,7 +111,7 @@ public class NCBIGene {
 				}
 			}
 
-			ncbiGeneLogger.info("Finished with " + ncbiEntry.getUniprotAccession());
+			ncbiGeneLogger.info("Finished with {}", ncbiEntry.getUniprotAccession());
 		}
 
 		int fileCount = 0;
@@ -121,7 +121,7 @@ public class NCBIGene {
 
 			deleteAndCreateFile(geneXMLFilePath);
 
-			logger.info("Generating " + geneXMLFilePath.getFileName());
+			logger.info("Generating {}", geneXMLFilePath.getFileName());
 
 			appendWithNewLine(getXMLHeader(), geneXMLFilePath);
 			appendWithNewLine(getOpenRootTag(), geneXMLFilePath);

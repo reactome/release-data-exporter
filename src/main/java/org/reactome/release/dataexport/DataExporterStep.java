@@ -50,7 +50,7 @@ public class DataExporterStep extends ReleaseStep {
 		int version = Integer.parseInt(props.getProperty("reactomeVersion"));
 		String outputDir = props.getProperty("outputDir", "output");
 		Files.createDirectories(Paths.get(outputDir));
-		logger.info("Files for Reactome version " + version + " will be output to the directory " + outputDir);
+		logger.info("Files for Reactome version {} will be output to the directory {}", version, outputDir);
 
 		try (Driver graphDBDriver = getGraphDBDriver(props); Session graphDBSession = graphDBDriver.session()) {
 			List<NCBIEntry> ncbiEntries = NCBIEntry.getUniProtToNCBIGeneEntries(graphDBSession);
