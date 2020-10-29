@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameter;
 
 import java.io.IOException;
 
-import org.reactome.release.dataexport.configuration.ConfigurationInitializer;
+import org.reactome.release.dataexport.configuration.ConfigurationManager;
 
 /**
  * Generates post-release export files for NCBI, UCSC and Europe PMC.
@@ -34,11 +34,11 @@ public class Main {
 	}
 
 	private void run() throws IOException {
-		ConfigurationInitializer configurationInitializer = new ConfigurationInitializer();
-		configurationInitializer.stopGitTrackingOriginalSampleConfigurationFile();
-		configurationInitializer.createConfigurationFile(overwriteConfigFile);
+		ConfigurationManager configurationManager = new ConfigurationManager();
+		configurationManager.stopGitTrackingOriginalSampleConfigurationFile();
+		configurationManager.createConfigurationFile(overwriteConfigFile);
 
 		DataExporterStep dataExporterStep = new DataExporterStep();
-		dataExporterStep.executeStep(configurationInitializer.getProps());
+		dataExporterStep.executeStep(configurationManager.getProps());
 	}
 }

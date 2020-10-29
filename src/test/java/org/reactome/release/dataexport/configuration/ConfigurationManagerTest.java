@@ -27,22 +27,22 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-public class ConfigurationInitializerTest {
+public class ConfigurationManagerTest {
 	private static final Path DEFAULT_CONFIG_FILE = Paths.get("temp_dir","test_config_file.properties");
 
 	@Mock
 	private ConfigurationEntryCollection configurationEntryCollection;
 
 	@Spy
-	private ConfigurationInitializer configurationInitializer;
+	private ConfigurationManager configurationManager;
 
 	@BeforeEach
 	public void instantiateConfigurationInitializerTest() {
 		MockitoAnnotations.initMocks(this);
 
-		configurationInitializer = Mockito.spy(new ConfigurationInitializer(DEFAULT_CONFIG_FILE.toString()));
+		configurationManager = Mockito.spy(new ConfigurationManager(DEFAULT_CONFIG_FILE.toString()));
 		Mockito.doReturn(configurationEntryCollection)
-			.when(configurationInitializer).getConfigurationEntryCollection();
+			.when(configurationManager).getConfigurationEntryCollection();
 		mockConfigurationEntryCollection();
 	}
 
@@ -51,7 +51,7 @@ public class ConfigurationInitializerTest {
 		final String expectedEndingOfSampleConfigurationPath = "target/classes/sample_config.properties";
 
 		assertThat(
-			ConfigurationInitializer.getPathToOriginalSampleConfigurationFile(),
+			ConfigurationManager.getPathToOriginalSampleConfigurationFile(),
 			endsWith(expectedEndingOfSampleConfigurationPath)
 		);
 	}
@@ -62,10 +62,10 @@ public class ConfigurationInitializerTest {
 		final boolean overWriteConfigurationFile = false;
 
 		createTemporaryTestDirectory();
-		configurationInitializer.writeConfigurationFile();
+		configurationManager.writeConfigurationFile();
 
 		assertThat(
-			configurationInitializer.createConfigurationFile(overWriteConfigurationFile),
+			configurationManager.createConfigurationFile(overWriteConfigurationFile),
 			is(equalTo(false))
 		);
 
@@ -76,7 +76,7 @@ public class ConfigurationInitializerTest {
 	public void configurationFileIsWrittenCorrectly() throws IOException {
 		createTemporaryTestDirectory();
 
-		configurationInitializer.writeConfigurationFile();
+		configurationManager.writeConfigurationFile();
 
 		assertThat(
 			configFileContent(),
@@ -90,7 +90,7 @@ public class ConfigurationInitializerTest {
 	public void configurationFileWrittenHasReadAndWritePermissions() throws IOException {
 		createTemporaryTestDirectory();
 
-		configurationInitializer.writeConfigurationFile();
+		configurationManager.writeConfigurationFile();
 
 		assertThat(DEFAULT_CONFIG_FILE.toFile(), is(aReadableFile()));
 		assertThat(DEFAULT_CONFIG_FILE.toFile(), is(aWritableFile()));
@@ -102,7 +102,7 @@ public class ConfigurationInitializerTest {
 	public void configurationFileIsValidThrowsIOExceptionWhenConfigurationFileDoesNotExist() {
 		assertThrows(
 			IOException.class,
-			() -> configurationInitializer.configurationFileIsValid(),
+			() -> configurationManager.configurationFileIsValid(),
 			"Expected configurationFileIsValid() to throw an IOException for a configuration file that does "
 				+ "not exist, but it didn't"
 		);
@@ -114,9 +114,9 @@ public class ConfigurationInitializerTest {
 
 		createTemporaryTestDirectory();
 
-		configurationInitializer.writeConfigurationFile();
+		configurationManager.writeConfigurationFile();
 		assertThat(
-			configurationInitializer.configurationFileIsValid(),
+			configurationManager.configurationFileIsValid(),
 			is(equalTo(true))
 		);
 
@@ -130,9 +130,9 @@ public class ConfigurationInitializerTest {
 		createTemporaryTestDirectory();
 
 		mockConfigurationEntryCollectionWithOneExtraRequiredKey();
-		configurationInitializer.writeConfigurationFile();
+		configurationManager.writeConfigurationFile();
 		assertThat(
-			configurationInitializer.configurationFileIsValid(),
+			configurationManager.configurationFileIsValid(),
 			is(equalTo(false))
 		);
 
@@ -143,8 +143,8 @@ public class ConfigurationInitializerTest {
 	public void getPropsThrowsAnIOExceptionIfTheConfigurationFileDoesNotExist() {
 		assertThrows(
 			IOException.class,
-			() -> configurationInitializer.getProps(),
-			"Expected getProps() for ConfigurationInitializer to throw an IOException for a configuration file"
+			() -> configurationManager.getProps(),
+			"Expected getProps() for ConfigurationManager to throw an IOException for a configuration file"
 				+ "that does not exist, but it didn't"
 		);
 	}

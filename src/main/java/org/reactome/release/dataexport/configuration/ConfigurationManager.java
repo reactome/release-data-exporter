@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * file
  * @author jweiser
  */
-public class ConfigurationInitializer {
+public class ConfigurationManager {
 	private static final Logger logger = LogManager.getLogger("mainLog");
 
 	private static final String DEFAULT_CONFIGURATION_FILE_NAME = "config.properties";
@@ -31,18 +31,18 @@ public class ConfigurationInitializer {
 	private ConfigurationEntryCollection configurationEntryCollection;
 
 	/**
-	 * Creates a ConfigurationInitializer object using the default configuration file name of "config.properties".
+	 * Creates a ConfigurationManager object using the default configuration file name of "config.properties".
 	 */
-	public ConfigurationInitializer() {
+	public ConfigurationManager() {
 		this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
 	}
 
 	/**
-	 * Creates a ConfigurationInitializer object using the provided configuration file name.
+	 * Creates a ConfigurationManager object using the provided configuration file name.
 	 *
 	 * @param configFileName Name of the configuration file name to check and potentially create/overwrite
 	 */
-	ConfigurationInitializer(String configFileName) {
+	ConfigurationManager(String configFileName) {
 		this.configFileName = configFileName;
 	}
 
@@ -53,7 +53,7 @@ public class ConfigurationInitializer {
 	 */
 	public static String getPathToOriginalSampleConfigurationFile() {
 		return Objects.requireNonNull(
-			ConfigurationInitializer.class.getClassLoader().getResource("sample_config.properties")
+			ConfigurationManager.class.getClassLoader().getResource("sample_config.properties")
 		).getPath();
 	}
 
@@ -162,7 +162,7 @@ public class ConfigurationInitializer {
 
 	/**
 	 * Checks to see if an already existing configuration file's contents are valid or not.  The configuration file
-	 * is valid if the configuration entries, in this ConfigurationInitializer object, already are present in the
+	 * is valid if the configuration entries, in this ConfigurationManager object, already are present in the
 	 * existing configuration file.
 	 *
 	 * @return <code>true</code> if all required configuration keys (those added in the
