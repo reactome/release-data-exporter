@@ -43,6 +43,11 @@ cd $DIR
 echo "Updating data-release-pipeline repository from GitHub"
 git pull
 
+original_config_file=src/main/resources/sample_config.properties
+# Stop git tracking on original/sample configuration file to prevent committing and pushing if any sensitive
+# information is mistakenly added
+git update-index --assume-unchanged $original_config_file
+
 jar_file="data-exporter.jar"
 ## Generate the jar file if it doesn't exist or a re-build is requested
 if [ ! -f $jar_file ] || [ ! -z $build_jar ]; then

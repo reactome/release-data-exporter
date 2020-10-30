@@ -35,7 +35,6 @@ public class Main {
 
 	private void run() throws IOException {
 		ConfigurationManager configurationManager = new ConfigurationManager();
-		configurationManager.stopGitTrackingOriginalSampleConfigurationFile();
 		configurationManager.createConfigurationFile(overwriteConfigFile);
 
 		DataExporterStep dataExporterStep = new DataExporterStep();
