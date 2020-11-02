@@ -2,12 +2,12 @@
 
 This program will produce data exports for submission to NCBI, UCSC, and Europe PMC.  Files provided to these resources
 are:
-* **<a href="https://www.ncbi.nlm.nih.gov/">NCBI</a>:** Gene (NCBI gene identifier to Reactome top level pathways) and Protein (all UniProt entries in Reactome
- associated with any NCBI Gene identifier).
-* **<a href="https://www.genome.ucsc.edu/">UCSC</a>:** Entity (UniProt entries in Reactome) and Events (UniProt entries in Reactome in relation to Reactome 
-pathways and reactions).
-* **<a href="https://europepmc.org/">Europe PMC</a>:** Profile and Link XML (describing Reactome as a provider and Reactome Pathway to literature 
-references, respectively).
+* **<a href="https://www.ncbi.nlm.nih.gov/">NCBI</a>:** Gene (NCBI gene identifier to Reactome top level pathways) and 
+Protein (all UniProt entries in Reactome associated with any NCBI Gene identifier).
+* **<a href="https://www.genome.ucsc.edu/">UCSC</a>:** Entity (UniProt entries in Reactome) and Events (UniProt entries
+in Reactome in relation to Reactome pathways and reactions).
+* **<a href="https://europepmc.org/">Europe PMC</a>:** Profile and Link XML (describing Reactome as a provider and 
+Reactome Pathway to literature references, respectively).
 
 The file outputs will be as follows in the configured output directory (see configuration section below) and where XX 
 is the Reactome Release Version Number:
@@ -23,15 +23,15 @@ size is acceptable for NCBI)
 
 After the files have been generated, the following files will be uploaded to external FTP Servers:
 
-* To the **[NCBI FTP Server](ftp://ftp-private.ncbi.nih.gov)**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft" files will be uploaded (using the 
-values provided in the configuration file to connect to the FTP Server - see the [Configuration](#configuration) 
-section below).  **NOTE: Access to the Reactome files requires user
-and password credentials.**
+* To the **[NCBI FTP Server](ftp://ftp-private.ncbi.nih.gov)**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft"
+files will be uploaded (using the values provided in the configuration file to connect to the FTP Server - see the
+[Configuration](#configuration) section below).  **NOTE: Access to the Reactome files requires user and password 
+credentials.**
 
-* To the **[EuropePMC FTP Server](ftp://labslink.ebi.ac.uk)**, the "europe_pmc_profile_reactome_XX.xml" and "europe_pmc_links_reactome_XX.xml" 
-files will be uploaded (using the values provided in the configuration file to connect to the FTP Server - see the 
-[Configuration](#configuration) section below).  **NOTE: Access to
-the Reactome files requires user and password credentials.**
+* To the **[EuropePMC FTP Server](ftp://labslink.ebi.ac.uk)**, the "europe_pmc_profile_reactome_XX.xml" and 
+europe_pmc_links_reactome_XX.xml" files will be uploaded (using the values provided in the configuration file to 
+connect to the FTP Server - see the [Configuration](#configuration) section below).  **NOTE: Access to the Reactome 
+files requires user and password credentials.**
 
 ## Compiling & Running
 
@@ -79,10 +79,15 @@ prompts from the user for new values).
 the `data-exporter.jar`), so this section is if set values need to be changed as well as for general reference.**
 
 The configuration file produced will be at the root directory of this project and named `config.properties`.  It can 
-be viewed and edited directly if desired.
+be viewed and edited directly if desired.  This file is included in the `.gitignore` list to prevent it from being
+tracked by Git and accidentally storing and making public sensitive information such as login credentials for external
+servers.
 
-A sample configuration file is provided at `src/main/resources/config.properties` and looks like this, but should 
-**NEVER BE EDITED DIRECTLY** and any changes are ignored by git after running the configuration script.
+A sample configuration file is provided at `src/main/resources/sample_config.properties` and its contents look like the
+following, but the **sample configuration should NEVER BE EDITED DIRECTLY** to avoid accidental commits of sensitive
+information to the sample configuration file.  Any changes to the sample configuration file are ignored by git upon 
+running the `runDataExporter.sh` shell script, but not editing the sample configuration file adds an extra measure of
+precaution. 
 
 ```
 neo4jUserName=neo4j
