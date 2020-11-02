@@ -2,11 +2,11 @@
 
 This program will produce data exports for submission to NCBI, UCSC, and Europe PMC.  Files provided to these resources
 are:
-* **NCBI:** Gene (NCBI gene identifier to Reactome top level pathways) and Protein (all UniProt entries in Reactome
+* **<a href="https://www.ncbi.nlm.nih.gov/">NCBI</a>:** Gene (NCBI gene identifier to Reactome top level pathways) and Protein (all UniProt entries in Reactome
  associated with any NCBI Gene identifier).
-* **UCSC:** Entity (UniProt entries in Reactome) and Events (UniProt entries in Reactome in relation to Reactome 
+* **<a href="https://www.genome.ucsc.edu/">UCSC</a>:** Entity (UniProt entries in Reactome) and Events (UniProt entries in Reactome in relation to Reactome 
 pathways and reactions).
-* **Europe PMC:** Profile and Link XML (describing Reactome as a provider and Reactome Pathway to literature 
+* **<a href="https://europepmc.org/">Europe PMC</a>:** Profile and Link XML (describing Reactome as a provider and Reactome Pathway to literature 
 references, respectively).
 
 The file outputs will be as follows in the configured output directory (see configuration section below) and where XX 
@@ -23,13 +23,15 @@ size is acceptable for NCBI)
 
 After the files have been generated, the following files will be uploaded to external FTP Servers:
 
-* To the **NCBI FTP Server**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft" files will be uploaded (using the 
+* To the **<a href="ftp://ftp-private.ncbi.nih.gov">NCBI FTP Server</a>**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft" files will be uploaded (using the 
 values provided in the configuration file to connect to the FTP Server - see the [Configuration](#configuration) 
-section below)
+section below).  NOTE: Access to the Reactome files requires user
+and password credentials.
 
-* To the **EuropePMC FTP Server**, the "europe_pmc_profile_reactome_XX.xml" and "europe_pmc_links_reactome_XX.xml" 
+* To the **<a href="ftp://labslink.ebi.ac.uk">EuropePMC FTP Server</a>**, the "europe_pmc_profile_reactome_XX.xml" and "europe_pmc_links_reactome_XX.xml" 
 files will be uploaded (using the values provided in the configuration file to connect to the FTP Server - see the 
-[Configuration](#configuration) section below)
+[Configuration](#configuration) section below).  NOTE: Access to
+the Reactome files requires user and password credentials.
 
 ## Compiling & Running
 
