@@ -16,7 +16,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.*;
 /**
  * File generator for NCBI Gene.  This class has logic for producing a file for
  * NCBI Gene XML, describing the relationship between NCBI Gene identifiers and
- * Reactome UniProt entries as well as their top level pathways.
+ * Reactome UniProt entries as well as their Top-level pathways.
  * It also can create a file for NCBI Protein, describing the relationship between
  * NCBI Gene identifiers and Reactome UniProt entries in a simple tab delimited format.
  * @author jweiser
@@ -96,8 +96,8 @@ public class NCBIGene {
 			Set<ReactomeEvent> topLevelPathways = ncbiEntry.getTopLevelPathways(graphDBSession);
 			if (topLevelPathways.isEmpty()) {
 				String errorMessage = ncbiEntry.getUniprotDisplayName() +
-					" participates in Event(s) but no top Pathway can be found, i.e. there seem to be a pathway" +
-					 " which contains or is an instance of itself.\n";
+					" participates in Event(s) but no Top-level Pathway can be found, i.e. there seem to be a" +
+					" pathway which contains or is an instance of itself.\n";
 
 				Files.write(geneErrorFilePath, errorMessage.getBytes(), StandardOpenOption.APPEND);
 				continue;
