@@ -47,16 +47,6 @@ public class ConfigurationManagerTest {
 	}
 
 	@Test
-	public void pathToSampleConfigurationFileIsCorrect() {
-		final String expectedEndingOfSampleConfigurationPath = "target/classes/sample_config.properties";
-
-		assertThat(
-			ConfigurationManager.getPathToOriginalSampleConfigurationFile(),
-			endsWith(expectedEndingOfSampleConfigurationPath)
-		);
-	}
-
-	@Test
 	public void createConfigurationFileReturnsFalseWhenNoOverwriteAndConfigurationFileExistsAndIsValid()
 		throws IOException {
 		final boolean overWriteConfigurationFile = false;

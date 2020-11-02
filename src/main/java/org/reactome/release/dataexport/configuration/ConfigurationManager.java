@@ -47,17 +47,6 @@ public class ConfigurationManager {
 	}
 
 	/**
-	 * Obtains and returns the path to the sample configuration file included in this project's resources.
-	 *
-	 * @return The file path to the sample configuration file in this project as a String
-	 */
-	public static String getPathToOriginalSampleConfigurationFile() {
-		return Objects.requireNonNull(
-			ConfigurationManager.class.getClassLoader().getResource("sample_config.properties")
-		).getPath();
-	}
-
-	/**
 	 * Creates a property configuration file with the needed property values for the data exporter project.  The file
 	 * will be (re)created if the "overwriteExistingFile" parameter is true.  Otherwise, the file will only be
 	 * created if the file does not already exist or if the existing file is not valid (i.e. it does not have one or
