@@ -17,6 +17,10 @@ while (( "$#" )); do
 			skip_integration_tests="-DskipITs=true"
 			shift
 			;;
+		-h|--help)
+			help=1
+			shift
+			;;
 		--) # end argument parsing
 			shift
 			break
@@ -38,6 +42,36 @@ eval set -- "$PARAMS"
 CWD=$(pwd) # Current working directory -- from where the script is being called
 DIR=$(dirname "$(readlink -f "$0")") # Directory of the script -- allows the script to invoked from anywhere
 cd $DIR
+
+## Print help instructions for this script and then exit
+if [ -z $help ]; then
+	cat << EOF
+
+For the release-data-exporter Java program, this script will manage (i.e. pull updates from the Git repository, build
+the jar file, and pass to the jar relevant command-line options) and run the program.  The program will produce data
+exports for submission to NCBI, UCSC, and Europe PMC.  For more details about the program, the files, or the external
+resources, please see the README file at the base directory of the release-data-exporter repository.
+
+Usage: ./$0 [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests] [-h|--help]
+
+The -b|--build_jar option will force a (re)build of the jar file for the release-data-exporter.  If this option is not
+included, the existing jar file will be used (only be built if it does not already exist).
+
+The -c|--overwrite_config_file option will attempt to (re)create the configuration file for the release-data-exporter.
+If this option is not included, the existing configuration file will be used (with the file being created only if it
+does not exist).
+
+The -s|--skip_integration_tests option will skip integration tests (i.e. test classes starting or ending with 'IT')
+during the Maven "test" Lifecycle Phase. If this option is not included, integration tests will be run by default.
+NOTE: This option only affects integration tests; Unit tests will always be run during a Maven build executed from this
+script.
+
+The -h|--help option will display this usage and explanatory text and exit the shell script.  NOTE: This option will
+override all others, as the no other part of the script will be run.
+EOF
+
+	exit 0
+fi
 
 ## Make sure the repo is up to date
 echo "Updating data-release-pipeline repository from GitHub"

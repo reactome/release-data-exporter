@@ -49,8 +49,10 @@ NCBI and EuropePMC FTP Servers to test code related to interaction with them.  B
 require a configuration file with the file path "src/test/resources/real_config.properties" (see 
 [Integration Tests](#integration-tests) section for more information)
 
-Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-sit|--skip_integration_tests]`
-Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests]`
+The `-h or --help` option can be provided to display full usage 
+and explanatory information about the script including its command-line options.
+
+Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests] [-h|--help]`
 
 NOTE: This script is building and invoking a Java application which requires a Java 8+ environment. You will need 
 maven and a full JDK to compile.
