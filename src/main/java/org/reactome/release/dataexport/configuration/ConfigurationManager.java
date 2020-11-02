@@ -1,5 +1,7 @@
 package org.reactome.release.dataexport.configuration;
 
+import static java.nio.file.attribute.PosixFilePermission.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,10 +11,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class to create, validate, query, and/or manipulate (e.g. change permissions) the configuration
@@ -244,8 +249,9 @@ public class ConfigurationManager {
 	}
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
+		Set<PosixFilePermission> filePermissions =
+			Stream.of(OWNER_READ, OWNER_WRITE, GROUP_READ, GROUP_WRITE).collect(Collectors.toSet());
 
-
-		Runtime.getRuntime().exec("chmod 660 " + getConfigFileName());
+		Files.setPosixFilePermissions(Paths.get(getConfigFileName()), filePermissions);
 	}
 }
