@@ -181,7 +181,7 @@ public class EuropePMC {
 	}
 
 	/**
-	 * Returns Path for Europe PMC Profile File based on pre-set output directory and Reactome version number
+	 * Returns Path for Europe PMC Profile File based on pre-set output directory and Reactome release version number
 	 * @return Path object for Europe PMC Profile File
 	 */
 	private Path getEuropePMCProfileFilePath() {
@@ -189,7 +189,7 @@ public class EuropePMC {
 	}
 
 	/**
-	 * Returns Path for Europe PMC Link File based on pre-set output directory and Reactome version number
+	 * Returns Path for Europe PMC Link File based on pre-set output directory and Reactome release version number
 	 * @return Path object for Europe PMC Link File
 	 */
 	private Path getEuropePMCLinkFilePath() {
