@@ -44,7 +44,7 @@ DIR=$(dirname "$(readlink -f "$0")") # Directory of the script -- allows the scr
 cd $DIR
 
 ## Print help instructions for this script and then exit
-if [ -z $help ]; then
+if [ -n $help ]; then
 	cat << EOF
 
 For the release-data-exporter Java program, this script will manage (i.e. pull updates from the Git repository, build
@@ -52,7 +52,7 @@ the jar file, and pass to the jar relevant command-line options) and run the pro
 exports for submission to NCBI, UCSC, and Europe PMC.  For more details about the program, the files, or the external
 resources, please see the README file at the base directory of the release-data-exporter repository.
 
-Usage: ./$0 [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests] [-h|--help]
+Usage: $0 [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests] [-h|--help]
 
 The -b|--build_jar option will force a (re)build of the jar file for the release-data-exporter.  If this option is not
 included, the existing jar file will be used (only be built if it does not already exist).
@@ -84,7 +84,7 @@ git update-index --assume-unchanged $original_config_file
 
 jar_file="data-exporter.jar"
 ## Generate the jar file if it doesn't exist or a re-build is requested
-if [ ! -f $jar_file ] || [ ! -z $build_jar ]; then
+if [ ! -f $jar_file ] || [ -n $build_jar ]; then
 	# Based on command-line options, $skip_integration_tests may be empty or have the switch to skip integration tests
 	mvn clean package $skip_integration_tests
 else
@@ -92,6 +92,7 @@ else
 	echo "Executing existing $jar_file file.  To force a rebuild, $0 -b or --build_jar"
 fi
 
+## Inform user that the Java program will attempt to use the existing configuration file
 if [ -z $overwrite_config_file ]; then
 	echo "Attempting to use existing configuration file.  \
 To force overwrite of the configuration file, $0 -c or --overwrite_config_file"
