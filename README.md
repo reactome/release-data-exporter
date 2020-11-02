@@ -23,12 +23,12 @@ size is acceptable for NCBI)
 
 After the files have been generated, the following files will be uploaded to external FTP Servers:
 
-* To the **[NCBI FTP Server](ftp://ftp-private.ncbi.nih.gov)</a>**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft" files will be uploaded (using the 
+* To the **[NCBI FTP Server](ftp://ftp-private.ncbi.nih.gov)**, the "gene_reactomeXX-Y.xml" and "protein_reactomeXX.ft" files will be uploaded (using the 
 values provided in the configuration file to connect to the FTP Server - see the [Configuration](#configuration) 
 section below).  NOTE: Access to the Reactome files requires user
 and password credentials.
 
-* To the **[EuropePMC FTP Server](ftp://labslink.ebi.ac.uk)*, the "europe_pmc_profile_reactome_XX.xml" and "europe_pmc_links_reactome_XX.xml" 
+* To the **[EuropePMC FTP Server](ftp://labslink.ebi.ac.uk)**, the "europe_pmc_profile_reactome_XX.xml" and "europe_pmc_links_reactome_XX.xml" 
 files will be uploaded (using the values provided in the configuration file to connect to the FTP Server - see the 
 [Configuration](#configuration) section below).  NOTE: Access to
 the Reactome files requires user and password credentials.
