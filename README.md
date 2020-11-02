@@ -10,7 +10,7 @@ pathways and reactions).
 references, respectively).
 
 The file outputs will be as follows in the configured output directory (see configuration section below) and where XX 
-is the Reactome Version:
+is the Reactome Release Version Number:
 
 * gene_reactomeXX-Y.xml (where Y is the file number as this file is split between multiple files so the file upload 
 size is acceptable for NCBI)
@@ -90,7 +90,7 @@ neo4jPassword=root
 neo4jHostName=localhost
 neo4jPort=7687
 
-reactomeVersion=74
+releaseNumber=74
 outputDir=output
 
 ncbiFTPUserName=ncbi_ftp_reactome_account_user_name

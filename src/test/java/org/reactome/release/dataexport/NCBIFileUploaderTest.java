@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getMockTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeleted;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExcept;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExceptOne;
@@ -287,7 +287,7 @@ public class NCBIFileUploaderTest {
 	@Test
 	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
 		final Path incorrectCurrentProfileFileName =
-			Paths.get("protein_react" + getCurrentReactomeVersion() + ".ft");
+			Paths.get("protein_react" + getCurrentReactomeReleaseNumber() + ".ft");
 
 		assertThat(
 			ncbiFileUploader.isCurrentFile(incorrectCurrentProfileFileName),
@@ -306,7 +306,7 @@ public class NCBIFileUploaderTest {
 	@Test
 	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
 		final Path incorrectCurrentLinksFileName =
-			Paths.get("protein_react" + getCurrentReactomeVersion() + ".ft");
+			Paths.get("protein_react" + getCurrentReactomeReleaseNumber() + ".ft");
 
 		assertThat(
 			ncbiFileUploader.isCurrentFile(incorrectCurrentLinksFileName),
@@ -325,7 +325,7 @@ public class NCBIFileUploaderTest {
 	@Test
 	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
 		final Path incorrectPreviousProfileFileName =
-			Paths.get("protein_react" + getPreviousReactomeVersion() + ".ft");
+			Paths.get("protein_react" + getPreviousReactomeReleaseNumber() + ".ft");
 
 		assertThat(
 			ncbiFileUploader.isPreviousFile(incorrectPreviousProfileFileName),
@@ -344,7 +344,7 @@ public class NCBIFileUploaderTest {
 	@Test
 	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
 		final Path incorrectPreviousLinksFileName =
-			Paths.get("protein_react" + getPreviousReactomeVersion() + ".ft");
+			Paths.get("protein_react" + getPreviousReactomeReleaseNumber() + ".ft");
 
 		assertThat(
 			ncbiFileUploader.isPreviousFile(incorrectPreviousLinksFileName),

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class FTPFileUploader {
 	private static final Logger logger = LogManager.getLogger("mainLog");
 
-	private static final List<String> requiredProperties = Arrays.asList("outputDir", "reactomeNumber");
+	private static final List<String> requiredProperties = Arrays.asList("outputDir", "releaseNumber");
 
 	private Properties props;
 	private FTPClient ftpClientConnectionToServer;
@@ -142,9 +142,9 @@ public abstract class FTPFileUploader {
 	public boolean deleteOldFilesFromServer() throws IOException {
 		List<String> filesToDelete = getRemoteFileNamesToDelete();
 		if (filesToDelete.isEmpty()) {
-			int previousReactomeVersion = getReactomeReleaseNumber() - 1;
+			int previousReactomeReleaseNumber = getReactomeReleaseNumber() - 1;
 			logger.info("No files from Reactome version {} to delete on the FTP server {}",
-				previousReactomeVersion, getServerHostName()
+				previousReactomeReleaseNumber, getServerHostName()
 			);
 			return false;
 		}
@@ -269,12 +269,12 @@ public abstract class FTPFileUploader {
 	};
 
 	/**
-	 * Checks a provided file path to determine if it is a Reactome-owned file for the previous Release version number
-	 * (one less than the current Release version number defined in the configuration file for this project).
+	 * Checks a provided file path to determine if it is a Reactome-owned file for the previous Release release number
+	 * (one less than the current Release release number defined in the configuration file for this project).
 	 *
 	 * @param filePath Path of the file to check if it is a previous Reactome file
-	 * @return <code>true</code> if the filePath provided matches for the previous Reactome version according to the
-	 * implementation defined in the method isReactomeOwnedFile; <code>false</code> otherwise
+	 * @return <code>true</code> if the filePath provided matches for the previous Reactome release number according to
+	 * the implementation defined in the method isReactomeOwnedFile; <code>false</code> otherwise
 	 * @see #isReactomeOwnedFile(String, int)
 	 */
 	protected boolean isPreviousFile(Path filePath) {
@@ -289,8 +289,8 @@ public abstract class FTPFileUploader {
 	 * Checks a provided file name to determine if it is a Reactome-owned file for the provided Release version.
 	 *
 	 * @param fileName Name of the file to check if it is a Reactome-owned file
-	 * @param reactomeReleaseNumber Reactome release version number used to check if the file names provided
-	 * corresponds to that version
+	 * @param reactomeReleaseNumber Reactome release number used to check if the file names provided corresponds to
+	 * that version
 	 * @return <code>true</code> if the fileName provided matches what is considered a Reactome-owned file according
 	 * to the implementation of this method;<code>false</code> otherwise
 	 */
@@ -345,10 +345,10 @@ public abstract class FTPFileUploader {
 	/**
 	 * Returns the current Reactome release version (as defined by the configuration file in this project).
 	 *
-	 * @return Reactome release version number
+	 * @return Reactome release number
 	 */
 	protected int getReactomeReleaseNumber() {
-		return Integer.parseInt(getProps().getProperty("reactomeNumber"));
+		return Integer.parseInt(getProps().getProperty("releaseNumber"));
 	}
 
 	/**

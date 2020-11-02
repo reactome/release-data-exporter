@@ -29,16 +29,16 @@ public class NCBIGene {
 
 	private List<NCBIEntry> ncbiEntries;
 	private String outputDir;
-	private int reactomeVersion;
+	private int reactomeReleaseNumber;
 
-	public static NCBIGene getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
-		return new NCBIGene(ncbiEntries, outputDir, reactomeVersion);
+	public static NCBIGene getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
+		return new NCBIGene(ncbiEntries, outputDir, reactomeReleaseNumber);
 	}
 
-	private NCBIGene(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
+	private NCBIGene(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
 		this.ncbiEntries = ncbiEntries;
 		this.outputDir = outputDir;
-		this.reactomeVersion = reactomeVersion;
+		this.reactomeReleaseNumber = reactomeReleaseNumber;
 	}
 
 	/**
@@ -157,16 +157,16 @@ public class NCBIGene {
 	}
 
 	private Path getProteinFilePath() {
-		return Paths.get(outputDir, "proteins_version" + reactomeVersion);
+		return Paths.get(outputDir, "proteins_version" + reactomeReleaseNumber);
 	}
 
 	private Path getGeneXMLFilePath(int fileCount) {
-		String fileName = "gene_reactome" + reactomeVersion + "-" + fileCount + ".xml";
+		String fileName = "gene_reactome" + reactomeReleaseNumber + "-" + fileCount + ".xml";
 		return Paths.get(outputDir, fileName);
 	}
 
 	private Path getGeneErrorFilePath() {
-		return Paths.get(outputDir, "geneentrez_" + reactomeVersion + ".err");
+		return Paths.get(outputDir, "geneentrez_" + reactomeReleaseNumber + ".err");
 	}
 
 	/**

@@ -1,7 +1,7 @@
 package org.reactome.release.dataexport.utilities;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
 
 import java.io.IOException;
 
@@ -22,19 +22,19 @@ public class NCBIFileUploaderTestUtils {
 	}
 
 	public static String getCurrentNCBIGeneFileNamePattern() throws IOException {
-		return "gene_reactome" + getCurrentReactomeVersion() + "-\\d+.xml";
+		return "gene_reactome" + getCurrentReactomeReleaseNumber() + "-\\d+.xml";
 	}
 
 	public static String getPreviousNCBIGeneFileNamePattern() throws IOException {
-		return "gene_reactome" + getPreviousReactomeVersion() + "-\\d+.xml";
+		return "gene_reactome" + getPreviousReactomeReleaseNumber() + "-\\d+.xml";
 	}
 
 	public static String getCurrentNCBIProteinFileName() throws IOException {
-		return "protein_reactome" + getCurrentReactomeVersion() + ".ft";
+		return "protein_reactome" + getCurrentReactomeReleaseNumber() + ".ft";
 	}
 
 	public static String getPreviousNCBIProteinFileName() throws IOException {
-		return "protein_reactome" + getPreviousReactomeVersion() + ".ft";
+		return "protein_reactome" + getPreviousReactomeReleaseNumber() + ".ft";
 	}
 
 	public static class AllItemsMatchingAtLeastOneRegex extends TypeSafeMatcher<List<String>> {

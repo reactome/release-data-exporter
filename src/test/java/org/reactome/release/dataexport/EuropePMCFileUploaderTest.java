@@ -14,9 +14,9 @@ import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTes
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCLinksFileName;
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCProfileFileName;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getMockTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeleted;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExcept;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExceptOne;
@@ -289,7 +289,7 @@ public class EuropePMCFileUploaderTest {
 	@Test
 	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
 		final Path incorrectCurrentProfileFileName =
-			Paths.get("europe_pmc_profile_react_" + getCurrentReactomeVersion() + ".xml");
+			Paths.get("europe_pmc_profile_react_" + getCurrentReactomeReleaseNumber() + ".xml");
 
 		assertThat(
 			europePMCFileUploader.isCurrentFile(incorrectCurrentProfileFileName),
@@ -308,7 +308,7 @@ public class EuropePMCFileUploaderTest {
 	@Test
 	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
 		final Path incorrectCurrentLinksFileName =
-			Paths.get("europe_pmc_links_react_" + getCurrentReactomeVersion() + ".xml");
+			Paths.get("europe_pmc_links_react_" + getCurrentReactomeReleaseNumber() + ".xml");
 
 		assertThat(
 			europePMCFileUploader.isCurrentFile(incorrectCurrentLinksFileName),
@@ -327,7 +327,7 @@ public class EuropePMCFileUploaderTest {
 	@Test
 	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
 		final Path incorrectPreviousProfileFileName =
-			Paths.get("europe_pmc_profile_react_" + getPreviousReactomeVersion() + ".xml");
+			Paths.get("europe_pmc_profile_react_" + getPreviousReactomeReleaseNumber() + ".xml");
 
 		assertThat(
 			europePMCFileUploader.isPreviousFile(incorrectPreviousProfileFileName),
@@ -346,7 +346,7 @@ public class EuropePMCFileUploaderTest {
 	@Test
 	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
 		final Path incorrectPreviousLinksFileName =
-			Paths.get("europe_pmc_links_react_" + getPreviousReactomeVersion() + ".xml");
+			Paths.get("europe_pmc_links_react_" + getPreviousReactomeReleaseNumber() + ".xml");
 
 		assertThat(
 			europePMCFileUploader.isPreviousFile(incorrectPreviousLinksFileName),

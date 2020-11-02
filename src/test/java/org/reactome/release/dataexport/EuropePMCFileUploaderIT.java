@@ -10,7 +10,7 @@ import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTes
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCProfileFileName;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getFileNamesInFileListings;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getITTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeReleaseNumber;
 
 import java.io.IOException;
 
@@ -60,7 +60,7 @@ public class EuropePMCFileUploaderIT {
 		// Mock current Reactome version to return the next, upcoming Reactome version so the current files will be
 		// seen as out ot date and returned as file to be deleted by the `getRemoteFileNamesToDelete` method being
 		// tested
-		Mockito.doReturn(getNextReactomeVersion()).when(this.europePMCFileUploader).getReactomeReleaseNumber();
+		Mockito.doReturn(getNextReactomeReleaseNumber()).when(this.europePMCFileUploader).getReactomeReleaseNumber();
 
 		final String[] expectedRemoteFileNamesToDelete = {
 			getCurrentEuropePMCLinksFileName(),

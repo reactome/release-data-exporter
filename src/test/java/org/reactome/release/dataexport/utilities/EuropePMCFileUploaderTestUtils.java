@@ -1,7 +1,7 @@
 package org.reactome.release.dataexport.utilities;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeVersion;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,18 +16,18 @@ public class EuropePMCFileUploaderTestUtils {
 	}
 
 	public static String getCurrentEuropePMCProfileFileName() throws IOException {
-		return "europe_pmc_profile_reactome_" + getCurrentReactomeVersion() + ".xml";
+		return "europe_pmc_profile_reactome_" + getCurrentReactomeReleaseNumber() + ".xml";
 	}
 
 	public static String getPreviousEuropePMCProfileFileName() throws IOException {
-		return "europe_pmc_profile_reactome_" + getPreviousReactomeVersion() + ".xml";
+		return "europe_pmc_profile_reactome_" + getPreviousReactomeReleaseNumber() + ".xml";
 	}
 
 	public static String getCurrentEuropePMCLinksFileName() throws IOException {
-		return "europe_pmc_links_reactome_" + getCurrentReactomeVersion() + ".xml";
+		return "europe_pmc_links_reactome_" + getCurrentReactomeReleaseNumber() + ".xml";
 	}
 
 	public static String getPreviousEuropePMCLinksFileName() throws IOException {
-		return "europe_pmc_links_reactome_" + getPreviousReactomeVersion() + ".xml";
+		return "europe_pmc_links_reactome_" + getPreviousReactomeReleaseNumber() + ".xml";
 	}
 }

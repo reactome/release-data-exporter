@@ -81,16 +81,16 @@ public class FTPFileUploaderTestUtils {
 			.collect(Collectors.toList());
 	}
 
-	public static int getNextReactomeVersion() throws IOException {
-		return getCurrentReactomeVersion() + 1;
+	public static int getNextReactomeReleaseNumber() throws IOException {
+		return getCurrentReactomeReleaseNumber() + 1;
 	}
 
-	public static int getCurrentReactomeVersion() throws IOException {
-		return Integer.parseInt(getMockTestPropertiesObject().getProperty("reactomeNumber"));
+	public static int getCurrentReactomeReleaseNumber() throws IOException {
+		return Integer.parseInt(getMockTestPropertiesObject().getProperty("releaseNumber"));
 	}
 
-	public static int getPreviousReactomeVersion() throws IOException {
-		return getCurrentReactomeVersion() - 1;
+	public static int getPreviousReactomeReleaseNumber() throws IOException {
+		return getCurrentReactomeReleaseNumber() - 1;
 	}
 
 	public static List<String> getFileNamesInFileListings(List<String> fileListings) {

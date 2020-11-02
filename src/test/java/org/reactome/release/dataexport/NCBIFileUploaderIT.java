@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getFileNamesInFileListings;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getITTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeVersion;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.AllItemsMatchingAtLeastOneRegex.allItemsMatchingAtLeastOneRegex;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIGeneFileNamePattern;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
@@ -44,7 +44,7 @@ public class NCBIFileUploaderIT {
 		// Mock current Reactome version to return the next, upcoming Reactome version so the current files will be
 		// seen as out ot date and returned as file to be deleted by the `getRemoteFileNamesToDelete` method being
 		// tested
-		Mockito.doReturn(getNextReactomeVersion()).when(this.ncbiFileUploader).getReactomeReleaseNumber();
+		Mockito.doReturn(getNextReactomeReleaseNumber()).when(this.ncbiFileUploader).getReactomeReleaseNumber();
 
 		assertThat(
 			this.ncbiFileUploader.getRemoteFileNamesToDelete(),

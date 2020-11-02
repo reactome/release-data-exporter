@@ -29,20 +29,20 @@ public class EuropePMC {
 	private static final int reactomeProviderID = 1925;
 
 	private String outputDir;
-	private int reactomeVersion;
+	private int reactomeReleaseNumber;
 
 	/**
 	 * Returns a new instance of the Europe PMC File Generator
 	 * @param outputDir Directory path for output files
-	 * @param reactomeVersion Release version of Reactome
+	 * @param reactomeReleaseNumber Release version number of Reactome
 	 */
-	public static EuropePMC getInstance(String outputDir, int reactomeVersion) {
-		return new EuropePMC(outputDir, reactomeVersion);
+	public static EuropePMC getInstance(String outputDir, int reactomeReleaseNumber) {
+		return new EuropePMC(outputDir, reactomeReleaseNumber);
 	}
 
-	private EuropePMC(String outputDir, int reactomeVersion) {
+	private EuropePMC(String outputDir, int reactomeReleaseNumber) {
 		this.outputDir = outputDir;
-		this.reactomeVersion = reactomeVersion;
+		this.reactomeReleaseNumber = reactomeReleaseNumber;
 	}
 
 	/**
@@ -181,19 +181,19 @@ public class EuropePMC {
 	}
 
 	/**
-	 * Returns Path for Europe PMC Profile File based on pre-set output directory and Reactome version
+	 * Returns Path for Europe PMC Profile File based on pre-set output directory and Reactome version number
 	 * @return Path object for Europe PMC Profile File
 	 */
 	private Path getEuropePMCProfileFilePath() {
-		return Paths.get(outputDir, "europe_pmc_profile_reactome_" + reactomeVersion + ".xml");
+		return Paths.get(outputDir, "europe_pmc_profile_reactome_" + reactomeReleaseNumber + ".xml");
 	}
 
 	/**
-	 * Returns Path for Europe PMC Link File based on pre-set output directory and Reactome version
+	 * Returns Path for Europe PMC Link File based on pre-set output directory and Reactome version number
 	 * @return Path object for Europe PMC Link File
 	 */
 	private Path getEuropePMCLinkFilePath() {
-		return Paths.get(outputDir, "europe_pmc_links_reactome_" + reactomeVersion + ".xml");
+		return Paths.get(outputDir, "europe_pmc_links_reactome_" + reactomeReleaseNumber + ".xml");
 	}
 
 	/**

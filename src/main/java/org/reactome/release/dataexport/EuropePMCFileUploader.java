@@ -29,7 +29,7 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	 * Returns a new instance of this class responsible for uploading files to the EuropePMC FTP Server.
 	 *
 	 * The properties files must have keys for the following or an IllegalStateException will be thrown:
-	 * 1. reactomeNumber - the current release version for Reactome
+	 * 1. releaseNumber - the current release release number for Reactome
 	 * 2. outputDir - this is the output directory on the local machine (where this code is run) which contains the
 	 *      files to upload to the EuropePMC FTP Server
 	 * 3. europePMCFTPUserName - this is the Reactome specific user name for logging on to the EuropePMC FTP Server
@@ -135,10 +135,10 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	}
 
 	/**
-	 * Checks a file name for a specific Reactome release version number to see if it matches pre-determined patterns
+	 * Checks a file name for a specific Reactome release number to see if it matches pre-determined patterns
 	 * as files owned (i.e. generated) by Reactome.  For the EuropePMC FTP Server, these are files with the pattern
 	 * europe_pmc_profile_reactome_XX.xml or europe_pmc_links_reactome_XX.xml where XX is the Reactome release
-	 * version.
+	 * number.
 	 *
 	 * @param fileName Name of the file to check if it is a Reactome-owned file
 	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond

@@ -12,7 +12,7 @@ import java.util.Properties;
  *
  * 1) Upload new (i.e. current Reactome release) NCBI gene and protein files, created by the NCBIGene and NCBIProtein
  * classes (i.e. gene_reactome_XX(-Y).xml and protein_reactomeXX.ft files where XX is the current Reactome release
- * version and Y is the optional number of the gene file if the gene file is split into parts to accommodate NCBI's
+ * number and Y is the optional number of the gene file if the gene file is split into parts to accommodate NCBI's
  * file size limit).
  *
  * 2) Delete old (i.e previous Reactome release) NCBI gene and protein files
@@ -35,7 +35,7 @@ public class NCBIFileUploader extends FTPFileUploader {
 	 * Returns a new instance of this class responsible for uploading files to the NCBI FTP Server.
 	 *
 	 * The properties files must have keys for the following or an IllegalStateException will be thrown:
-	 * 1. reactomeNumber - the current release version for Reactome
+	 * 1. releaseNumber - the current release number for Reactome
 	 * 2. outputDir - this is the output directory on the local machine (where this code is run) which contains the
 	 *      files to upload to the NCBI FTP Server
 	 * 3. ncbiFTPUserName - this is the Reactome specific user name for logging on to the NCBI FTP Server
@@ -139,13 +139,13 @@ public class NCBIFileUploader extends FTPFileUploader {
 	}
 
 	/**
-	 * Checks a file name for a specific Reactome release version number to see if it matches pre-determined patterns
-	 * as files owned (i.e. generated) by Reactome.  For the NCBI FTP Server, these are files with the pattern
-	 * gene_reactome_XX(-Y).xml or protein_reactomeXX.ft where XX is the Reactome release version and Y is the optional
+	 * Checks a file name for a specific Reactome release number to see if it matches pre-determined patterns as files
+	 * owned (i.e. generated) by Reactome.  For the NCBI FTP Server, these are files with the pattern
+	 * gene_reactome_XX(-Y).xml or protein_reactomeXX.ft where XX is the Reactome release number and Y is the optional
 	 * number of the gene file if the gene file is split into parts (see the class level JavaDoc).
 	 *
 	 * @param fileName Name of the file to check if it is a Reactome-owned file
-	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond
+	 * @param reactomeReleaseNumber Reactome release number the file to which the file should correspond
 	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome-owned
 	 * file for the pass reactomeReleaseVersion; <code>false</code> otherwise
 	 */
