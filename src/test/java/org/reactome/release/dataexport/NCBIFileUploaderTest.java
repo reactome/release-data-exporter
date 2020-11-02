@@ -229,7 +229,7 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseVersion() throws IOException {
+	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber() throws IOException {
 		assertThat(
 			ncbiFileUploader.getLocalFileNamesToUpload(),
 			is(equalTo((getCurrentNCBIFilePathsInMockOutputDirectory())))

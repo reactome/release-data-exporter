@@ -231,7 +231,7 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseVersion() throws IOException {
+	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber() throws IOException {
 		assertThat(
 			europePMCFileUploader.getLocalFileNamesToUpload(),
 			is(equalTo((getCurrentEuropePMCFilePathsInMockOutputDirectory())))

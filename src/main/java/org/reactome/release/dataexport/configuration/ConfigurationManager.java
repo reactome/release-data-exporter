@@ -199,7 +199,7 @@ public class ConfigurationManager {
 
 	private void addReactomeSpecificConfigurationEntries() {
 		configurationEntryCollection.addRequiredConfigurationEntry(
-			"Reactome Version", "reactomeVersion"
+			"Reactome Version", "reactomeNumber"
 		);
 		configurationEntryCollection.addOptionalConfigurationEntry(
 			"Path to Local File Output Directory", "outputDir", "output"

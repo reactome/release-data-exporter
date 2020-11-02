@@ -35,7 +35,7 @@ public class NCBIFileUploader extends FTPFileUploader {
 	 * Returns a new instance of this class responsible for uploading files to the NCBI FTP Server.
 	 *
 	 * The properties files must have keys for the following or an IllegalStateException will be thrown:
-	 * 1. reactomeVersion - the current release version for Reactome
+	 * 1. reactomeNumber - the current release version for Reactome
 	 * 2. outputDir - this is the output directory on the local machine (where this code is run) which contains the
 	 *      files to upload to the NCBI FTP Server
 	 * 3. ncbiFTPUserName - this is the Reactome specific user name for logging on to the NCBI FTP Server
@@ -145,14 +145,14 @@ public class NCBIFileUploader extends FTPFileUploader {
 	 * number of the gene file if the gene file is split into parts (see the class level JavaDoc).
 	 *
 	 * @param fileName Name of the file to check if it is a Reactome owned file
-	 * @param reactomeReleaseVersion Reactome release version number the file to which the file should correspond
+	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond
 	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome owned
 	 * file for the pass reactomeReleaseVersion; <code>false</code> otherwise
 	 */
 	@Override
-	protected boolean isReactomeOwnedFile(String fileName, int reactomeReleaseVersion) {
-		final String geneFileNamePattern = "gene_reactome" + reactomeReleaseVersion + "(-\\d+)?.xml";
-		final String proteinFileNamePattern = "protein_reactome" + reactomeReleaseVersion + ".ft";
+	protected boolean isReactomeOwnedFile(String fileName, int reactomeReleaseNumber) {
+		final String geneFileNamePattern = "gene_reactome" + reactomeReleaseNumber + "(-\\d+)?.xml";
+		final String proteinFileNamePattern = "protein_reactome" + reactomeReleaseNumber + ".ft";
 
 		return fileName.matches(geneFileNamePattern) || fileName.matches(proteinFileNamePattern);
 	}

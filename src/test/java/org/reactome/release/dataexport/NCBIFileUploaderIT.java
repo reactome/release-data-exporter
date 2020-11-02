@@ -44,7 +44,7 @@ public class NCBIFileUploaderIT {
 		// Mock current Reactome version to return the next, upcoming Reactome version so the current files will be
 		// seen as out ot date and returned as file to be deleted by the `getRemoteFileNamesToDelete` method being
 		// tested
-		Mockito.doReturn(getNextReactomeVersion()).when(this.ncbiFileUploader).getReactomeReleaseVersion();
+		Mockito.doReturn(getNextReactomeVersion()).when(this.ncbiFileUploader).getReactomeReleaseNumber();
 
 		assertThat(
 			this.ncbiFileUploader.getRemoteFileNamesToDelete(),

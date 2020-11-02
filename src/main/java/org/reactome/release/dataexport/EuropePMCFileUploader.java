@@ -29,7 +29,7 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	 * Returns a new instance of this class responsible for uploading files to the EuropePMC FTP Server.
 	 *
 	 * The properties files must have keys for the following or an IllegalStateException will be thrown:
-	 * 1. reactomeVersion - the current release version for Reactome
+	 * 1. reactomeNumber - the current release version for Reactome
 	 * 2. outputDir - this is the output directory on the local machine (where this code is run) which contains the
 	 *      files to upload to the EuropePMC FTP Server
 	 * 3. europePMCFTPUserName - this is the Reactome specific user name for logging on to the EuropePMC FTP Server
@@ -141,14 +141,14 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	 * version.
 	 *
 	 * @param fileName Name of the file to check if it is a Reactome owned file
-	 * @param reactomeReleaseVersion Reactome release version number the file to which the file should correspond
+	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond
 	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome owned
-	 * file for the pass reactomeReleaseVersion; <code>false</code> otherwise
+	 * file for the pass reactomeReleaseNumber; <code>false</code> otherwise
 	 */
 	@Override
-	protected boolean isReactomeOwnedFile(String fileName, int reactomeReleaseVersion) {
-		final String profileFileName = "europe_pmc_profile_reactome_" + reactomeReleaseVersion + ".xml";
-		final String linksFileName = "europe_pmc_links_reactome_" + reactomeReleaseVersion + ".xml";
+	protected boolean isReactomeOwnedFile(String fileName, int reactomeReleaseNumber) {
+		final String profileFileName = "europe_pmc_profile_reactome_" + reactomeReleaseNumber + ".xml";
+		final String linksFileName = "europe_pmc_links_reactome_" + reactomeReleaseNumber + ".xml";
 
 		return fileName.matches(profileFileName) || fileName.matches(linksFileName);
 	}

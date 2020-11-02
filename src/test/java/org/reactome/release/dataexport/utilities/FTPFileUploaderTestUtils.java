@@ -86,7 +86,7 @@ public class FTPFileUploaderTestUtils {
 	}
 
 	public static int getCurrentReactomeVersion() throws IOException {
-		return Integer.parseInt(getMockTestPropertiesObject().getProperty("reactomeVersion"));
+		return Integer.parseInt(getMockTestPropertiesObject().getProperty("reactomeNumber"));
 	}
 
 	public static int getPreviousReactomeVersion() throws IOException {

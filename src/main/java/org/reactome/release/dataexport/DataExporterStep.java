@@ -47,27 +47,28 @@ public class DataExporterStep extends ReleaseStep {
 	public void executeStep(Properties props) throws IOException {
 		logger.info("Beginning NCBI, UCSC, and Europe PMC export step...");
 
-		int version = Integer.parseInt(props.getProperty("reactomeVersion"));
+		int reactomeVersionNumber = Integer.parseInt(props.getProperty("reactomeNumber"));
 		String outputDir = props.getProperty("outputDir", "output");
 		Files.createDirectories(Paths.get(outputDir));
-		logger.info("Files for Reactome version {} will be output to the directory {}", version, outputDir);
+		logger.info("Files for Reactome reactomeVersionNumber {} will be output to the directory {}",
+			reactomeVersionNumber, outputDir);
 
 		try (Driver graphDBDriver = getGraphDBDriver(props); Session graphDBSession = graphDBDriver.session()) {
 			List<NCBIEntry> ncbiEntries = NCBIEntry.getUniProtToNCBIGeneEntries(graphDBSession);
 
 			// Write NCBI Gene related Protein File
-			NCBIGene.getInstance(ncbiEntries, outputDir, version).writeProteinFile();
+			NCBIGene.getInstance(ncbiEntries, outputDir, reactomeVersionNumber).writeProteinFile();
 
 			// Write NCBI Gene Files (split into multiple files to conform with 15MB upload maximum)
-			NCBIGene.getInstance(ncbiEntries, outputDir, version).writeGeneXMLFiles(graphDBSession);
+			NCBIGene.getInstance(ncbiEntries, outputDir, reactomeVersionNumber).writeGeneXMLFiles(graphDBSession);
 
 			// Write NCBI Protein File
-			NCBIProtein.getInstance(ncbiEntries, outputDir, version).writeNCBIProteinFile();
+			NCBIProtein.getInstance(ncbiEntries, outputDir, reactomeVersionNumber).writeNCBIProteinFile();
 
 			// Write UCSC Entity and Event Files
-			UCSC.getInstance(outputDir, version).writeUCSCFiles(graphDBSession);
+			UCSC.getInstance(outputDir, reactomeVersionNumber).writeUCSCFiles(graphDBSession);
 			// Write Europe PMC Profile and Link Files
-			EuropePMC.getInstance(outputDir, version).writeEuropePMCFiles(graphDBSession);
+			EuropePMC.getInstance(outputDir, reactomeVersionNumber).writeEuropePMCFiles(graphDBSession);
 		}
 
 		// Upload Europe PMC Profile and Link Files (and delete previous release Europe PMC Profile and Link Files)
