@@ -13,7 +13,7 @@ while (( "$#" )); do
 			overwrite_config_file="--overwrite_config_file"
 			shift
 			;;
-		-sit|--skip_integration_tests)
+		-s|--skip_integration_tests)
 			skip_integration_tests="-DskipITs=true"
 			shift
 			;;

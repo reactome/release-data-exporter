@@ -44,12 +44,13 @@ The `-c or --overwrite_config_file` option can be provided to force resetting of
 configuration values will be prompted for if a configuration file is missing or incomplete, regardless of specifying 
 this option.
 
-The `-sit or --skip_integration_tests` option can be provided to skip integration tests which require connection to the
+The `-s or --skip_integration_tests` option can be provided to skip integration tests which require connection to the
 NCBI and EuropePMC FTP Servers to test code related to interaction with them.  By default, these tests are run and 
 require a configuration file with the file path "src/test/resources/real_config.properties" (see 
 [Integration Tests](#integration-tests) section for more information)
 
 Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-sit|--skip_integration_tests]`
+Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests]`
 
 NOTE: This script is building and invoking a Java application which requires a Java 8+ environment. You will need 
 maven and a full JDK to compile.
