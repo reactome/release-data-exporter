@@ -144,9 +144,9 @@ public class NCBIFileUploader extends FTPFileUploader {
 	 * gene_reactome_XX(-Y).xml or protein_reactomeXX.ft where XX is the Reactome release version and Y is the optional
 	 * number of the gene file if the gene file is split into parts (see the class level JavaDoc).
 	 *
-	 * @param fileName Name of the file to check if it is a Reactome owned file
+	 * @param fileName Name of the file to check if it is a Reactome-owned file
 	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond
-	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome owned
+	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome-owned
 	 * file for the pass reactomeReleaseVersion; <code>false</code> otherwise
 	 */
 	@Override

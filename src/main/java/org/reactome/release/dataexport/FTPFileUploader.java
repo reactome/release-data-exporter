@@ -253,7 +253,7 @@ public abstract class FTPFileUploader {
 	}
 
 	/**
-	 * Checks a provided file path to determine if it is a Reactome owned file for the current Release version (as
+	 * Checks a provided file path to determine if it is a Reactome-owned file for the current Release version (as
 	 * defined in the configuration file for this project).
 	 *
 	 * @param filePath Path of the file to check if it is a current Reactome file
@@ -269,7 +269,7 @@ public abstract class FTPFileUploader {
 	};
 
 	/**
-	 * Checks a provided file path to determine if it is a Reactome owned file for the previous Release version number
+	 * Checks a provided file path to determine if it is a Reactome-owned file for the previous Release version number
 	 * (one less than the current Release version number defined in the configuration file for this project).
 	 *
 	 * @param filePath Path of the file to check if it is a previous Reactome file
@@ -286,12 +286,12 @@ public abstract class FTPFileUploader {
 	};
 
 	/**
-	 * Checks a provided file name to determine if it is a Reactome owned file for the provided Release version.
+	 * Checks a provided file name to determine if it is a Reactome-owned file for the provided Release version.
 	 *
-	 * @param fileName Name of the file to check if it is a Reactome owned file
+	 * @param fileName Name of the file to check if it is a Reactome-owned file
 	 * @param reactomeReleaseNumber Reactome release version number used to check if the file names provided
 	 * corresponds to that version
-	 * @return <code>true</code> if the fileName provided matches what is considered a Reactome owned file according
+	 * @return <code>true</code> if the fileName provided matches what is considered a Reactome-owned file according
 	 * to the implementation of this method;<code>false</code> otherwise
 	 */
 	protected abstract boolean isReactomeOwnedFile(String fileName, int reactomeReleaseNumber);

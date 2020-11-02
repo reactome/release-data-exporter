@@ -140,9 +140,9 @@ public class EuropePMCFileUploader extends FTPFileUploader {
 	 * europe_pmc_profile_reactome_XX.xml or europe_pmc_links_reactome_XX.xml where XX is the Reactome release
 	 * version.
 	 *
-	 * @param fileName Name of the file to check if it is a Reactome owned file
+	 * @param fileName Name of the file to check if it is a Reactome-owned file
 	 * @param reactomeReleaseNumber Reactome release version number the file to which the file should correspond
-	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome owned
+	 * @return <code>true</code> if the fileName matches one of the patterns of files indicating it is a Reactome-owned
 	 * file for the pass reactomeReleaseNumber; <code>false</code> otherwise
 	 */
 	@Override
