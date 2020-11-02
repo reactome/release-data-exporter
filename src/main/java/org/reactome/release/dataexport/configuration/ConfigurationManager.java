@@ -86,15 +86,12 @@ public class ConfigurationManager {
 		addNCBIFTPServerConfigurationEntries();
 
 		if (!configurationFileExists()) {
-			System.out.println(
-				"The configuration file " + getConfigFileName() + " does not exist.  "
-					+ "Please provide the following property values.");
+			System.out.println("The configuration file " + getConfigFileName() + " does not exist.  Please provide " +
+				"the following property values.");
 		} else if (!configurationFileIsValid()) {
-			System.out.println(
-				"The configuration file " + getConfigFileName() + " does not have all the required property "
-					+ "values.  Please provide the following property values and the configuration file will be "
-					+ "recreated"
-			);
+			System.out.println("The configuration file " + getConfigFileName() + " does not have all the required " +
+				"property values.  Please provide the following property values and the configuration file will be " +
+				"recreated");
 		}
 
 		writeConfigurationFile();
