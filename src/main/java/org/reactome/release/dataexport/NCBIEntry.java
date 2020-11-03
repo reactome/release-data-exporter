@@ -6,7 +6,6 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -106,7 +105,7 @@ public class NCBIEntry implements Comparable<NCBIEntry> {
 	 * @return Value of String compare between this UniProt accession and the parameter's UniProt accession
 	 */
 	@Override
-	public int compareTo(@Nonnull NCBIEntry obj) {
+	public int compareTo(NCBIEntry obj) {
 		return this.getUniprotAccession().compareTo(obj.getUniprotAccession());
 	}
 

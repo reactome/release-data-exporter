@@ -180,7 +180,7 @@ public class PathwayHierarchyUtilities {
 
 		// The pathway id is invalid if does not exist in the hierarchy
 		if (!existsInHierarchy(pathwayId, pathwayHierarchy)) {
-			logger.warn("Pathway id " + pathwayId + " does not exist in the provided Pathway Hierarchy");
+			logger.warn("Pathway id {} does not exist in the provided Pathway Hierarchy", pathwayId);
 		}
 	}
 

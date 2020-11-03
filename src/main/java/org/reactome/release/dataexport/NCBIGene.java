@@ -16,7 +16,7 @@ import static org.reactome.release.dataexport.DataExportUtilities.*;
 /**
  * File generator for NCBI Gene.  This class has logic for producing a file for
  * NCBI Gene XML, describing the relationship between NCBI Gene identifiers and
- * Reactome UniProt entries as well as their top level pathways.
+ * Reactome UniProt entries as well as their Top-level pathways.
  * It also can create a file for NCBI Protein, describing the relationship between
  * NCBI Gene identifiers and Reactome UniProt entries in a simple tab delimited format.
  * @author jweiser
@@ -29,16 +29,16 @@ public class NCBIGene {
 
 	private List<NCBIEntry> ncbiEntries;
 	private String outputDir;
-	private int reactomeVersion;
+	private int reactomeReleaseNumber;
 
-	public static NCBIGene getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
-		return new NCBIGene(ncbiEntries, outputDir, reactomeVersion);
+	public static NCBIGene getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
+		return new NCBIGene(ncbiEntries, outputDir, reactomeReleaseNumber);
 	}
 
-	private NCBIGene(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
+	private NCBIGene(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
 		this.ncbiEntries = ncbiEntries;
 		this.outputDir = outputDir;
-		this.reactomeVersion = reactomeVersion;
+		this.reactomeReleaseNumber = reactomeReleaseNumber;
 	}
 
 	/**
@@ -91,13 +91,13 @@ public class NCBIGene {
 
 		Set<String> ncbiGeneXMLNodeStrings = new LinkedHashSet<>();
 		for (NCBIEntry ncbiEntry : ncbiEntries) {
-			ncbiGeneLogger.info("Working on " + ncbiEntry.getUniprotAccession());
+			ncbiGeneLogger.info("Working on {}", ncbiEntry.getUniprotAccession());
 
 			Set<ReactomeEvent> topLevelPathways = ncbiEntry.getTopLevelPathways(graphDBSession);
 			if (topLevelPathways.isEmpty()) {
 				String errorMessage = ncbiEntry.getUniprotDisplayName() +
-									  " participates in Event(s) but no top Pathway can be found, i.e. there seem to be a pathway" +
-									  " which contains or is an instance of itself.\n";
+					" participates in Event(s) but no Top-level Pathway can be found, i.e. there seem to be a" +
+					" pathway which contains or is an instance of itself.\n";
 
 				Files.write(geneErrorFilePath, errorMessage.getBytes(), StandardOpenOption.APPEND);
 				continue;
@@ -111,7 +111,7 @@ public class NCBIGene {
 				}
 			}
 
-			ncbiGeneLogger.info("Finished with " + ncbiEntry.getUniprotAccession());
+			ncbiGeneLogger.info("Finished with {}", ncbiEntry.getUniprotAccession());
 		}
 
 		int fileCount = 0;
@@ -121,7 +121,7 @@ public class NCBIGene {
 
 			deleteAndCreateFile(geneXMLFilePath);
 
-			logger.info("Generating " + geneXMLFilePath.getFileName());
+			logger.info("Generating {}", geneXMLFilePath.getFileName());
 
 			appendWithNewLine(getXMLHeader(), geneXMLFilePath);
 			appendWithNewLine(getOpenRootTag(), geneXMLFilePath);
@@ -157,16 +157,16 @@ public class NCBIGene {
 	}
 
 	private Path getProteinFilePath() {
-		return Paths.get(outputDir, "proteins_version" + reactomeVersion);
+		return Paths.get(outputDir, "proteins_version" + reactomeReleaseNumber);
 	}
 
 	private Path getGeneXMLFilePath(int fileCount) {
-		String fileName = "gene_reactome" + reactomeVersion + "-" + fileCount + ".xml";
+		String fileName = "gene_reactome" + reactomeReleaseNumber + "-" + fileCount + ".xml";
 		return Paths.get(outputDir, fileName);
 	}
 
 	private Path getGeneErrorFilePath() {
-		return Paths.get(outputDir, "geneentrez_" + reactomeVersion + ".err");
+		return Paths.get(outputDir, "geneentrez_" + reactomeReleaseNumber + ".err");
 	}
 
 	/**

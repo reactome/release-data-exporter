@@ -26,16 +26,16 @@ public class NCBIProtein {
 
 	private List<NCBIEntry> ncbiEntries;
 	private String outputDir;
-	private int reactomeVersion;
+	private int reactomeReleaseNumber;
 
-	public static NCBIProtein getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
-		return new NCBIProtein(ncbiEntries, outputDir, reactomeVersion);
+	public static NCBIProtein getInstance(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
+		return new NCBIProtein(ncbiEntries, outputDir, reactomeReleaseNumber);
 	}
 
-	private NCBIProtein(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeVersion) {
+	private NCBIProtein(List<NCBIEntry> ncbiEntries, String outputDir, int reactomeReleaseNumber) {
 		this.ncbiEntries = ncbiEntries;
 		this.outputDir = outputDir;
-		this.reactomeVersion = reactomeVersion;
+		this.reactomeReleaseNumber = reactomeReleaseNumber;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class NCBIProtein {
 	}
 
 	private Path getNCBIProteinFilePath() {
-		return Paths.get(outputDir, "protein_reactome" + reactomeVersion + ".ft");
+		return Paths.get(outputDir, "protein_reactome" + reactomeReleaseNumber + ".ft");
 	}
 
 	private String getProteinFileHeader() {
