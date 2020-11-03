@@ -50,12 +50,6 @@
 			<artifactId>jcommander</artifactId>
 			<version>1.78</version>
 		</dependency>
-		<!-- required for javax.annotation.Nonnull -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
-		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>

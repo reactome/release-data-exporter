@@ -10,7 +10,6 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
-import javax.annotation.Nonnull;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -562,7 +561,7 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 	 * @return Value of String compare between this UniProt accession and the parameter's UniProt accession
 	 */
 	@Override
-	public int compareTo(@Nonnull UniProtReactomeEntry obj) {
+	public int compareTo(UniProtReactomeEntry obj) {
 		return this.getAccession().compareTo(obj.getAccession());
 	}
 
