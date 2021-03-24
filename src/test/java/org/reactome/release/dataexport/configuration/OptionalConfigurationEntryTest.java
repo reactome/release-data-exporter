@@ -66,7 +66,7 @@ public class OptionalConfigurationEntryTest {
 		Scanner mockScanner = new Scanner(noUserValue);
 		OptionalConfigurationEntry optionalConfigurationEntry = new OptionalConfigurationEntry(
 			USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, mockScanner
-		);;
+		);
 
 		assertThat(
 			optionalConfigurationEntry.toString(),
