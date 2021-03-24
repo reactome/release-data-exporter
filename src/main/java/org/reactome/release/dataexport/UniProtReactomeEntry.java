@@ -218,7 +218,7 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 		logger.info("Computing UniProt to Reactome events");
 
 		Map<UniProtReactomeEntry, Set<ReactomeEvent>> uniprotReactomeEntryToReactomeEvent = new ConcurrentHashMap<>();
-		AtomicInteger uniProtReactomeEntiresProcessed = new AtomicInteger(0);
+		AtomicInteger uniProtReactomeEntriesProcessed = new AtomicInteger(0);
 
 		for (
 			Entry<UniProtReactomeEntry, Set<Long>> uniProtToRLEIdsEntry :
@@ -232,9 +232,9 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 				uniProtReactomeEntry, k -> new HashSet<>()
 			).addAll(reactomeEvents);
 
-			if (uniProtReactomeEntiresProcessed.getAndIncrement() % 10000 == 0) {
+			if (uniProtReactomeEntriesProcessed.getAndIncrement() % 10000 == 0) {
 				logNumberOfUniProtEntriesProcessed(
-					uniProtReactomeEntiresProcessed,
+					uniProtReactomeEntriesProcessed,
 					fetchUniProtReactomeEntryToRLEId(graphDBSession).size()
 				);
 			}
