@@ -87,7 +87,7 @@ public class EuropePMCFileUploaderIT {
 
 	@Test
 	public void europePMCFileUploaderDisconnectsSuccessfullyToEuropePMCFTPServer() throws IOException {
-		this.europePMCFileUploader.loginToFTPServer();
+		assertThat(this.europePMCFileUploader.loginToFTPServer(), is(equalTo(true)));
 		assertThat(this.europePMCFileUploader.closeFTPConnectionToServer(), is(equalTo(true)));
 	}
 }
