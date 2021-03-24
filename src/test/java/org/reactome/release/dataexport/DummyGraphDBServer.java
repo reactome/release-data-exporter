@@ -1,5 +1,7 @@
 package org.reactome.release.dataexport;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import org.junit.jupiter.api.TestInstance;
 import org.neo4j.driver.internal.logging.JULogging;
@@ -43,16 +45,17 @@ public class DummyGraphDBServer {
 		List<String> cypherStatements;
 
 		try {
+			Path cypherDataFilePath = Paths.get(
+				Objects.requireNonNull(
+					getClass()
+					.getClassLoader()
+					.getResource(MOCK_GRAPHDB_CYPHER_DATA_FILE)
+					.toURI()
+				)
+			);
 			cypherStatements =
-				Files.readAllLines(Paths.get(
-					Objects.requireNonNull(
-						getClass()
-						.getClassLoader()
-						.getResource(MOCK_GRAPHDB_CYPHER_DATA_FILE)
-					)
-					.getPath()
-				));
-		} catch (IOException e) {
+				Files.readAllLines(cypherDataFilePath);
+		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException("Populating dummy graph db failed", e);
 		}
 
