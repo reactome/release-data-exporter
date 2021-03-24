@@ -1,6 +1,6 @@
 package org.reactome.release.dataexport.configuration;
 
-import static java.nio.file.attribute.PosixFilePermission.*;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,11 +13,12 @@ import java.nio.file.StandardOpenOption;
 
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.nio.file.attribute.PosixFilePermission.*;
 
 /**
  * Class to create, validate, query, and/or manipulate (e.g. change permissions) the configuration
@@ -235,9 +236,23 @@ public class ConfigurationManager {
 	}
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			giveFileReadAndWritePermissionsForUserInWindows();
+		} else {
+			giveFileReadAndWritePermissionsForUserAndGroupOnlyInUnix();
+		}
+	}
+
+	private void giveFileReadAndWritePermissionsForUserInWindows() {
+		File configFile = new File(getConfigFileName());
+		configFile.setReadable(true);
+		configFile.setWritable(true);
+	}
+
+	private void giveFileReadAndWritePermissionsForUserAndGroupOnlyInUnix() throws IOException {
 		Set<PosixFilePermission> filePermissions =
 			Stream.of(OWNER_READ, OWNER_WRITE, GROUP_READ, GROUP_WRITE).collect(Collectors.toSet());
 
-		Files.setPosixFilePermissions(Paths.get(getConfigFileName()), filePermissions);
+		Files.setPosixFilePermissions(getConfigFilePath(), filePermissions);
 	}
 }
