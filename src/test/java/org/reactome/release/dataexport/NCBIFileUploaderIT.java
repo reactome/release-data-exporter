@@ -12,6 +12,8 @@ import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtil
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -32,7 +34,7 @@ public class NCBIFileUploaderIT {
 	}
 
 	@Test
-	public void existsOnServerReturnsTrueForExpectedNCBIFile() throws IOException {
+	public void existsOnServerReturnsTrueForExpectedNCBIFile() throws IOException, URISyntaxException {
 		assertThat(
 			this.ncbiFileUploader.existsOnServer(getCurrentNCBIProteinFileName()),
 			is(equalTo(true))
@@ -40,7 +42,7 @@ public class NCBIFileUploaderIT {
 	}
 
 	@Test
-	public void remoteFileNamesToDeleteReturnsExpectedNCBIFiles() throws IOException {
+	public void remoteFileNamesToDeleteReturnsExpectedNCBIFiles() throws IOException, URISyntaxException {
 		// Mock current Reactome version to return the next, upcoming Reactome version so the current files will be
 		// seen as out ot date and returned as file to be deleted by the `getRemoteFileNamesToDelete` method being
 		// tested
@@ -56,7 +58,7 @@ public class NCBIFileUploaderIT {
 	}
 
 	@Test
-	public void fileListingsFromReactomeFolderOnNCBIFTPServerAreCorrect() throws IOException {
+	public void fileListingsFromReactomeFolderOnNCBIFTPServerAreCorrect() throws IOException, URISyntaxException {
 		final String providerInfoReactomeFile = "providerinfo.xml";
 
 		assertThat(

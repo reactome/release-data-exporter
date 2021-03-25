@@ -23,6 +23,7 @@ import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtil
 
 import java.io.IOException;
 
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -51,7 +52,7 @@ public class NCBIFileUploaderTest {
 	private NCBIFileUploader ncbiFileUploader;
 
 	@BeforeEach
-	public void initializeNCBIFileUploader() throws IOException {
+	public void initializeNCBIFileUploader() throws IOException, URISyntaxException {
 		final boolean initializeFTPServerConnection = false;
 
 		this.props = getMockTestPropertiesObject();
@@ -158,7 +159,7 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException {
+	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException, URISyntaxException {
 		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
@@ -172,7 +173,7 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException {
+	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException, URISyntaxException {
 		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
@@ -229,7 +230,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber() throws IOException {
+	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			ncbiFileUploader.getLocalFileNamesToUpload(),
 			is(equalTo((getCurrentNCBIFilePathsInMockOutputDirectory())))
@@ -277,7 +280,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentNCBIFileMethod() throws IOException {
+	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			ncbiFileUploader.isCurrentFile(Paths.get(getCurrentNCBIProteinFileName())),
 			is(equalTo(true))
@@ -285,7 +290,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
+	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectCurrentProfileFileName =
 			Paths.get("protein_react" + getCurrentReactomeReleaseNumber() + ".ft");
 
@@ -296,7 +303,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentNCBIFileMethod() throws IOException {
+	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			ncbiFileUploader.isCurrentFile(Paths.get(getCurrentNCBIProteinFileName())),
 			is(equalTo(true))
@@ -304,7 +313,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentNCBIFileMethod() throws IOException {
+	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectCurrentLinksFileName =
 			Paths.get("protein_react" + getCurrentReactomeReleaseNumber() + ".ft");
 
@@ -315,7 +326,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousNCBIFileMethod() throws IOException {
+	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			ncbiFileUploader.isPreviousFile(Paths.get(getPreviousNCBIProteinFileName())),
 			is(equalTo(true))
@@ -323,7 +336,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
+	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectPreviousProfileFileName =
 			Paths.get("protein_react" + getPreviousReactomeReleaseNumber() + ".ft");
 
@@ -334,7 +349,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousNCBIFileMethod() throws IOException {
+	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			ncbiFileUploader.isPreviousFile(Paths.get(getPreviousNCBIProteinFileName())),
 			is(equalTo(true))
@@ -342,7 +359,9 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousNCBIFileMethod() throws IOException {
+	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousNCBIFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectPreviousLinksFileName =
 			Paths.get("protein_react" + getPreviousReactomeReleaseNumber() + ".ft");
 

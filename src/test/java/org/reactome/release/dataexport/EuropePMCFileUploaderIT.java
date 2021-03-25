@@ -13,6 +13,7 @@ import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeReleaseNumber;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ public class EuropePMCFileUploaderIT {
 	}
 
 	@Test
-	public void existsOnServerReturnsTrueForExpectedEuropePMCFile() throws IOException {
+	public void existsOnServerReturnsTrueForExpectedEuropePMCFile() throws IOException, URISyntaxException {
 		assertThat(
 			this.europePMCFileUploader.existsOnServer(getCurrentEuropePMCLinksFileName()),
 			is(equalTo(true))
@@ -56,7 +57,7 @@ public class EuropePMCFileUploaderIT {
 	}
 
 	@Test
-	public void remoteFileNamesToDeleteReturnsExpectedEuropePMCFiles() throws IOException {
+	public void remoteFileNamesToDeleteReturnsExpectedEuropePMCFiles() throws IOException, URISyntaxException {
 		// Mock current Reactome version to return the next, upcoming Reactome version so the current files will be
 		// seen as out ot date and returned as file to be deleted by the `getRemoteFileNamesToDelete` method being
 		// tested
@@ -74,7 +75,7 @@ public class EuropePMCFileUploaderIT {
 	}
 
 	@Test
-	public void fileListingsFromReactomeFolderOnEuropePMCFTPServerAreCorrect() throws IOException {
+	public void fileListingsFromReactomeFolderOnEuropePMCFTPServerAreCorrect() throws IOException, URISyntaxException {
 		assertThat(
 			getFileNamesInFileListings(this.europePMCFileUploader.getListingOfReactomeFilesPresentOnServer()),
 			hasItems(
@@ -86,7 +87,7 @@ public class EuropePMCFileUploaderIT {
 
 	@Test
 	public void europePMCFileUploaderDisconnectsSuccessfullyToEuropePMCFTPServer() throws IOException {
-		this.europePMCFileUploader.loginToFTPServer();
+		assertThat(this.europePMCFileUploader.loginToFTPServer(), is(equalTo(true)));
 		assertThat(this.europePMCFileUploader.closeFTPConnectionToServer(), is(equalTo(true)));
 	}
 }

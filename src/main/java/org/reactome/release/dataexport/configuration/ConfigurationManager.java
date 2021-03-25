@@ -1,6 +1,6 @@
 package org.reactome.release.dataexport.configuration;
 
-import static java.nio.file.attribute.PosixFilePermission.*;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,11 +13,12 @@ import java.nio.file.StandardOpenOption;
 
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.nio.file.attribute.PosixFilePermission.*;
 
 /**
  * Class to create, validate, query, and/or manipulate (e.g. change permissions) the configuration
@@ -67,13 +68,6 @@ public class ConfigurationManager {
 			return false;
 		}
 
-		initializeConfigurationEntryCreator();
-
-		addNeo4jDatabaseConfigurationEntries();
-		addReactomeSpecificConfigurationEntries();
-		addEuropePMCFTPServerConfigurationEntries();
-		addNCBIFTPServerConfigurationEntries();
-
 		if (!configurationFileExists()) {
 			System.out.println("The configuration file " + getConfigFileName() + " does not exist.  Please provide " +
 				"the following property values.");
@@ -114,11 +108,9 @@ public class ConfigurationManager {
 	 *  3) Change the new configuration file's permissions to 600 (read and write only for user and group)
 	 */
 	void writeConfigurationFile() throws IOException {
-		Path configurationFilePath = Paths.get(getConfigFileName());
-
-		Files.deleteIfExists(configurationFilePath);
+		Files.deleteIfExists(getConfigFilePath());
 		Files.write(
-			configurationFilePath,
+			getConfigFilePath(),
 			getConfigurationEntryCollection().getConfigurationEntriesJoinedByNewLines().getBytes(),
 			StandardOpenOption.CREATE
 		);
@@ -141,7 +133,7 @@ public class ConfigurationManager {
 	boolean configurationFileIsValid() throws IOException {
 		List<String> requiredConfigurationKeys = getConfigurationEntryCollection().getConfigurationEntryKeys();
 		List<String> existingFileConfigurationKeys =
-			Files.readAllLines(Paths.get(getConfigFileName()))
+			Files.readAllLines(getConfigFilePath())
 				.stream()
 				.map(this::getConfigurationKeyFromConfigurationEntry)
 				.collect(Collectors.toList());
@@ -157,18 +149,33 @@ public class ConfigurationManager {
 	 * @see ConfigurationEntryCollection
 	 */
 	ConfigurationEntryCollection getConfigurationEntryCollection() {
+		if (this.configurationEntryCollection == null) {
+			populateConfigurationEntryCreator();
+		}
+
 		return this.configurationEntryCollection;
 	}
 
-	private void initializeConfigurationEntryCreator() {
-		this.configurationEntryCollection = new ConfigurationEntryCollection();
+	private void populateConfigurationEntryCreator() {
+		ConfigurationEntryCollection configurationEntryCollection = new ConfigurationEntryCollection();
+
+		addNeo4jDatabaseConfigurationEntries(configurationEntryCollection);
+		addReactomeSpecificConfigurationEntries(configurationEntryCollection);
+		addEuropePMCFTPServerConfigurationEntries(configurationEntryCollection);
+		addNCBIFTPServerConfigurationEntries(configurationEntryCollection);
+
+		this.configurationEntryCollection = configurationEntryCollection;
 	}
 
 	private String getConfigFileName() {
 		return this.configFileName;
 	}
 
-	private void addNeo4jDatabaseConfigurationEntries() {
+	private Path getConfigFilePath() {
+		return Paths.get(getConfigFileName());
+	}
+
+	private void addNeo4jDatabaseConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
 		configurationEntryCollection.addRequiredConfigurationEntry(
 			"Neo4j Username", "neo4jUserName"
 		);
@@ -183,7 +190,7 @@ public class ConfigurationManager {
 		);
 	}
 
-	private void addReactomeSpecificConfigurationEntries() {
+	private void addReactomeSpecificConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
 		configurationEntryCollection.addRequiredConfigurationEntry(
 			"Reactome Release Version Number", "releaseNumber"
 		);
@@ -192,7 +199,7 @@ public class ConfigurationManager {
 		);
 	}
 
-	private void addEuropePMCFTPServerConfigurationEntries() {
+	private void addEuropePMCFTPServerConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
 		configurationEntryCollection.addOptionalConfigurationEntry(
 			"EuropePMC FTP Server Username", "europePMCFTPUserName", "elinks"
 		);
@@ -207,7 +214,7 @@ public class ConfigurationManager {
 		);
 	}
 
-	private void addNCBIFTPServerConfigurationEntries() {
+	private void addNCBIFTPServerConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
 		configurationEntryCollection.addOptionalConfigurationEntry(
 			"NCBI FTP Server Username", "ncbiFTPUserName", "reactome"
 		);
@@ -235,9 +242,23 @@ public class ConfigurationManager {
 	}
 
 	private void makeFileReadAndWriteForUserAndGroupOnly() throws IOException {
+		if (SystemUtils.IS_OS_WINDOWS) {
+			giveFileReadAndWritePermissionsForUserInWindows();
+		} else {
+			giveFileReadAndWritePermissionsForUserAndGroupOnlyInUnix();
+		}
+	}
+
+	private void giveFileReadAndWritePermissionsForUserInWindows() {
+		File configFile = new File(getConfigFileName());
+		configFile.setReadable(true);
+		configFile.setWritable(true);
+	}
+
+	private void giveFileReadAndWritePermissionsForUserAndGroupOnlyInUnix() throws IOException {
 		Set<PosixFilePermission> filePermissions =
 			Stream.of(OWNER_READ, OWNER_WRITE, GROUP_READ, GROUP_WRITE).collect(Collectors.toSet());
 
-		Files.setPosixFilePermissions(Paths.get(getConfigFileName()), filePermissions);
+		Files.setPosixFilePermissions(getConfigFilePath(), filePermissions);
 	}
 }

@@ -117,7 +117,7 @@ public abstract class FTPFileUploader {
 		for (String fileToUpload : filesToUpload) {
 			if (!uploadFileToServer(fileToUpload)) {
 				return false; // File failed to upload - indicates not all files were uploaded successfully
-			};
+			}
 		}
 
 		return true; // All files uploaded successfully
@@ -266,7 +266,7 @@ public abstract class FTPFileUploader {
 			filePath.getFileName().toString(),
 			getReactomeReleaseNumber()
 		);
-	};
+	}
 
 	/**
 	 * Checks a provided file path to determine if it is a Reactome-owned file for the previous Release release number
@@ -283,7 +283,7 @@ public abstract class FTPFileUploader {
 			filePath.getFileName().toString(),
 			previousReactomeReleaseNumber
 		);
-	};
+	}
 
 	/**
 	 * Checks a provided file name to determine if it is a Reactome-owned file for the provided Release version.
@@ -305,7 +305,7 @@ public abstract class FTPFileUploader {
 	 */
 	protected List<String> getRequiredProperties() {
 		return requiredProperties;
-	};
+	}
 
 	/**
 	 * Logs into the FTP Server with the user name and password defined in the methods getUserName and getPassword,

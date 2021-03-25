@@ -25,6 +25,7 @@ import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils
 
 import java.io.IOException;
 
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -53,7 +54,7 @@ public class EuropePMCFileUploaderTest {
 	private EuropePMCFileUploader europePMCFileUploader;
 
 	@BeforeEach
-	public void initializeEuropePMCFileUploader() throws IOException {
+	public void initializeEuropePMCFileUploader() throws IOException, URISyntaxException {
 		final boolean initializeFTPServerConnection = false;
 
 		this.props = getMockTestPropertiesObject();
@@ -160,7 +161,7 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException {
+	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException, URISyntaxException {
 		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
@@ -174,7 +175,7 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException {
+	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException, URISyntaxException {
 		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
@@ -231,7 +232,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber() throws IOException {
+	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			europePMCFileUploader.getLocalFileNamesToUpload(),
 			is(equalTo((getCurrentEuropePMCFilePathsInMockOutputDirectory())))
@@ -279,7 +282,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void correctCurrentProfileFileNameReturnsTrueForIsCurrentEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			europePMCFileUploader.isCurrentFile(Paths.get(getCurrentEuropePMCProfileFileName())),
 			is(equalTo(true))
@@ -287,7 +292,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void incorrectCurrentProfileFileNameReturnsFalseForIsCurrentEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectCurrentProfileFileName =
 			Paths.get("europe_pmc_profile_react_" + getCurrentReactomeReleaseNumber() + ".xml");
 
@@ -298,7 +305,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void correctCurrentLinksFileNameReturnsTrueForIsCurrentEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			europePMCFileUploader.isCurrentFile(Paths.get(getCurrentEuropePMCLinksFileName())),
 			is(equalTo(true))
@@ -306,7 +315,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentEuropePMCFileMethod() throws IOException {
+	public void incorrectCurrentLinksFileNameReturnsFalseForIsCurrentEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectCurrentLinksFileName =
 			Paths.get("europe_pmc_links_react_" + getCurrentReactomeReleaseNumber() + ".xml");
 
@@ -317,7 +328,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void correctPreviousProfileFileNameReturnsTrueForIsPreviousEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			europePMCFileUploader.isPreviousFile(Paths.get(getPreviousEuropePMCProfileFileName())),
 			is(equalTo(true))
@@ -325,7 +338,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void incorrectPreviousProfileFileNameReturnsFalseForIsPreviousEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectPreviousProfileFileName =
 			Paths.get("europe_pmc_profile_react_" + getPreviousReactomeReleaseNumber() + ".xml");
 
@@ -336,7 +351,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void correctPreviousLinksFileNameReturnsTrueForIsPreviousEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		assertThat(
 			europePMCFileUploader.isPreviousFile(Paths.get(getPreviousEuropePMCLinksFileName())),
 			is(equalTo(true))
@@ -344,7 +361,9 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousEuropePMCFileMethod() throws IOException {
+	public void incorrectPreviousLinksFileNameReturnsFalseForIsPreviousEuropePMCFileMethod()
+		throws IOException, URISyntaxException {
+
 		final Path incorrectPreviousLinksFileName =
 			Paths.get("europe_pmc_links_react_" + getPreviousReactomeReleaseNumber() + ".xml");
 

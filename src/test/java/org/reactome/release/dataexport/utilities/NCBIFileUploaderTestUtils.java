@@ -5,6 +5,7 @@ import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils
 
 import java.io.IOException;
 
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,27 +14,27 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 public class NCBIFileUploaderTestUtils {
-	public static List<String> getCurrentNCBIFilePathsInMockOutputDirectory() throws IOException {
+	public static List<String> getCurrentNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
 		return FTPFileUploaderTestUtils.getPathsForCurrentFilesInMockOutputDirectory("ncbi");
 	}
 
-	public static List<String> getPreviousNCBIFilePathsInMockOutputDirectory() throws IOException {
+	public static List<String> getPreviousNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
 		return FTPFileUploaderTestUtils.getPathsForPreviousFilesInMockOutputDirectory("ncbi");
 	}
 
-	public static String getCurrentNCBIGeneFileNamePattern() throws IOException {
+	public static String getCurrentNCBIGeneFileNamePattern() throws IOException, URISyntaxException {
 		return "gene_reactome" + getCurrentReactomeReleaseNumber() + "-\\d+.xml";
 	}
 
-	public static String getPreviousNCBIGeneFileNamePattern() throws IOException {
+	public static String getPreviousNCBIGeneFileNamePattern() throws IOException, URISyntaxException {
 		return "gene_reactome" + getPreviousReactomeReleaseNumber() + "-\\d+.xml";
 	}
 
-	public static String getCurrentNCBIProteinFileName() throws IOException {
+	public static String getCurrentNCBIProteinFileName() throws IOException, URISyntaxException {
 		return "protein_reactome" + getCurrentReactomeReleaseNumber() + ".ft";
 	}
 
-	public static String getPreviousNCBIProteinFileName() throws IOException {
+	public static String getPreviousNCBIProteinFileName() throws IOException, URISyntaxException {
 		return "protein_reactome" + getPreviousReactomeReleaseNumber() + ".ft";
 	}
 
@@ -63,7 +64,7 @@ public class NCBIFileUploaderTestUtils {
 		}
 	}
 
-	private static boolean isCurrentNCBIFile(String fileName) {
+	private static boolean isCurrentNCBIFile(String fileName) throws URISyntaxException {
 		//System.out.println(fileName);
 		try {
 			return fileName.matches(".*" + getCurrentNCBIGeneFileNamePattern() + "$") ||
