@@ -66,7 +66,8 @@ public abstract class FTPFileUploader {
 		if (loginToFTPServer()) {
 			logger.info("Login successful to {}", getServerHostName());
 		} else {
-			logger.error("Login to {} failed", getServerHostName());
+			logger.error("Login to {} failed.  FTP client reply message was: {}",
+				getServerHostName(), getFtpClientReplyMessage());
 		}
 
 		getFtpClientToServer().changeWorkingDirectory(getReactomeDirectoryPathOnFTPServer());
@@ -196,7 +197,8 @@ public abstract class FTPFileUploader {
 			getFtpClientToServer().disconnect();
 			return true;
 		} catch (IOException e) {
-			logger.error("Unable to close connection to FTP Server {}", getServerHostName(), e);
+			logger.error("Unable to close connection to FTP Server {}.  FTP client reply message was: ",
+				getServerHostName(), getFtpClientReplyMessage(),  e);
 			return false;
 		}
 	}
@@ -414,7 +416,8 @@ public abstract class FTPFileUploader {
 			logger.info("Successfully uploaded '{}' to server {}", fileToUpload, getServerHostName());
 			return true;
 		} else {
-			logger.error("Unable to upload '{}' to the server {}", fileToUpload, getServerHostName());
+			logger.error("Unable to upload '{}' to the server {}.  FTP client reply message was: {}",
+				fileToUpload, getServerHostName(), getFtpClientReplyMessage());
 			return false;
 		}
 	}
@@ -426,7 +429,8 @@ public abstract class FTPFileUploader {
 			logger.info("Successfully deleted '{}' from FTP server {}", fileToDelete, getServerHostName());
 			return true;
 		} else {
-			logger.error("Unable to delete '{}' from the FTP server {}", fileToDelete, getServerHostName());
+			logger.error("Unable to delete '{}' from the FTP server {}.  FTP client reply message was: {}",
+				fileToDelete, getServerHostName(), getFtpClientReplyMessage());
 			return false;
 		}
 	}
@@ -435,5 +439,9 @@ public abstract class FTPFileUploader {
 		return Arrays.stream(getFtpClientToServer().listFiles())
 			.map(FTPFile::getName)
 			.collect(Collectors.toList());
+	}
+
+	private String getFtpClientReplyMessage() {
+		return getFtpClientToServer().getReplyString();
 	}
 }
