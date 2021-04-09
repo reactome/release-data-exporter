@@ -1,0 +1,1 @@
+NOTE: This directory will be automatically populated and emptied with dummy/mock files for testing FTP uploading logic
