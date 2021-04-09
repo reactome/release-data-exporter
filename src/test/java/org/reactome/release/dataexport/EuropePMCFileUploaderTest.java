@@ -13,15 +13,7 @@ import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTes
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCProfileFileName;
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCLinksFileName;
 import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCProfileFileName;
-
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getMockTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeleted;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExcept;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExceptOne;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploaded;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploadedExceptOne;
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
 
 import java.io.IOException;
 
@@ -36,6 +28,8 @@ import java.util.Properties;
 
 import org.apache.commons.net.ftp.FTPClient;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +37,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils;
 
 public class EuropePMCFileUploaderTest {
 	private Properties props;
@@ -53,11 +48,17 @@ public class EuropePMCFileUploaderTest {
 	@InjectMocks
 	private EuropePMCFileUploader europePMCFileUploader;
 
+
+	@BeforeAll
+	public static void createMockLocalFilesDirectory() throws IOException, URISyntaxException {
+		EuropePMCFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	}
+
 	@BeforeEach
 	public void initializeEuropePMCFileUploader() throws IOException, URISyntaxException {
 		final boolean initializeFTPServerConnection = false;
 
-		this.props = getMockTestPropertiesObject();
+		this.props = getTestPropertiesObject();
 		this.europePMCFileUploader = Mockito.spy(
 			EuropePMCFileUploader.getInstance(props, initializeFTPServerConnection)
 		);
@@ -371,5 +372,10 @@ public class EuropePMCFileUploaderTest {
 			europePMCFileUploader.isPreviousFile(incorrectPreviousLinksFileName),
 			is(equalTo(false))
 		);
+	}
+
+	@AfterAll
+	public static void removeMockLocalFilesDirectory() throws IOException, URISyntaxException {
+		EuropePMCFileUploaderTestUtils.removeEuropePMCMockLocalFilesOutputDirectory();
 	}
 }

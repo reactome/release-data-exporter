@@ -8,15 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getMockTestPropertiesObject;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeleted;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExcept;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyDeletedExceptOne;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploaded;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.mockAllFilesSuccessfullyUploadedExceptOne;
-
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIFilePathsInMockOutputDirectory;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getPreviousNCBIProteinFileName;
@@ -34,6 +26,8 @@ import java.util.Properties;
 
 import org.apache.commons.net.ftp.FTPClient;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils;
 
 public class NCBIFileUploaderTest {
 	private Properties props;
@@ -51,11 +46,16 @@ public class NCBIFileUploaderTest {
 	@InjectMocks
 	private NCBIFileUploader ncbiFileUploader;
 
+	@BeforeAll
+	public static void createMockLocalFilesDirectory() throws IOException, URISyntaxException {
+		NCBIFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	}
+
 	@BeforeEach
 	public void initializeNCBIFileUploader() throws IOException, URISyntaxException {
 		final boolean initializeFTPServerConnection = false;
 
-		this.props = getMockTestPropertiesObject();
+		this.props = getTestPropertiesObject();
 		this.ncbiFileUploader = Mockito.spy(
 			NCBIFileUploader.getInstance(props, initializeFTPServerConnection)
 		);
@@ -369,5 +369,10 @@ public class NCBIFileUploaderTest {
 			ncbiFileUploader.isPreviousFile(incorrectPreviousLinksFileName),
 			is(equalTo(false))
 		);
+	}
+
+	@AfterAll
+	public static void removeMockLocalFilesDirectory() throws IOException, URISyntaxException {
+		NCBIFileUploaderTestUtils.removeNCBIMockLocalFilesOutputDirectory();
 	}
 }

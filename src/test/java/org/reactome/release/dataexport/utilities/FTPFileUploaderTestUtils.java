@@ -18,43 +18,41 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.mockito.Mockito;
 
 public class FTPFileUploaderTestUtils {
-	public static Properties getITTestPropertiesObject() {
-		final String realConfigPropertiesFileName = "real_config.properties";
-		try {
-			return getTestPropertiesObject(realConfigPropertiesFileName);
-		} catch (IOException | URISyntaxException e) {
-			throw new RuntimeException(
-				"ERROR!  To successfully run integration tests, a configuration file with real values for the "
-					+ "EuropePMC and NCBI server configuration values must be provided in this project with the file"
-					+ "path src/test/resources/" + realConfigPropertiesFileName + ".  For a sample configuration "
-					+ "file, see src/main/resources/sample_config.properties.", e
-			);
+
+	public static Properties getTestPropertiesObject() throws IOException, URISyntaxException {
+		return getITTestPropertiesObject() != null ? getITTestPropertiesObject() : getMockTestPropertiesObject();
+	}
+
+	public static void createMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		Files.createDirectories(Paths.get(getMockLocalFilesOutputDirectory()));
+	}
+
+	public static void createFileIfDoesNotExist(Path file) throws IOException {
+		if (Files.notExists(file)) {
+			Files.createFile(file);
 		}
 	}
 
-	public static Properties getMockTestPropertiesObject() throws IOException, URISyntaxException {
-		return getTestPropertiesObject("mock_config.properties");
+	public static Path createTestUploadFile(Path directoryToCreateFile) throws IOException {
+		Files.createDirectories(directoryToCreateFile);
+
+		Path testUploadFilePath = getTestUploadFilePath(directoryToCreateFile);
+		createFileIfDoesNotExist(testUploadFilePath);
+		return testUploadFilePath;
 	}
 
-	public static Properties getTestPropertiesObject(String configResourceFileName)
-		throws IOException, URISyntaxException {
+	public static Path getTestUploadFilePath(Path directoryToCreateFile) {
+		final String testUploadFileName = "dummy.txt";
 
-		URL urlToConfigResource = FTPFileUploaderTestUtils.class.getClassLoader().getResource(configResourceFileName);
-		if (urlToConfigResource == null) {
-			throw new IOException("Unable to find resource " + configResourceFileName);
-		}
-
-		Properties props = new Properties();
-		props.load(new FileInputStream(urlToConfigResource.getPath()));
-		props.setProperty("outputDir", getMockOutputDirectory());
-		return props;
+		return directoryToCreateFile.resolve(testUploadFileName);
 	}
 
-	public static String getMockOutputDirectory() throws URISyntaxException {
+	public static String getMockLocalFilesOutputDirectory() throws URISyntaxException {
 		return getResourcePathAsString("mock_uploader_local_files");
 	}
 
@@ -62,22 +60,36 @@ public class FTPFileUploaderTestUtils {
 		return getResourcePathAsString("logs");
 	}
 
-	public static List<String> getPathsForCurrentFilesInMockOutputDirectory(String subDirectory)
-		throws IOException, URISyntaxException {
+	public static Path getPathForSubDirectoryOfMockLocalFilesOutputDirectory(String subDirectory)
+		throws URISyntaxException {
 
-		return getPathsForFilesInMockOutputDirectory(Paths.get(subDirectory,"current_version"));
+		return Paths.get(getMockLocalFilesOutputDirectory()).resolve(subDirectory);
 	}
 
-	public static List<String> getPathsForPreviousFilesInMockOutputDirectory(String subDirectory)
+	public static List<String> getPathsForCurrentFilesInMockOutputDirectory(String directory)
 		throws IOException, URISyntaxException {
 
-		return getPathsForFilesInMockOutputDirectory(Paths.get(subDirectory, "previous_version"));
+		return getPathsForFilesInMockOutputDirectory(getPathForCurrentVersionSubDirectory(directory));
+	}
+
+	public static List<String> getPathsForPreviousFilesInMockOutputDirectory(String directory)
+		throws IOException, URISyntaxException {
+
+		return getPathsForFilesInMockOutputDirectory(getPathForPreviousVersionSubDirectory(directory));
+	}
+
+	public static Path getPathForCurrentVersionSubDirectory(String directory) {
+		return Paths.get(directory, "current_version");
+	}
+
+	public static Path getPathForPreviousVersionSubDirectory(String directory) {
+		return Paths.get(directory, "previous_version");
 	}
 
 	public static List<String> getPathsForFilesInMockOutputDirectory(Path subDirectory)
 		throws IOException, URISyntaxException {
 
-		return Files.list(Paths.get(getMockOutputDirectory()).resolve(subDirectory))
+		return Files.list(getPathForSubDirectoryOfMockLocalFilesOutputDirectory(subDirectory.toString()))
 			.map(Path::toString)
 			.collect(Collectors.toList());
 	}
@@ -138,6 +150,38 @@ public class FTPFileUploaderTestUtils {
 	) throws IOException {
 		Mockito.doReturn(false).when(ftpClientConnectionToServer)
 			.storeFile(eq(fileNotUploaded), any(InputStream.class));
+	}
+
+	public static Properties getITTestPropertiesObject() {
+		final String realConfigPropertiesFileName = "real_config.properties";
+		try {
+			return getTestPropertiesObject(realConfigPropertiesFileName);
+		} catch (IOException | URISyntaxException e) {
+			throw new RuntimeException(
+				"ERROR!  To successfully run integration tests, a configuration file with real values for the " +
+				"EuropePMC and NCBI server configuration values must be provided in this project with the file" +
+				"path src/test/resources/" + realConfigPropertiesFileName + ".  For a sample configuration " +
+				"file, see src/main/resources/sample_config.properties.", e
+			);
+		}
+	}
+
+	private static Properties getMockTestPropertiesObject() throws IOException, URISyntaxException {
+		return getTestPropertiesObject("mock_config.properties");
+	}
+
+	private static Properties getTestPropertiesObject(String configResourceFileName)
+		throws IOException, URISyntaxException {
+
+		URL urlToConfigResource = FTPFileUploaderTestUtils.class.getClassLoader().getResource(configResourceFileName);
+		if (urlToConfigResource == null) {
+			throw new IOException("Unable to find resource " + configResourceFileName);
+		}
+
+		Properties props = new Properties();
+		props.load(new FileInputStream(urlToConfigResource.getPath()));
+		props.setProperty("outputDir", getMockLocalFilesOutputDirectory());
+		return props;
 	}
 
 	private static String getResourcePathAsString(String resourceName) throws URISyntaxException {

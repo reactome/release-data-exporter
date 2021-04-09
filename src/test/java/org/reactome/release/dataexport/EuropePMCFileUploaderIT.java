@@ -6,15 +6,17 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCLinksFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCProfileFileName;
+import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.*;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getFileNamesInFileListings;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getITTestPropertiesObject;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeReleaseNumber;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Properties;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +37,19 @@ import org.mockito.MockitoAnnotations;
  * @author jweiser
  */
 public class EuropePMCFileUploaderIT {
+	private static Properties itTestProperties;
+	private static String mockEuropePMCFilePathString;
 	private EuropePMCFileUploader europePMCFileUploader;
+
+	@BeforeAll
+	public static void obtainRealConfigurationProperties() throws IOException, URISyntaxException {
+		itTestProperties = getITTestPropertiesObject();
+		mockEuropePMCFilePathString = createEuropePMCTestUploadFile().toString();
+	}
 
 	@BeforeEach
 	public void initializeEuropePMCFileUploader() throws IOException {
-		this.europePMCFileUploader = Mockito.spy(EuropePMCFileUploader.getInstance(getITTestPropertiesObject()));
+		this.europePMCFileUploader = Mockito.spy(EuropePMCFileUploader.getInstance(itTestProperties));
 		MockitoAnnotations.initMocks(this);
 	}
 
@@ -86,8 +96,29 @@ public class EuropePMCFileUploaderIT {
 	}
 
 	@Test
+	public void writesFilesSuccessfullyOnEuropePMCFTPServer() throws IOException, URISyntaxException {
+		assertThat(
+			this.europePMCFileUploader.uploadFileToServer(mockEuropePMCFilePathString), is(equalTo(true))
+		);
+		assertThat(
+			this.europePMCFileUploader.existsOnServer(mockEuropePMCFilePathString), is(equalTo(true))
+		);
+		assertThat(
+			this.europePMCFileUploader.deleteOldFileFromServer(mockEuropePMCFilePathString), is(equalTo(true))
+		);
+	}
+
+	@Test
 	public void europePMCFileUploaderDisconnectsSuccessfullyToEuropePMCFTPServer() throws IOException {
 		assertThat(this.europePMCFileUploader.loginToFTPServer(), is(equalTo(true)));
 		assertThat(this.europePMCFileUploader.closeFTPConnectionToServer(), is(equalTo(true)));
+	}
+
+	@AfterAll
+	public static void removeMockFilesFromEuropePMCFTPServer() throws IOException {
+		EuropePMCFileUploader europePMCFileUploader = EuropePMCFileUploader.getInstance(itTestProperties);
+		if (europePMCFileUploader.existsOnServer(mockEuropePMCFilePathString)) {
+			europePMCFileUploader.deleteOldFileFromServer(mockEuropePMCFilePathString);
+		}
 	}
 }
