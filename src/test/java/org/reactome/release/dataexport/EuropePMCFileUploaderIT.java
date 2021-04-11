@@ -38,13 +38,13 @@ import org.mockito.MockitoAnnotations;
  */
 public class EuropePMCFileUploaderIT {
 	private static Properties itTestProperties;
-	private static String mockEuropePMCFilePathString;
+	private static String dummyEuropePMCFilePathAsString;
 	private EuropePMCFileUploader europePMCFileUploader;
 
 	@BeforeAll
 	public static void obtainRealConfigurationProperties() throws IOException, URISyntaxException {
 		itTestProperties = getITTestPropertiesObject();
-		mockEuropePMCFilePathString = createEuropePMCTestUploadFile().toString();
+		dummyEuropePMCFilePathAsString = createEuropePMCDummyUploadFile().toString();
 	}
 
 	@BeforeEach
@@ -98,13 +98,13 @@ public class EuropePMCFileUploaderIT {
 	@Test
 	public void writesFilesSuccessfullyOnEuropePMCFTPServer() throws IOException, URISyntaxException {
 		assertThat(
-			this.europePMCFileUploader.uploadFileToServer(mockEuropePMCFilePathString), is(equalTo(true))
+			this.europePMCFileUploader.uploadFileToServer(dummyEuropePMCFilePathAsString), is(equalTo(true))
 		);
 		assertThat(
-			this.europePMCFileUploader.existsOnServer(mockEuropePMCFilePathString), is(equalTo(true))
+			this.europePMCFileUploader.existsOnServer(dummyEuropePMCFilePathAsString), is(equalTo(true))
 		);
 		assertThat(
-			this.europePMCFileUploader.deleteOldFileFromServer(mockEuropePMCFilePathString), is(equalTo(true))
+			this.europePMCFileUploader.deleteOldFileFromServer(dummyEuropePMCFilePathAsString), is(equalTo(true))
 		);
 	}
 
@@ -115,10 +115,10 @@ public class EuropePMCFileUploaderIT {
 	}
 
 	@AfterAll
-	public static void removeMockFilesFromEuropePMCFTPServer() throws IOException {
+	public static void removeDummyFilesFromEuropePMCFTPServer() throws IOException {
 		EuropePMCFileUploader europePMCFileUploader = EuropePMCFileUploader.getInstance(itTestProperties);
-		if (europePMCFileUploader.existsOnServer(mockEuropePMCFilePathString)) {
-			europePMCFileUploader.deleteOldFileFromServer(mockEuropePMCFilePathString);
+		if (europePMCFileUploader.existsOnServer(dummyEuropePMCFilePathAsString)) {
+			europePMCFileUploader.deleteOldFileFromServer(dummyEuropePMCFilePathAsString);
 		}
 	}
 }

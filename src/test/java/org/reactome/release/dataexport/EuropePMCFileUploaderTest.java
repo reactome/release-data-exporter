@@ -8,11 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCFilePathsInMockOutputDirectory;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCLinksFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getCurrentEuropePMCProfileFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCLinksFileName;
-import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.getPreviousEuropePMCProfileFileName;
+import static org.reactome.release.dataexport.utilities.EuropePMCFileUploaderTestUtils.*;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
 
 import java.io.IOException;
@@ -50,8 +46,8 @@ public class EuropePMCFileUploaderTest {
 
 
 	@BeforeAll
-	public static void createMockLocalFilesDirectory() throws IOException, URISyntaxException {
-		EuropePMCFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	public static void createDummyLocalFilesDirectory() throws IOException, URISyntaxException {
+		EuropePMCFileUploaderTestUtils.createDummyLocalFilesOutputDirectory();
 	}
 
 	@BeforeEach
@@ -163,7 +159,7 @@ public class EuropePMCFileUploaderTest {
 
 	@Test
 	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException, URISyntaxException {
-		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInDummyLocalFilesOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
 
@@ -177,7 +173,7 @@ public class EuropePMCFileUploaderTest {
 
 	@Test
 	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException, URISyntaxException {
-		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentEuropePMCFilePathsInDummyLocalFilesOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(europePMCFileUploader).getLocalFileNamesToUpload();
 
@@ -233,12 +229,12 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber()
+	public void localFilesNamesToUploadReturnsDummyFilesForCurrentReleaseNumber()
 		throws IOException, URISyntaxException {
 
 		assertThat(
 			europePMCFileUploader.getLocalFileNamesToUpload(),
-			is(equalTo((getCurrentEuropePMCFilePathsInMockOutputDirectory())))
+			is(equalTo((getCurrentEuropePMCFilePathsInDummyLocalFilesOutputDirectory())))
 		);
 	}
 
@@ -375,7 +371,7 @@ public class EuropePMCFileUploaderTest {
 	}
 
 	@AfterAll
-	public static void removeMockLocalFilesDirectory() throws IOException, URISyntaxException {
-		EuropePMCFileUploaderTestUtils.removeEuropePMCMockLocalFilesOutputDirectory();
+	public static void removeDummyLocalFilesDirectory() throws IOException, URISyntaxException {
+		EuropePMCFileUploaderTestUtils.removeEuropePMCDummyLocalFilesOutputDirectory();
 	}
 }

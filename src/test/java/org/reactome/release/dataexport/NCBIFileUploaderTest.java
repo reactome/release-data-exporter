@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
-import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIFilePathsInMockOutputDirectory;
+import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getPreviousNCBIProteinFileName;
 
@@ -47,8 +47,8 @@ public class NCBIFileUploaderTest {
 	private NCBIFileUploader ncbiFileUploader;
 
 	@BeforeAll
-	public static void createMockLocalFilesDirectory() throws IOException, URISyntaxException {
-		NCBIFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	public static void createDummyLocalFilesDirectory() throws IOException, URISyntaxException {
+		NCBIFileUploaderTestUtils.createDummyLocalFilesOutputDirectory();
 	}
 
 	@BeforeEach
@@ -160,7 +160,7 @@ public class NCBIFileUploaderTest {
 
 	@Test
 	public void uploadFilesToServerReturnsFalseWhenOneFileIsNotUploaded() throws IOException, URISyntaxException {
-		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
 
@@ -174,7 +174,7 @@ public class NCBIFileUploaderTest {
 
 	@Test
 	public void uploadFilesToServerReturnsTrueWhenAllFilesAreUploaded() throws IOException, URISyntaxException {
-		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInMockOutputDirectory();
+		final List<String> mockFileNamesToUpload = getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory();
 
 		Mockito.doReturn(mockFileNamesToUpload).when(ncbiFileUploader).getLocalFileNamesToUpload();
 
@@ -230,12 +230,12 @@ public class NCBIFileUploaderTest {
 	}
 
 	@Test
-	public void localFilesNamesToUploadReturnsMockFilesForCurrentReleaseNumber()
+	public void localFilesNamesToUploadReturnsDummyFilesForCurrentReleaseNumber()
 		throws IOException, URISyntaxException {
 
 		assertThat(
 			ncbiFileUploader.getLocalFileNamesToUpload(),
-			is(equalTo((getCurrentNCBIFilePathsInMockOutputDirectory())))
+			is(equalTo((getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory())))
 		);
 	}
 
@@ -372,7 +372,7 @@ public class NCBIFileUploaderTest {
 	}
 
 	@AfterAll
-	public static void removeMockLocalFilesDirectory() throws IOException, URISyntaxException {
-		NCBIFileUploaderTestUtils.removeNCBIMockLocalFilesOutputDirectory();
+	public static void removeDummyLocalFilesDirectory() throws IOException, URISyntaxException {
+		NCBIFileUploaderTestUtils.removeNCBIDummyLocalFilesOutputDirectory();
 	}
 }

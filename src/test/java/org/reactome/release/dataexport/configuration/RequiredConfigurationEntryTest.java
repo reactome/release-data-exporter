@@ -14,10 +14,10 @@ public class RequiredConfigurationEntryTest {
 
 	@Test
 	public void getValueFromUserInputReturnsExpectedValue() {
-		Scanner mockScanner = new Scanner(CONFIGURATION_VALUE_TEST);
+		Scanner testScanner = new Scanner(CONFIGURATION_VALUE_TEST);
 
 		RequiredConfigurationEntry requiredConfigurationEntry =
-			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, mockScanner);
+			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, testScanner);
 
 		assertThat(
 			requiredConfigurationEntry.getValueFromUserInput(),
@@ -27,12 +27,12 @@ public class RequiredConfigurationEntryTest {
 
 	@Test
 	public void getValueFromUserInputRePromptsAfterEmptyValueAndThenReturnsExpectedValue() {
-		final String mockInputWithBlankFirstValue = String.join("", System.lineSeparator(), CONFIGURATION_VALUE_TEST);
+		final String testInputWithBlankFirstValue = String.join("", System.lineSeparator(), CONFIGURATION_VALUE_TEST);
 
-		Scanner mockScanner = new Scanner(mockInputWithBlankFirstValue);
+		Scanner testScanner = new Scanner(testInputWithBlankFirstValue);
 
 		RequiredConfigurationEntry requiredConfigurationEntry =
-			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, mockScanner);
+			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, testScanner);
 
 		assertThat(
 			requiredConfigurationEntry.getValueFromUserInput(),
@@ -42,10 +42,10 @@ public class RequiredConfigurationEntryTest {
 
 	@Test
 	public void toStringReturnsExpectedConfigurationEntryFormatForEntryNameAndValue() {
-		Scanner mockScanner = new Scanner(CONFIGURATION_VALUE_TEST);
+		Scanner testScanner = new Scanner(CONFIGURATION_VALUE_TEST);
 
 		RequiredConfigurationEntry requiredConfigurationEntry =
-			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, mockScanner);
+			new RequiredConfigurationEntry(USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, testScanner);
 
 		final String expectedConfigurationEntry =
 			String.format("%s=%s", CONFIGURATION_ENTRY_NAME_TEST, CONFIGURATION_VALUE_TEST);

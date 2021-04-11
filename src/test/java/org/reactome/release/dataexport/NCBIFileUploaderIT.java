@@ -8,7 +8,7 @@ import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getITTestPropertiesObject;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getNextReactomeReleaseNumber;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.NonEmptyListWithAllItemsMatchingAtLeastOneRegex.allItemsMatchingAtLeastOneRegex;
-import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.createNCBITestUploadFile;
+import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.createNCBIDummyUploadFile;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIGeneFileNamePattern;
 import static org.reactome.release.dataexport.utilities.NCBIFileUploaderTestUtils.getCurrentNCBIProteinFileName;
 
@@ -25,13 +25,13 @@ import org.mockito.MockitoAnnotations;
 
 public class NCBIFileUploaderIT {
 	private static Properties itTestProperties;
-	private static String mockNCBIFilePathString;
+	private static String dummyNCBIFilePathAsString;
 	private NCBIFileUploader ncbiFileUploader;
 
 	@BeforeAll
 	public static void obtainRealConfigurationProperties() throws IOException, URISyntaxException {
 		itTestProperties = getITTestPropertiesObject();
-		mockNCBIFilePathString = createNCBITestUploadFile().toString();
+		dummyNCBIFilePathAsString = createNCBIDummyUploadFile().toString();
 	}
 
 	@BeforeEach
@@ -96,13 +96,13 @@ public class NCBIFileUploaderIT {
 	@Test
 	public void writesFilesSuccessfullyOnNCBIFTPServer() throws IOException, URISyntaxException {
 		assertThat(
-			this.ncbiFileUploader.uploadFileToServer(mockNCBIFilePathString), is(equalTo(true))
+			this.ncbiFileUploader.uploadFileToServer(dummyNCBIFilePathAsString), is(equalTo(true))
 		);
 		assertThat(
-			this.ncbiFileUploader.existsOnServer(mockNCBIFilePathString), is(equalTo(true))
+			this.ncbiFileUploader.existsOnServer(dummyNCBIFilePathAsString), is(equalTo(true))
 		);
 		assertThat(
-			this.ncbiFileUploader.deleteOldFileFromServer(mockNCBIFilePathString), is(equalTo(true))
+			this.ncbiFileUploader.deleteOldFileFromServer(dummyNCBIFilePathAsString), is(equalTo(true))
 		);
 	}
 
@@ -113,10 +113,10 @@ public class NCBIFileUploaderIT {
 	}
 
 	@AfterAll
-	public static void removeMockFilesFromNCBIFTPServer() throws IOException {
+	public static void removeDummyFilesFromNCBIFTPServer() throws IOException {
 		NCBIFileUploader ncbiFileUploader = NCBIFileUploader.getInstance(itTestProperties);
-		if (ncbiFileUploader.existsOnServer(mockNCBIFilePathString)) {
-			ncbiFileUploader.deleteOldFileFromServer(mockNCBIFilePathString);
+		if (ncbiFileUploader.existsOnServer(dummyNCBIFilePathAsString)) {
+			ncbiFileUploader.deleteOldFileFromServer(dummyNCBIFilePathAsString);
 		}
 	}
 }

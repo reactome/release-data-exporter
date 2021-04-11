@@ -16,26 +16,30 @@ import org.hamcrest.TypeSafeMatcher;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
 
 public class NCBIFileUploaderTestUtils {
-	private static final String NCBI_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME = "ncbi";
+	private static final String NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME = "ncbi";
 
-	public static void createMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
-		FTPFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	public static void createDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		FTPFileUploaderTestUtils.createDummyLocalFilesOutputDirectory();
 
-		Files.createDirectories(getNCBIMockLocalFilesDirectory());
-		createMockLocalCurrentNCBIFiles(getNCBIMockLocalFilesDirectory());
-		createMockLocalPreviousNCBIFiles(getNCBIMockLocalFilesDirectory());
+		Files.createDirectories(getNCBIDummyLocalFilesDirectory());
+		createDummyLocalCurrentNCBIFiles(getNCBIDummyLocalFilesDirectory());
+		createDummyLocalPreviousNCBIFiles(getNCBIDummyLocalFilesDirectory());
 	}
 
-	public static void removeNCBIMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
-		FileUtils.deleteDirectory(getNCBIMockLocalFilesDirectory().toFile());
+	public static void removeNCBIDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		FileUtils.deleteDirectory(getNCBIDummyLocalFilesDirectory().toFile());
 	}
 
-	public static List<String> getCurrentNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
-		return getPathsForCurrentFilesInMockOutputDirectory(NCBI_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	public static List<String> getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory()
+		throws IOException, URISyntaxException {
+
+		return getPathsForCurrentFilesInDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
-	public static List<String> getPreviousNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
-		return getPathsForPreviousFilesInMockOutputDirectory(NCBI_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	public static List<String> getPreviousNCBIFilePathsInDummyLocalFilesOutputDirectory()
+		throws IOException, URISyntaxException {
+
+		return getPathsForPreviousFilesInDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
 	public static String getCurrentNCBIGeneFileNamePattern() throws IOException, URISyntaxException {
@@ -54,8 +58,8 @@ public class NCBIFileUploaderTestUtils {
 		return getNCBIProteinFileName(getPreviousReactomeReleaseNumber());
 	}
 
-	public static Path createNCBITestUploadFile() throws URISyntaxException, IOException {
-		return createTestUploadFile(getNCBIMockLocalFilesDirectory());
+	public static Path createNCBIDummyUploadFile() throws URISyntaxException, IOException {
+		return createDummyUploadFile(getNCBIDummyLocalFilesDirectory());
 	}
 
 	public static class NonEmptyListWithAllItemsMatchingAtLeastOneRegex extends TypeSafeMatcher<List<String>> {
@@ -85,30 +89,30 @@ public class NCBIFileUploaderTestUtils {
 		}
 	}
 
-	private static void createMockLocalCurrentNCBIFiles(Path ncbiFileDirectory)
+	private static void createDummyLocalCurrentNCBIFiles(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
-		createMockLocalCurrentNCBIGeneFiles(ncbiFileDirectory);
-		createMockLocalCurrentNCBIProteinFile(ncbiFileDirectory);
+		createDummyLocalCurrentNCBIGeneFiles(ncbiFileDirectory);
+		createDummyLocalCurrentNCBIProteinFile(ncbiFileDirectory);
 	}
 
-	private static void createMockLocalPreviousNCBIFiles(Path ncbiFileDirectory)
+	private static void createDummyLocalPreviousNCBIFiles(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
-		createMockLocalPreviousNCBIGeneFiles(ncbiFileDirectory);
-		createMockLocalPreviousNCBIProteinFile(ncbiFileDirectory);
+		createDummyLocalPreviousNCBIGeneFiles(ncbiFileDirectory);
+		createDummyLocalPreviousNCBIProteinFile(ncbiFileDirectory);
 	}
 
-	private static void createMockLocalCurrentNCBIGeneFiles(Path ncbiFileDirectory)
+	private static void createDummyLocalCurrentNCBIGeneFiles(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path ncbiCurrentFileDirectory = getPathForCurrentVersionSubDirectory(ncbiFileDirectory.toString());
 
 		Files.createDirectories(ncbiCurrentFileDirectory);
-		createMockLocalNCBIGeneFiles(ncbiCurrentFileDirectory, getCurrentReactomeReleaseNumber());
+		createDummyLocalNCBIGeneFiles(ncbiCurrentFileDirectory, getCurrentReactomeReleaseNumber());
 	}
 
-	private static void createMockLocalCurrentNCBIProteinFile(Path ncbiFileDirectory)
+	private static void createDummyLocalCurrentNCBIProteinFile(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path ncbiCurrentFileDirectory = getPathForCurrentVersionSubDirectory(ncbiFileDirectory.toString());
@@ -117,16 +121,16 @@ public class NCBIFileUploaderTestUtils {
 		createFileIfDoesNotExist(ncbiCurrentFileDirectory.resolve(getCurrentNCBIProteinFileName()));
 	}
 
-	private static void createMockLocalPreviousNCBIGeneFiles(Path ncbiFileDirectory)
+	private static void createDummyLocalPreviousNCBIGeneFiles(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path ncbiPreviousFileDirectory = getPathForPreviousVersionSubDirectory(ncbiFileDirectory.toString());
 
 		Files.createDirectories(ncbiPreviousFileDirectory);
-		createMockLocalNCBIGeneFiles(ncbiPreviousFileDirectory, getPreviousReactomeReleaseNumber());
+		createDummyLocalNCBIGeneFiles(ncbiPreviousFileDirectory, getPreviousReactomeReleaseNumber());
 	}
 
-	private static void createMockLocalPreviousNCBIProteinFile(Path ncbiFileDirectory)
+	private static void createDummyLocalPreviousNCBIProteinFile(Path ncbiFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path ncbiPreviousFileDirectory = getPathForPreviousVersionSubDirectory(ncbiFileDirectory.toString());
@@ -135,7 +139,7 @@ public class NCBIFileUploaderTestUtils {
 		createFileIfDoesNotExist(ncbiPreviousFileDirectory.resolve(getPreviousNCBIProteinFileName()));
 	}
 
-	private static void createMockLocalNCBIGeneFiles(Path ncbiFileDirectory, int reactomeReleaseNumber)
+	private static void createDummyLocalNCBIGeneFiles(Path ncbiFileDirectory, int reactomeReleaseNumber)
 		throws IOException, URISyntaxException {
 
 		final int numberOfNCBIGeneSubFiles = 4;
@@ -146,8 +150,8 @@ public class NCBIFileUploaderTestUtils {
 		}
 	}
 
-	private static Path getNCBIMockLocalFilesDirectory() throws URISyntaxException {
-		return getPathForSubDirectoryOfMockLocalFilesOutputDirectory(NCBI_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	private static Path getNCBIDummyLocalFilesDirectory() throws URISyntaxException {
+		return getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
 	private static String getNCBIGeneFileName(int ncbiGeneSubFileNumber, int reactomeReleaseNumber)

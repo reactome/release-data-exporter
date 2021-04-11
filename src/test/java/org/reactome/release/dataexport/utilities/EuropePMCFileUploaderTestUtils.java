@@ -11,33 +11,33 @@ import java.util.List;
 import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
 
 public class EuropePMCFileUploaderTestUtils {
-	private static final String EUROPE_PMC_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME = "europe_pmc";
+	private static final String EUROPE_PMC_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME = "europe_pmc";
 
-	public static void createMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
-		FTPFileUploaderTestUtils.createMockLocalFilesOutputDirectory();
+	public static void createDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		FTPFileUploaderTestUtils.createDummyLocalFilesOutputDirectory();
 
-		Files.createDirectories(getEuropePMCMockLocalFilesDirectory());
-		createMockLocalCurrentEuropePMCFiles(getEuropePMCMockLocalFilesDirectory());
-		createMockLocalPreviousEuropePMCFiles(getEuropePMCMockLocalFilesDirectory());
+		Files.createDirectories(getEuropePMCDummyLocalFilesDirectory());
+		createDummyLocalCurrentEuropePMCFiles(getEuropePMCDummyLocalFilesDirectory());
+		createDummyLocalPreviousEuropePMCFiles(getEuropePMCDummyLocalFilesDirectory());
 	}
 
-	public static void removeEuropePMCMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+	public static void removeEuropePMCDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
 		FileUtils.deleteDirectory(
-			getPathForSubDirectoryOfMockLocalFilesOutputDirectory(
-				EUROPE_PMC_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME).toFile()
+			getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(
+				EUROPE_PMC_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME).toFile()
 		);
 	}
 
-	public static List<String> getCurrentEuropePMCFilePathsInMockOutputDirectory()
+	public static List<String> getCurrentEuropePMCFilePathsInDummyLocalFilesOutputDirectory()
 		throws IOException, URISyntaxException {
 
-		return getPathsForCurrentFilesInMockOutputDirectory(EUROPE_PMC_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+		return getPathsForCurrentFilesInDummyLocalFilesOutputDirectory(EUROPE_PMC_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
-	public static List<String> getPreviousEuropePMCFilePathsInMockOutputDirectory()
+	public static List<String> getPreviousEuropePMCFilePathsInDummyLocalFilesOutputDirectory()
 		throws IOException, URISyntaxException {
 
-		return getPathsForPreviousFilesInMockOutputDirectory(EUROPE_PMC_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+		return getPathsForPreviousFilesInDummyLocalFilesOutputDirectory(EUROPE_PMC_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
 	public static String getCurrentEuropePMCProfileFileName() throws IOException, URISyntaxException {
@@ -56,11 +56,11 @@ public class EuropePMCFileUploaderTestUtils {
 		return "europe_pmc_links_reactome_" + getPreviousReactomeReleaseNumber() + ".xml";
 	}
 
-	public static Path createEuropePMCTestUploadFile() throws URISyntaxException, IOException {
-		return createTestUploadFile(getEuropePMCMockLocalFilesDirectory());
+	public static Path createEuropePMCDummyUploadFile() throws URISyntaxException, IOException {
+		return createDummyUploadFile(getEuropePMCDummyLocalFilesDirectory());
 	}
 
-	private static void createMockLocalCurrentEuropePMCFiles(Path europePMCFileDirectory)
+	private static void createDummyLocalCurrentEuropePMCFiles(Path europePMCFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path europePMCCurrentFileDirectory = getPathForCurrentVersionSubDirectory(europePMCFileDirectory.toString());
@@ -70,7 +70,7 @@ public class EuropePMCFileUploaderTestUtils {
 		createFileIfDoesNotExist(europePMCCurrentFileDirectory.resolve(getCurrentEuropePMCProfileFileName()));
 	}
 
-	private static void createMockLocalPreviousEuropePMCFiles(Path europePMCFileDirectory)
+	private static void createDummyLocalPreviousEuropePMCFiles(Path europePMCFileDirectory)
 		throws IOException, URISyntaxException {
 
 		Path europePMCPreviousFileDirectory = getPathForPreviousVersionSubDirectory(europePMCFileDirectory.toString());
@@ -80,7 +80,7 @@ public class EuropePMCFileUploaderTestUtils {
 		createFileIfDoesNotExist(europePMCPreviousFileDirectory.resolve(getPreviousEuropePMCProfileFileName()));
 	}
 
-	private static Path getEuropePMCMockLocalFilesDirectory() throws URISyntaxException {
-		return getPathForSubDirectoryOfMockLocalFilesOutputDirectory(EUROPE_PMC_MOCK_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	private static Path getEuropePMCDummyLocalFilesDirectory() throws URISyntaxException {
+		return getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(EUROPE_PMC_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 }

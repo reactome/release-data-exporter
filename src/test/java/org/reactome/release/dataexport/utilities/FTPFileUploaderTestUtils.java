@@ -25,11 +25,11 @@ import org.mockito.Mockito;
 public class FTPFileUploaderTestUtils {
 
 	public static Properties getTestPropertiesObject() throws IOException, URISyntaxException {
-		return getITTestPropertiesObject() != null ? getITTestPropertiesObject() : getMockTestPropertiesObject();
+		return getITTestPropertiesObject() != null ? getITTestPropertiesObject() : getDummyTestPropertiesObject();
 	}
 
-	public static void createMockLocalFilesOutputDirectory() throws URISyntaxException, IOException {
-		Files.createDirectories(Paths.get(getMockLocalFilesOutputDirectory()));
+	public static void createDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		Files.createDirectories(Paths.get(getDummyLocalFilesOutputDirectory()));
 	}
 
 	public static void createFileIfDoesNotExist(Path file) throws IOException {
@@ -38,44 +38,44 @@ public class FTPFileUploaderTestUtils {
 		}
 	}
 
-	public static Path createTestUploadFile(Path directoryToCreateFile) throws IOException {
+	public static Path createDummyUploadFile(Path directoryToCreateFile) throws IOException {
 		Files.createDirectories(directoryToCreateFile);
 
-		Path testUploadFilePath = getTestUploadFilePath(directoryToCreateFile);
-		createFileIfDoesNotExist(testUploadFilePath);
-		return testUploadFilePath;
+		Path dummyUploadFilePath = getDummyUploadFilePath(directoryToCreateFile);
+		createFileIfDoesNotExist(dummyUploadFilePath);
+		return dummyUploadFilePath;
 	}
 
-	public static Path getTestUploadFilePath(Path directoryToCreateFile) {
-		final String testUploadFileName = "dummy.txt";
+	public static Path getDummyUploadFilePath(Path directoryToCreateFile) {
+		final String dummyUploadFileName = "dummy.txt";
 
-		return directoryToCreateFile.resolve(testUploadFileName);
+		return directoryToCreateFile.resolve(dummyUploadFileName);
 	}
 
-	public static String getMockLocalFilesOutputDirectory() throws URISyntaxException {
-		return getResourcePathAsString("mock_uploader_local_files");
+	public static String getDummyLocalFilesOutputDirectory() throws URISyntaxException {
+		return getResourcePathAsString("dummy_local_files_for_ftp_uploaders");
 	}
 
-	public static String getMockLogDirectory() throws URISyntaxException {
+	public static String getTestLogDirectory() throws URISyntaxException {
 		return getResourcePathAsString("logs");
 	}
 
-	public static Path getPathForSubDirectoryOfMockLocalFilesOutputDirectory(String subDirectory)
+	public static Path getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(String subDirectory)
 		throws URISyntaxException {
 
-		return Paths.get(getMockLocalFilesOutputDirectory()).resolve(subDirectory);
+		return Paths.get(getDummyLocalFilesOutputDirectory()).resolve(subDirectory);
 	}
 
-	public static List<String> getPathsForCurrentFilesInMockOutputDirectory(String directory)
+	public static List<String> getPathsForCurrentFilesInDummyLocalFilesOutputDirectory(String directory)
 		throws IOException, URISyntaxException {
 
-		return getPathsForFilesInMockOutputDirectory(getPathForCurrentVersionSubDirectory(directory));
+		return getPathsForFilesInDummyLocalFilesOutputDirectory(getPathForCurrentVersionSubDirectory(directory));
 	}
 
-	public static List<String> getPathsForPreviousFilesInMockOutputDirectory(String directory)
+	public static List<String> getPathsForPreviousFilesInDummyLocalFilesOutputDirectory(String directory)
 		throws IOException, URISyntaxException {
 
-		return getPathsForFilesInMockOutputDirectory(getPathForPreviousVersionSubDirectory(directory));
+		return getPathsForFilesInDummyLocalFilesOutputDirectory(getPathForPreviousVersionSubDirectory(directory));
 	}
 
 	public static Path getPathForCurrentVersionSubDirectory(String directory) {
@@ -86,10 +86,10 @@ public class FTPFileUploaderTestUtils {
 		return Paths.get(directory, "previous_version");
 	}
 
-	public static List<String> getPathsForFilesInMockOutputDirectory(Path subDirectory)
+	public static List<String> getPathsForFilesInDummyLocalFilesOutputDirectory(Path subDirectory)
 		throws IOException, URISyntaxException {
 
-		return Files.list(getPathForSubDirectoryOfMockLocalFilesOutputDirectory(subDirectory.toString()))
+		return Files.list(getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(subDirectory.toString()))
 			.map(Path::toString)
 			.collect(Collectors.toList());
 	}
@@ -99,7 +99,7 @@ public class FTPFileUploaderTestUtils {
 	}
 
 	public static int getCurrentReactomeReleaseNumber() throws IOException, URISyntaxException {
-		return Integer.parseInt(getMockTestPropertiesObject().getProperty("releaseNumber"));
+		return Integer.parseInt(getDummyTestPropertiesObject().getProperty("releaseNumber"));
 	}
 
 	public static int getPreviousReactomeReleaseNumber() throws IOException, URISyntaxException {
@@ -166,8 +166,8 @@ public class FTPFileUploaderTestUtils {
 		}
 	}
 
-	private static Properties getMockTestPropertiesObject() throws IOException, URISyntaxException {
-		return getTestPropertiesObject("mock_config.properties");
+	private static Properties getDummyTestPropertiesObject() throws IOException, URISyntaxException {
+		return getTestPropertiesObject("dummy_config.properties");
 	}
 
 	private static Properties getTestPropertiesObject(String configResourceFileName)
@@ -180,7 +180,7 @@ public class FTPFileUploaderTestUtils {
 
 		Properties props = new Properties();
 		props.load(new FileInputStream(urlToConfigResource.getPath()));
-		props.setProperty("outputDir", getMockLocalFilesOutputDirectory());
+		props.setProperty("outputDir", getDummyLocalFilesOutputDirectory());
 		return props;
 	}
 
