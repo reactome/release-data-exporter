@@ -28,7 +28,7 @@ import org.mockito.MockitoAnnotations;
  *
  * NOTE: This integration testing class expects the EuropePMC FTP Server to be up to date (i.e. have files uploaded
  * with the publicly current version of Reactome specified in the configuration file.  That is, if the current version
- * is configured a 74, the files "europe_pmc_reactome_profile_74.xml" and "europe_pmc_reactome_links_74.xml" are
+ * is configured as 74, the files "europe_pmc_reactome_profile_74.xml" and "europe_pmc_reactome_links_74.xml" are
  * expected to be present on the EuropePMC FTP Server in the directory designated for Reactome).
  *
  * If a Reactome release has just occurred, the post-release updates must be run so the EuropePMC files (and other
