@@ -55,12 +55,22 @@ public class EuropePMCFileUploaderIT {
 
 	@Test
 	public void logsInSuccessfullyToEuropePMCFTPServer() throws IOException {
-		assertThat(this.europePMCFileUploader.loginToFTPServer(), is(equalTo(true)));
+		final String messageIfTestFails = this.europePMCFileUploader.getFtpClientToServer().getReplyString();
+
+		assertThat(
+			messageIfTestFails,
+			this.europePMCFileUploader.loginToFTPServer(),
+			is(equalTo(true))
+		);
 	}
 
 	@Test
 	public void existsOnServerReturnsTrueForExpectedEuropePMCFile() throws IOException, URISyntaxException {
+		final String messageIfTestFails = "Expected file " + getCurrentEuropePMCLinksFileName() +
+			" does not exist on the server.";
+
 		assertThat(
+			messageIfTestFails,
 			this.europePMCFileUploader.existsOnServer(getCurrentEuropePMCLinksFileName()),
 			is(equalTo(true))
 		);

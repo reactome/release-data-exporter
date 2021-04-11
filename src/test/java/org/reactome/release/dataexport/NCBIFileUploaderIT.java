@@ -42,10 +42,10 @@ public class NCBIFileUploaderIT {
 
 	@Test
 	public void logsInSuccessfullyToNCBIFTPServer() throws IOException {
-		String reasonForPotentialFailure = this.ncbiFileUploader.getFtpClientToServer().getReplyString();
+		final String messageIfTestFails = this.ncbiFileUploader.getFtpClientToServer().getReplyString();
 
 		assertThat(
-			reasonForPotentialFailure,
+			messageIfTestFails,
 			this.ncbiFileUploader.loginToFTPServer(),
 			is(equalTo(true))
 		);
@@ -53,11 +53,11 @@ public class NCBIFileUploaderIT {
 
 	@Test
 	public void existsOnServerReturnsTrueForExpectedNCBIFile() throws IOException, URISyntaxException {
-		final String reasonForPotentialFailure = "Expected file " + getCurrentNCBIProteinFileName() +
+		final String messageIfTestFails = "Expected file " + getCurrentNCBIProteinFileName() +
 			" does not exist on the server.";
 
 		assertThat(
-			reasonForPotentialFailure,
+			messageIfTestFails,
 			this.ncbiFileUploader.existsOnServer(getCurrentNCBIProteinFileName()),
 			is(equalTo(true))
 		);
