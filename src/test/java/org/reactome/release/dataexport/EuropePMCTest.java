@@ -116,7 +116,7 @@ public class EuropePMCTest {
 	}
 
 	@Test
-	public void singleEuropePMCLinkFromMockGraphDB() {
+	public void singleEuropePMCLinkFromTestGraphDB() {
 		DummyGraphDBServer dummyGraphDBServer = DummyGraphDBServer.getInstance();
 		dummyGraphDBServer.initializeNeo4j();
 		dummyGraphDBServer.populateDummyGraphDB();

@@ -407,22 +407,25 @@ public abstract class FTPFileUploader {
 		}
 	}
 
-	private boolean uploadFileToServer(String fileToUpload) throws IOException {
+	boolean uploadFileToServer(String fileToUpload) throws IOException {
 		logger.info("Uploading file '{}' to server {}", fileToUpload, getServerHostName());
 
-		InputStream fileToUploadInputStream = new FileInputStream(fileToUpload);
-
-		if (getFtpClientToServer().storeFile(fileToUpload, fileToUploadInputStream)) {
-			logger.info("Successfully uploaded '{}' to server {}", fileToUpload, getServerHostName());
-			return true;
-		} else {
-			logger.error("Unable to upload '{}' to the server {}.  FTP client reply message was: {}",
-				fileToUpload, getServerHostName(), getFtpClientReplyMessage());
-			return false;
+		boolean isUploadSuccessful;
+		try(InputStream fileToUploadInputStream = new FileInputStream(fileToUpload)) {
+			if (getFtpClientToServer().storeFile(fileToUpload, fileToUploadInputStream)) {
+				logger.info("Successfully uploaded '{}' to server {}", fileToUpload, getServerHostName());
+				isUploadSuccessful = true;
+			} else {
+				logger.error("Unable to upload '{}' to the server {}.  FTP client reply message was: {}",
+					fileToUpload, getServerHostName(), getFtpClientReplyMessage());
+				isUploadSuccessful = false;
+			}
 		}
+
+		return isUploadSuccessful;
 	}
 
-	private boolean deleteOldFileFromServer(String fileToDelete) throws IOException {
+	boolean deleteOldFileFromServer(String fileToDelete) throws IOException {
 		logger.info("Deleting file '{}' from FTP server {}", fileToDelete, getServerHostName());
 
 		if (getFtpClientToServer().deleteFile(fileToDelete)) {

@@ -15,9 +15,9 @@ public class OptionalConfigurationEntryTest {
 
 	@Test
 	public void getValueFromUserInputReturnsExpectedValue() {
-		Scanner mockScanner = new Scanner(CONFIGURATION_VALUE_TEST);
+		Scanner testScanner = new Scanner(CONFIGURATION_VALUE_TEST);
 		OptionalConfigurationEntry optionalConfigurationEntry = new OptionalConfigurationEntry(
-				USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, mockScanner
+				USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, testScanner
 			);
 
 		assertThat(
@@ -28,11 +28,11 @@ public class OptionalConfigurationEntryTest {
 
 	@Test
 	public void getValueFromUserInputRePromptsAfterEmptyValueAndThenReturnsExpectedValue() {
-		final String mockInputWithBlankFirstValue = String.join("", System.lineSeparator(), CONFIGURATION_VALUE_TEST);
+		final String testInputWithBlankFirstValue = String.join("", System.lineSeparator(), CONFIGURATION_VALUE_TEST);
 
-		Scanner mockScanner = new Scanner(mockInputWithBlankFirstValue);
+		Scanner testScanner = new Scanner(testInputWithBlankFirstValue);
 		OptionalConfigurationEntry optionalConfigurationEntry = new OptionalConfigurationEntry(
-				USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, mockScanner
+				USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, testScanner
 			);
 
 		assertThat(
@@ -46,9 +46,9 @@ public class OptionalConfigurationEntryTest {
 		final String expectedConfigurationEntry =
 			String.format("%s=%s", CONFIGURATION_ENTRY_NAME_TEST, CONFIGURATION_VALUE_TEST);
 
-		Scanner mockScanner = new Scanner(CONFIGURATION_VALUE_TEST);
+		Scanner testScanner = new Scanner(CONFIGURATION_VALUE_TEST);
 		OptionalConfigurationEntry optionalConfigurationEntry = new OptionalConfigurationEntry(
-			USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, mockScanner
+			USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, testScanner
 		);
 
 		assertThat(
@@ -63,9 +63,9 @@ public class OptionalConfigurationEntryTest {
 		final String expectedConfigurationEntry =
 			String.format("%s=%s", CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST);
 
-		Scanner mockScanner = new Scanner(noUserValue);
+		Scanner testScanner = new Scanner(noUserValue);
 		OptionalConfigurationEntry optionalConfigurationEntry = new OptionalConfigurationEntry(
-			USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, mockScanner
+			USER_PROMPT_VALUE_NAME_TEST, CONFIGURATION_ENTRY_NAME_TEST, DEFAULT_VALUE_TEST, testScanner
 		);
 
 		assertThat(

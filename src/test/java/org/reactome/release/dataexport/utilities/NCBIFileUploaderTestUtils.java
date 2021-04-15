@@ -1,62 +1,87 @@
 package org.reactome.release.dataexport.utilities;
 
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getCurrentReactomeReleaseNumber;
-import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.getPreviousReactomeReleaseNumber;
-
 import java.io.IOException;
 
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import static org.reactome.release.dataexport.utilities.FTPFileUploaderTestUtils.*;
+
 public class NCBIFileUploaderTestUtils {
-	public static List<String> getCurrentNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
-		return FTPFileUploaderTestUtils.getPathsForCurrentFilesInMockOutputDirectory("ncbi");
+	private static final String NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME = "ncbi";
+
+	public static void createDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		FTPFileUploaderTestUtils.createDummyLocalFilesOutputDirectory();
+
+		Files.createDirectories(getNCBIDummyLocalFilesDirectory());
+		createDummyLocalCurrentNCBIFiles(getNCBIDummyLocalFilesDirectory());
+		createDummyLocalPreviousNCBIFiles(getNCBIDummyLocalFilesDirectory());
 	}
 
-	public static List<String> getPreviousNCBIFilePathsInMockOutputDirectory() throws IOException, URISyntaxException {
-		return FTPFileUploaderTestUtils.getPathsForPreviousFilesInMockOutputDirectory("ncbi");
+	public static void removeNCBIDummyLocalFilesOutputDirectory() throws URISyntaxException, IOException {
+		FileUtils.deleteDirectory(getNCBIDummyLocalFilesDirectory().toFile());
+	}
+
+	public static List<String> getCurrentNCBIFilePathsInDummyLocalFilesOutputDirectory()
+		throws IOException, URISyntaxException {
+
+		return getPathsForCurrentFilesInDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	}
+
+	public static List<String> getPreviousNCBIFilePathsInDummyLocalFilesOutputDirectory()
+		throws IOException, URISyntaxException {
+
+		return getPathsForPreviousFilesInDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
 	}
 
 	public static String getCurrentNCBIGeneFileNamePattern() throws IOException, URISyntaxException {
-		return "gene_reactome" + getCurrentReactomeReleaseNumber() + "-\\d+.xml";
+		return getNCBIGeneFileNamePattern(getCurrentReactomeReleaseNumber());
 	}
 
 	public static String getPreviousNCBIGeneFileNamePattern() throws IOException, URISyntaxException {
-		return "gene_reactome" + getPreviousReactomeReleaseNumber() + "-\\d+.xml";
+		return getNCBIGeneFileNamePattern(getPreviousReactomeReleaseNumber());
 	}
 
 	public static String getCurrentNCBIProteinFileName() throws IOException, URISyntaxException {
-		return "protein_reactome" + getCurrentReactomeReleaseNumber() + ".ft";
+		return getNCBIProteinFileName(getCurrentReactomeReleaseNumber());
 	}
 
 	public static String getPreviousNCBIProteinFileName() throws IOException, URISyntaxException {
-		return "protein_reactome" + getPreviousReactomeReleaseNumber() + ".ft";
+		return getNCBIProteinFileName(getPreviousReactomeReleaseNumber());
 	}
 
-	public static class AllItemsMatchingAtLeastOneRegex extends TypeSafeMatcher<List<String>> {
+	public static Path createNCBIDummyUploadFile() throws URISyntaxException, IOException {
+		return createDummyUploadFile(getNCBIDummyLocalFilesDirectory());
+	}
+
+	public static class NonEmptyListWithAllItemsMatchingAtLeastOneRegex extends TypeSafeMatcher<List<String>> {
 		private List<String> regularExpressions;
 
 		public static Matcher<List<String>> allItemsMatchingAtLeastOneRegex(String ...regularExpressions) {
-			return new AllItemsMatchingAtLeastOneRegex(regularExpressions);
+			return new NonEmptyListWithAllItemsMatchingAtLeastOneRegex(regularExpressions);
 		}
 
-		public AllItemsMatchingAtLeastOneRegex(String ...regularExpressions) {
+		public NonEmptyListWithAllItemsMatchingAtLeastOneRegex(String ...regularExpressions) {
 			this.regularExpressions = Arrays.asList(regularExpressions);
 		}
 
 		@Override
 		protected boolean matchesSafely(List<String> stringList) {
-			return stringList.stream().allMatch(this::matchesAnyRegex);
+			return !stringList.isEmpty() && stringList.stream().allMatch(this::matchesAnyRegex);
 		}
 
 		@Override
 		public void describeTo(Description description) {
-			description.appendText("everything matches at least one regex from: " + regularExpressions);
+			description.appendText("non-empty list with each element matched to at least one regex from: " +
+				regularExpressions);
 		}
 
 		private boolean matchesAnyRegex(String stringToCheck) {
@@ -64,14 +89,84 @@ public class NCBIFileUploaderTestUtils {
 		}
 	}
 
-	private static boolean isCurrentNCBIFile(String fileName) throws URISyntaxException {
-		//System.out.println(fileName);
-		try {
-			return fileName.matches(".*" + getCurrentNCBIGeneFileNamePattern() + "$") ||
-				fileName.endsWith(getCurrentNCBIProteinFileName());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
+	private static void createDummyLocalCurrentNCBIFiles(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		createDummyLocalCurrentNCBIGeneFiles(ncbiFileDirectory);
+		createDummyLocalCurrentNCBIProteinFile(ncbiFileDirectory);
+	}
+
+	private static void createDummyLocalPreviousNCBIFiles(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		createDummyLocalPreviousNCBIGeneFiles(ncbiFileDirectory);
+		createDummyLocalPreviousNCBIProteinFile(ncbiFileDirectory);
+	}
+
+	private static void createDummyLocalCurrentNCBIGeneFiles(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		Path ncbiCurrentFileDirectory = getPathForCurrentVersionSubDirectory(ncbiFileDirectory.toString());
+
+		Files.createDirectories(ncbiCurrentFileDirectory);
+		createDummyLocalNCBIGeneFiles(ncbiCurrentFileDirectory, getCurrentReactomeReleaseNumber());
+	}
+
+	private static void createDummyLocalCurrentNCBIProteinFile(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		Path ncbiCurrentFileDirectory = getPathForCurrentVersionSubDirectory(ncbiFileDirectory.toString());
+
+		Files.createDirectories(ncbiCurrentFileDirectory);
+		createFileIfDoesNotExist(ncbiCurrentFileDirectory.resolve(getCurrentNCBIProteinFileName()));
+	}
+
+	private static void createDummyLocalPreviousNCBIGeneFiles(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		Path ncbiPreviousFileDirectory = getPathForPreviousVersionSubDirectory(ncbiFileDirectory.toString());
+
+		Files.createDirectories(ncbiPreviousFileDirectory);
+		createDummyLocalNCBIGeneFiles(ncbiPreviousFileDirectory, getPreviousReactomeReleaseNumber());
+	}
+
+	private static void createDummyLocalPreviousNCBIProteinFile(Path ncbiFileDirectory)
+		throws IOException, URISyntaxException {
+
+		Path ncbiPreviousFileDirectory = getPathForPreviousVersionSubDirectory(ncbiFileDirectory.toString());
+
+		Files.createDirectories(ncbiPreviousFileDirectory);
+		createFileIfDoesNotExist(ncbiPreviousFileDirectory.resolve(getPreviousNCBIProteinFileName()));
+	}
+
+	private static void createDummyLocalNCBIGeneFiles(Path ncbiFileDirectory, int reactomeReleaseNumber)
+		throws IOException, URISyntaxException {
+
+		final int numberOfNCBIGeneSubFiles = 4;
+		for (int ncbiGeneSubFileNum = 1; ncbiGeneSubFileNum <= numberOfNCBIGeneSubFiles; ncbiGeneSubFileNum++) {
+			createFileIfDoesNotExist(
+				ncbiFileDirectory.resolve(getNCBIGeneFileName(ncbiGeneSubFileNum, reactomeReleaseNumber))
+			);
 		}
+	}
+
+	private static Path getNCBIDummyLocalFilesDirectory() throws URISyntaxException {
+		return getPathForSubDirectoryOfDummyLocalFilesOutputDirectory(NCBI_DUMMY_LOCAL_FILE_SUB_DIRECTORY_NAME);
+	}
+
+	private static String getNCBIGeneFileName(int ncbiGeneSubFileNumber, int reactomeReleaseNumber)
+		throws IOException, URISyntaxException {
+
+		return getNCBIGeneFileNamePattern(reactomeReleaseNumber).replace(
+		"\\d+", Integer.toString(ncbiGeneSubFileNumber)
+		);
+	}
+
+	private static String getNCBIGeneFileNamePattern(int reactomeReleaseNumber) {
+		return "gene_reactome" + reactomeReleaseNumber + "-\\d+.xml";
+	}
+
+	private static String getNCBIProteinFileName(int reactomeReleaseNumber) {
+		return "protein_reactome" + reactomeReleaseNumber + ".ft";
 	}
 }

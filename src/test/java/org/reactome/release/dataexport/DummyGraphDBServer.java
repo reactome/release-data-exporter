@@ -40,7 +40,7 @@ public class DummyGraphDBServer {
 	}
 
 	public void populateDummyGraphDB() {
-		final String MOCK_GRAPHDB_CYPHER_DATA_FILE = "mock_reactome_graphdb.txt";
+		final String TEST_GRAPHDB_CYPHER_DATA_FILE = "test_reactome_graphdb_content.txt";
 
 		List<String> cypherStatements;
 
@@ -49,7 +49,7 @@ public class DummyGraphDBServer {
 				Objects.requireNonNull(
 					getClass()
 					.getClassLoader()
-					.getResource(MOCK_GRAPHDB_CYPHER_DATA_FILE)
+					.getResource(TEST_GRAPHDB_CYPHER_DATA_FILE)
 					.toURI()
 				)
 			);
