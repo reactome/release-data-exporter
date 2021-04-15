@@ -2,12 +2,24 @@
 
 This program will produce data exports for submission to NCBI, UCSC, and Europe PMC.  Files provided to these resources
 are:
-* **<a href="https://www.ncbi.nlm.nih.gov/">NCBI</a>:** Gene (NCBI gene identifier to Reactome top level pathways) and 
-Protein (all UniProt entries in Reactome associated with any NCBI Gene identifier).
-* **<a href="https://www.genome.ucsc.edu/">UCSC</a>:** Entity (UniProt entries in Reactome) and Events (UniProt entries
-in Reactome in relation to Reactome pathways and reactions).
-* **<a href="https://europepmc.org/">Europe PMC</a>:** Profile and Link XML (describing Reactome as a provider and 
-Reactome Pathway to literature references, respectively).
+
+* **<a href="https://www.ncbi.nlm.nih.gov/">NCBI (click to go to site)</a>** 
+
+1. Gene (NCBI gene identifier to Reactome top level pathways)
+
+2. Protein (all UniProt entries in Reactome associated with any NCBI Gene identifier)
+
+* **<a href="https://www.genome.ucsc.edu/">UCSC (click to go to site)</a>** 
+
+1. Entity (UniProt entries in Reactome)
+
+2. Events (UniProt entries in Reactome in relation to Reactome pathways and reactions)
+
+* **<a href="https://europepmc.org/">Europe PMC (click to go to site)</a>**
+
+1. Link XML (describing Reactome Pathway to literature references)
+
+2. Profile XML (describing Reactome as a provider) 
 
 The file outputs will be as follows in the configured output directory (see configuration section below) and where XX 
 is the Reactome Release Version Number:
