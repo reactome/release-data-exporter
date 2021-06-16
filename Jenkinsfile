@@ -22,10 +22,14 @@ pipeline {
 		stage('Main: Run Data-Exporter'){
 			steps{
 				script{
-					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
+//					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
+						// build project
+						sh "mvn clean package"
 						sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
 						sh "ln -sf output/ archive"
-					}
+						// clean up old jars
+						sh "mvn clean"
+//					}
 				}
 			}
 		}
