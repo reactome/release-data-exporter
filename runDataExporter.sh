@@ -44,7 +44,7 @@ DIR=$(dirname "$(readlink -f "$0")") # Directory of the script -- allows the scr
 cd $DIR
 
 ## Print help instructions for this script and then exit
-if [ -n $help ]; then
+if [[ $help && -n $help ]]; then
 	cat << EOF
 
 For the release-data-exporter Java program, this script will manage (i.e. pull updates from the Git repository, build
