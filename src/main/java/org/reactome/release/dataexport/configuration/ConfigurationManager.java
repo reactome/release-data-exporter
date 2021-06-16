@@ -35,16 +35,20 @@ public class ConfigurationManager {
 	 * Creates a ConfigurationManager object using the default configuration file name of "config.properties".
 	 */
 	public ConfigurationManager() {
-		this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
+		this(DEFAULT_CONFIGURATION_FILE_NAME);
 	}
 
 	/**
 	 * Creates a ConfigurationManager object using the provided configuration file name.
 	 *
-	 * @param configFileName Name of the configuration file name to check and potentially create/overwrite
+	 * @param configFilePath Name of the configuration file path to check and potentially create/overwrite
 	 */
-	ConfigurationManager(String configFileName) {
-		this.configFileName = configFileName;
+	public ConfigurationManager(String configFilePath) {
+		if (configFilePath != null && !configFilePath.isEmpty()) {
+			this.configFileName = configFilePath;
+		} else {
+			this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
+		}
 	}
 
 	/**

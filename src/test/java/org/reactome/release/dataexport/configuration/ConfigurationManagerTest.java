@@ -46,15 +46,15 @@ public class ConfigurationManagerTest {
 	}
 
 	@Test
-	public void createConfigurationFileReturnsFalseWhenNoOverwriteAndConfigurationFileExistsAndIsValid()
+	public void createConfigurationFileReturnsFalseWhenNoGenerateAndConfigurationFileExistsAndIsValid()
 		throws IOException {
-		final boolean overWriteConfigurationFile = false;
+		final boolean generateConfigurationFile = false;
 
 		createTemporaryTestDirectory();
 		configurationManager.writeConfigurationFile();
 
 		assertThat(
-			configurationManager.createConfigurationFile(overWriteConfigurationFile),
+			configurationManager.createConfigurationFile(generateConfigurationFile),
 			is(equalTo(false))
 		);
 
