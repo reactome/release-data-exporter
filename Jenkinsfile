@@ -11,13 +11,13 @@ pipeline {
 
 	stages {
 		// This stage builds the jar file using Maven.
-		stage('Setup: Build jar file'){
-			steps{
-				script{
-					utils.buildJarFile()
-				}
-			}
-		}
+// 		stage('Setup: Build jar file'){
+// 			steps{
+// 				script{
+// 					utils.buildJarFile()
+// 				}
+// 			}
+// 		}
 
 		stage('Main: Run Data-Exporter'){
 			steps{
@@ -25,7 +25,12 @@ pipeline {
 //					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
 						// build project
 						sh "mvn clean package"
-						sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
+						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
+						{
+							sh "cp $CONFIG_FILE ./config.properties"
+							sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
+							sh "rm ./config.properties"
+						}
 						sh "ln -sf output/ archive"
 						// clean up old jars
 						sh "mvn clean"
