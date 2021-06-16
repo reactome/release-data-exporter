@@ -96,20 +96,20 @@ git update-index --assume-unchanged $original_config_file
 
 jar_file="data-exporter.jar"
 ## Generate the jar file if it doesn't exist or a re-build is requested
-if [ ! -f $jar_file ] || [ -n $build_jar ]; then
+if [[ ! -f $jar_file ]] || [[ ! -z $build_jar ]]; then
 	# Based on command-line options, $skip_integration_tests may be empty or have the switch to skip integration tests
 	mvn clean package $skip_integration_tests
 else
 	echo ""
-	echo "Executing existing $jar_file file.  To force a rebuild, $0 -b or --build_jar"
+	echo -e "Executing existing $jar_file file.  To force a rebuild, $0 -b or --build_jar\n"
 fi
 
 ## Inform user that the Java program will attempt to use the existing configuration file
-if [ -n $config_file_path ]; then
-	echo "Using $config_file_path for the configuration file"
-else if [ -z $generate_config_file ]; then
-	echo "Attempting to use existing configuration file.  \
-	To force generation of the configuration file, $0 -g or --generate_config_file"
+if [[ -n "$config_file_path" ]]; then
+	echo -e "Using $config_file_path for the configuration file parameter to the Java program\n"
+elif [[ -z $generate_config_file ]]; then
+	echo -e "Attempting to use existing configuration file.  \
+To force generation of the configuration file, $0 -g or --generate_config_file (without -c or --config_file)\n"
 fi
 
 ## Link and run the jar file
