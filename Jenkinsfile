@@ -26,9 +26,9 @@ pipeline {
 						// build project
 						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 						{
-							sh "cp $CONFIG_FILE ./config.properties"
+							sh "ln -s $CONFIG_FILE config.properties"
 							sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
-							sh "rm ./config.properties"
+							sh "rm config.properties"
 						}
 						sh "ln -sf output/ archive"
 						// clean up old jars
