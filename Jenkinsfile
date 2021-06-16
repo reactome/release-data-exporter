@@ -11,20 +11,19 @@ pipeline {
 
 	stages {
 		// This stage builds the jar file using Maven.
-// 		stage('Setup: Build jar file'){
-// 			steps{
-// 				script{
-// 					utils.buildJarFile()
-// 				}
-// 			}
-// 		}
+		stage('Setup: Build jar file'){
+			steps{
+				script{
+					sh "mvn -DskipTests clean package"
+				}
+			}
+		}
 
 		stage('Main: Run Data-Exporter'){
 			steps{
 				script{
 //					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
 						// build project
-						sh "mvn clean package"
 						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 						{
 							sh "cp $CONFIG_FILE ./config.properties"
