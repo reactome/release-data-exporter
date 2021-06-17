@@ -6,12 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 
 import java.nio.file.attribute.PosixFilePermission;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -27,6 +26,7 @@ import static java.nio.file.attribute.PosixFilePermission.*;
  */
 public class ConfigurationManager {
 	private static final String DEFAULT_CONFIGURATION_FILE_NAME = "config.properties";
+	private static Path TEMPORARY_CONFIGURATION_FILE_PATH;
 
 	private String configFileName;
 	private ConfigurationEntryCollection configurationEntryCollection;
@@ -102,18 +102,18 @@ public class ConfigurationManager {
 	 * exists).  The permissions of the newly written configuration file are also set to 660 (read and write only for
 	 * user and group).
 	 *
-	 * @throws IOException Thrown if unable to one of the following:
-	 *  1) Delete old configuration file if it exists
-	 *  2) Write the new configuration file
+	 * @throws IOException Thrown if unable to do one of the following:
+	 *  1) Write the new configuration file
+	 *  2) Overwrite the old configuration file, if it exists
 	 *  3) Change the new configuration file's permissions to 600 (read and write only for user and group)
 	 */
 	void writeConfigurationFile() throws IOException {
-		Files.deleteIfExists(getConfigFilePath());
 		Files.write(
-			getConfigFilePath(),
+			getTemporaryConfigFilePath(),
 			getConfigurationEntryCollection().getConfigurationEntriesJoinedByNewLines().getBytes(),
 			StandardOpenOption.CREATE
 		);
+		Files.move(getTemporaryConfigFilePath(), getConfigFilePath(), StandardCopyOption.REPLACE_EXISTING);
 
 		makeFileReadAndWriteForUserAndGroupOnly();
 	}
@@ -173,6 +173,17 @@ public class ConfigurationManager {
 
 	private Path getConfigFilePath() {
 		return Paths.get(getConfigFileName());
+	}
+
+	private Path getTemporaryConfigFilePath() {
+		if (TEMPORARY_CONFIGURATION_FILE_PATH == null) {
+			TEMPORARY_CONFIGURATION_FILE_PATH = getConfigFilePath().resolve(getDateStamp());
+		}
+		return TEMPORARY_CONFIGURATION_FILE_PATH;
+	}
+
+	private String getDateStamp() {
+		return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(Instant.now());
 	}
 
 	private void addNeo4jDatabaseConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
