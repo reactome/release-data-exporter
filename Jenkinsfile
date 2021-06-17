@@ -5,7 +5,7 @@ import org.reactome.release.jenkins.utilities.Utilities
 
 // Shared library maintained at 'release-jenkins-utils' repository.
 def utils = new Utilities()
-
+def currentRelease = utils.getReleaseVersion()
 pipeline
 {
 	agent any
