@@ -13,10 +13,10 @@ import org.reactome.release.dataexport.configuration.ConfigurationManager;
  */
 public class Main {
 	@Parameter(names={"--generate-config-file", "-g"})
-	private boolean generateConfigFile;
+	private boolean generateConfigFile = false; // Default is to try to use an existing configuration file
 
 	@Parameter(names={"--config-file-path", "-c"})
-	private String configFilePath;
+	private String configFilePath; // Default is null and a "default configuration file path" is used later
 
 	/**
 	 * Main method to process configuration file and run the executeStep method of the DataExporterStep class
