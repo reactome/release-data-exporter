@@ -26,7 +26,9 @@ pipeline {
 						// build project
 						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 						{
-							sh "ln -s $CONFIG_FILE config.properties"
+							writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
+							sh "cp config.properties target/config.properties"
+							//sh "ln -s $CONFIG_FILE config.properties"
 							sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
 							sh "rm config.properties"
 						}
