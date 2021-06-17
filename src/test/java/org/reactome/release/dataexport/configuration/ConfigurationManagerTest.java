@@ -46,7 +46,7 @@ public class ConfigurationManagerTest {
 	}
 
 	@Test
-	public void createConfigurationFileReturnsFalseWhenNoGenerateAndConfigurationFileExistsAndIsValid()
+	public void validateAndPotentiallyCreateConfigurationFileReturnsFalseIfNoGenerateAndConfigFileExistsAndIsValid()
 		throws IOException {
 		final boolean generateConfigurationFile = false;
 
