@@ -3,9 +3,6 @@ import groovy.json.JsonSlurper
 
 import org.reactome.release.jenkins.utilities.Utilities
 
-// Shared library maintained at 'release-jenkins-utils' repository.
-def utils = new Utilities()
-def currentRelease = utils.getReleaseVersion()
 pipeline
 {
 	agent any
@@ -33,8 +30,7 @@ pipeline
 					withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 					{
 						writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
-						sh "cp config.properties target/config.properties"
-						//sh "ln -s $CONFIG_FILE config.properties"
+						// sh "cp config.properties target/config.properties"
 						sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar -c config.properties"
 						sh "rm config.properties"
 					}
@@ -48,6 +44,9 @@ pipeline
 		stage('Post: Archive Outputs'){
 			steps{
 				script{
+					// Shared library maintained at 'release-jenkins-utils' repository.
+					def utils = new Utilities()
+					def currentRelease = utils.getReleaseVersion()
 					def s3Path = "${env.S3_RELEASE_DIRECTORY_URL}/${currentRelease}/data-exporter"
 					def dataExporterPath = "${env.ABS_RELEASE_PATH}/data-exporter"
 					sh "mkdir -p databases/ data/ logs/"
