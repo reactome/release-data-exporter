@@ -52,11 +52,11 @@ public class ConfigurationManager {
 	}
 
 	/**
-	 * Creates a property configuration file with the needed property values for the data exporter project.  The file
-	 * will be (re)created if the "overwriteExistingFile" parameter is true.  Otherwise, the file will only be
-	 * created if the file does not already exist or if the existing file is not valid (i.e. it does not have one or
-	 * more of the needed property values for the project).  If the file is (re)created, the file permissions will be
-	 * set to 660 to allow read and write access to the user and group only.
+	 * Validates and possibly creates a property configuration file with the needed property values for the data
+	 * exporter project.  The file will be (re)created if the "overwriteExistingFile" parameter is true.  Otherwise,
+	 * the file will only be created if the file does not already exist or if the existing file is not valid (i.e. it
+	 * does not have one or more of the needed property values for the project).  If the file is (re)created, the file
+	 * permissions will be set to 660 to allow read and write access to the user and group only.
 	 *
 	 * @param overwriteExistingFile <code>true</code> if the file should be (re)created regardless if it already exists
 	 * or is valid;<code>false</code> otherwise
@@ -67,7 +67,7 @@ public class ConfigurationManager {
 	 * configuration file if one needs to be recreated (this includes an exception from deleting an existing file,
 	 * writing a new file, or setting its file system permissions appropriately).
 	 */
-	public boolean createConfigurationFile(boolean overwriteExistingFile) throws IOException {
+	public boolean validateAndPotentiallyCreateConfigurationFile(boolean overwriteExistingFile) throws IOException {
 		if (!overwriteExistingFile && configurationFileExistsAndIsValid()) {
 			return false;
 		}

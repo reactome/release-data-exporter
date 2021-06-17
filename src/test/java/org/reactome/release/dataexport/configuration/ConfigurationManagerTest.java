@@ -54,7 +54,7 @@ public class ConfigurationManagerTest {
 		configurationManager.writeConfigurationFile();
 
 		assertThat(
-			configurationManager.createConfigurationFile(generateConfigurationFile),
+			configurationManager.validateAndPotentiallyCreateConfigurationFile(generateConfigurationFile),
 			is(equalTo(false))
 		);
 

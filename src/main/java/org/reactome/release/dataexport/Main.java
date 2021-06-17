@@ -39,7 +39,7 @@ public class Main {
 
 	private void run() throws IOException {
 		ConfigurationManager configurationManager = new ConfigurationManager(configFilePath);
-		configurationManager.createConfigurationFile(!configFilePathExists() && generateConfigFile);
+		configurationManager.validateAndPotentiallyCreateConfigurationFile(!configFilePathExists() && generateConfigFile);
 
 		DataExporterStep dataExporterStep = new DataExporterStep();
 		dataExporterStep.executeStep(configurationManager.getProps());
