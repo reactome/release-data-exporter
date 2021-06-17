@@ -113,12 +113,12 @@ outputDir=output
 ncbiFTPUserName=ncbi_ftp_reactome_account_user_name
 ncbiFTPPassword=ncbi_ftp_reactome_account_password
 ncbiFTPHostName=ncbi_ftp_server_host_name
-ncbiFTPDirectory=path/to/reactome/files/on/ncbi/ftp/server
+ncbiFTPReactomeFolderPath=path/to/reactome/files/on/ncbi/ftp/server
 
 europePMCFTPUserName=europe_pmc_reactome_account_user_name
 europePMCFTPPassword=europe_pmc_reactome_account_password
 europePMCFTPHostName=europe_pmc_ftp_server_host_name
-europePMCFTPDirectory=path/to/reactome/files/on/europe_pmc/ftp/server
+europePMCFTPReactomeFolderPath=path/to/reactome/files/on/europe_pmc/ftp/server
 ```
 
 ## Integration Tests
