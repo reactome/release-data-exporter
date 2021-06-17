@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Command line argument parsing
 # Taken from https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f
