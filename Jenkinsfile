@@ -6,36 +6,41 @@ import org.reactome.release.jenkins.utilities.Utilities
 // Shared library maintained at 'release-jenkins-utils' repository.
 def utils = new Utilities()
 
-pipeline {
+pipeline
+{
 	agent any
 
-	stages {
+	stages
+	{
 		// This stage builds the jar file using Maven.
-		stage('Setup: Build jar file'){
-			steps{
-				script{
+		stage('Setup: Build jar file')
+		{
+			steps
+			{
+				script
+				{
 					sh "mvn -DskipTests clean package"
 				}
 			}
 		}
 
-		stage('Main: Run Data-Exporter'){
-			steps{
-				script{
-//					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
-						// build project
-						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
-						{
-							writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
-							sh "cp config.properties target/config.properties"
-							//sh "ln -s $CONFIG_FILE config.properties"
-							sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar"
-							sh "rm config.properties"
-						}
-						sh "ln -sf output/ archive"
-						// clean up old jars
-						sh "mvn clean"
-//					}
+		stage('Main: Run Data-Exporter')
+		{
+			steps
+			{
+				script
+				{
+					withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
+					{
+						writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
+						sh "cp config.properties target/config.properties"
+						//sh "ln -s $CONFIG_FILE config.properties"
+						sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar -c config.properties"
+						sh "rm config.properties"
+					}
+					sh "ln -sf output/ archive"
+					// clean up old jars
+					sh "mvn clean"
 				}
 			}
 		}
