@@ -12,18 +12,22 @@ import org.reactome.release.dataexport.configuration.ConfigurationManager;
  * @author jweiser
  */
 public class Main {
-	@Parameter(names={"--overwrite-config-file", "-c"})
-	private boolean overwriteConfigFile = false;
+	@Parameter(names={"--generate-config-file", "-g"})
+	private boolean generateConfigFile = false; // Default is to try to use an existing configuration file
+
+	@Parameter(names={"--config-file-path", "-c"})
+	private String configFilePath; // Default is null and a "default configuration file path" is used later
 
 	/**
 	 * Main method to process configuration file and run the executeStep method of the DataExporterStep class
 	 *
-	 * @param args Command line arguments for the post-release data files export (currently the only argument is,
-	 *     optionally, "--overwrite-config-file" or "-c" to indicate the configuration file should be (re)created
+	 * @param args Command line arguments for the post-release data files export (currently the only arguments are,
+	 * optionally, "--generate-config-file" or "-g" to indicate the configuration file should be (re)created and
+	 * "--config-file-path" or "-c"
 	 * @throws IOException Thrown if unable to create and/or read the configuration file, create output directory
 	 * or write files
 	 */
-	public static void main( String[] args ) throws IOException {
+	public static void main(String[] args) throws IOException {
 		Main main = new Main();
 		JCommander.newBuilder()
 			.addObject(main)
@@ -34,10 +38,14 @@ public class Main {
 	}
 
 	private void run() throws IOException {
-		ConfigurationManager configurationManager = new ConfigurationManager();
-		configurationManager.createConfigurationFile(overwriteConfigFile);
+		ConfigurationManager configurationManager = new ConfigurationManager(configFilePath);
+		configurationManager.validateAndPotentiallyCreateConfigurationFile(!configFilePathExists() && generateConfigFile);
 
 		DataExporterStep dataExporterStep = new DataExporterStep();
 		dataExporterStep.executeStep(configurationManager.getProps());
+	}
+
+	private boolean configFilePathExists() {
+		return configFilePath != null && !configFilePath.isEmpty();
 	}
 }

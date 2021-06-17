@@ -52,7 +52,7 @@ The program can be run by invoking the script `runDataExporter.sh` at the root d
 The `-b or --build_jar` option can also be provided to force `data-exporter.jar` to be re-built.  The jar file
 will be built if it does not exist, regardless of specifying this option.
 
-The `-c or --overwrite_config_file` option can be provided to force resetting of the configuration values, but
+The `-g or --generate_config_file` option can be provided to force resetting of the configuration values, but
 configuration values will be prompted for if a configuration file is missing or incomplete, regardless of specifying 
 this option.
 
@@ -64,7 +64,7 @@ require a configuration file with the file path "src/test/resources/real_config.
 The `-h or --help` option can be provided to display full usage 
 and explanatory information about the script including its command-line options.
 
-Usage: `./runDataExporter.sh [-b|--build_jar] [-c|--overwrite_config_file] [-s|--skip_integration_tests] [-h|--help]`
+Usage: `./runDataExporter.sh [-b|--build_jar] [-g|--generate_config_file] [-s|--skip_integration_tests] [-h|--help]`
 
 NOTE: This script is building and invoking a Java application which requires a Java 8+ environment. You will need 
 maven and a full JDK to compile.
@@ -80,10 +80,10 @@ section for more information).
 
 If the manual compilation was successful, you should see a JAR file in the `target` directory, with a name like 
 `data-exporter-VERSION_NUMBER-jar-with-dependencies.jar`. This is the file you will run with a command like the 
-following (the `-c|--overwrite_config_file flag is optional and forces a new configuration file to be created through
+following (the `-g|--generate_config_file flag is optional and forces a new configuration file to be created through
 prompts from the user for new values).
 
-2. `java -jar target/data-exporter-1.0-SNAPSHOT-jar-with-dependencies.jar [-c|--overwrite_config_file]`
+2. `java -jar target/data-exporter-1.0-SNAPSHOT-jar-with-dependencies.jar [-g|--generate_config_file]`
 
 ## Configuration
 
