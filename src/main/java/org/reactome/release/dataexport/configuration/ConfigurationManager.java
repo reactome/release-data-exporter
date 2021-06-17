@@ -11,6 +11,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -72,9 +74,10 @@ public class ConfigurationManager {
 			System.out.println("The configuration file " + getConfigFileName() + " does not exist.  Please provide " +
 				"the following property values.");
 		} else if (!configurationFileIsValid()) {
-			System.out.println("The configuration file " + getConfigFileName() + " does not have all the required " +
-				"property values.  Please provide the following property values and the configuration file will be " +
-				"recreated");
+			System.out.println("The configuration file " + getConfigFileName() + "is missing the following property " +
+				"values: " + getMissingConfigurationKeys() + System.lineSeparator() + "To recreate the configuration" +
+				"file, please respond to the following prompts.  Otherwise, terminate the program if you wish to " +
+				"edit the configuration file manually");
 		}
 
 		writeConfigurationFile();
@@ -131,6 +134,18 @@ public class ConfigurationManager {
 	 * called)
 	 */
 	boolean configurationFileIsValid() throws IOException {
+		return getMissingConfigurationKeys().isEmpty();
+	}
+
+	/**
+	 * Checks and returns any required configuration key names which are missing from an existing configuration file.
+	 * Returns an empty list if there are no missing configuration keys.
+	 *
+	 * @return List of required configuration key names which are not in the existing configuration file
+	 * @throws IOException Thrown if unable to read the configuration file (which should exist when this method is
+	 * called)
+	 */
+	List<String> getMissingConfigurationKeys() throws IOException {
 		List<String> requiredConfigurationKeys = getConfigurationEntryCollection().getConfigurationEntryKeys();
 		List<String> existingFileConfigurationKeys =
 			Files.readAllLines(getConfigFilePath())
@@ -138,7 +153,13 @@ public class ConfigurationManager {
 				.map(this::getConfigurationKeyFromConfigurationEntry)
 				.collect(Collectors.toList());
 
-		return existingFileConfigurationKeys.containsAll(requiredConfigurationKeys);
+		List<String> missingConfigurationKeys = new ArrayList<>();
+		for (String requiredConfigurationKey : requiredConfigurationKeys) {
+			if (!existingFileConfigurationKeys.contains(requiredConfigurationKey)) {
+				missingConfigurationKeys.add(requiredConfigurationKey);
+			}
+		}
+		return missingConfigurationKeys;
 	}
 
 	/**
