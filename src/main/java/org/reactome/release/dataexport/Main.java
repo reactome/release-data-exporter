@@ -13,7 +13,7 @@ import org.reactome.release.dataexport.configuration.ConfigurationManager;
  */
 public class Main {
 	@Parameter(names={"--overwrite-config-file", "-c"})
-	private boolean overwriteConfigFile;
+	private boolean overwriteConfigFile = false;
 
 	/**
 	 * Main method to process configuration file and run the executeStep method of the DataExporterStep class
@@ -26,7 +26,7 @@ public class Main {
 	public static void main( String[] args ) throws IOException {
 		Main main = new Main();
 		JCommander.newBuilder()
-			.addObject(new Main())
+			.addObject(main)
 			.build()
 			.parse(args);
 
