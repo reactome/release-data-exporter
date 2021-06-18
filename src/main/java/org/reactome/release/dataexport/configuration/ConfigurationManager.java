@@ -10,6 +10,7 @@ import java.nio.file.*;
 
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
@@ -198,13 +199,16 @@ public class ConfigurationManager {
 
 	private Path getTemporaryConfigFilePath() {
 		if (TEMPORARY_CONFIGURATION_FILE_PATH == null) {
-			TEMPORARY_CONFIGURATION_FILE_PATH = getConfigFilePath().resolve(getDateStamp());
+			Path configFileDirectory = getConfigFilePath().getParent();
+			String tempConfigFileName = getConfigFilePath().getFileName().toString() + getDateStamp();
+
+			TEMPORARY_CONFIGURATION_FILE_PATH = configFileDirectory.resolve(tempConfigFileName);
 		}
 		return TEMPORARY_CONFIGURATION_FILE_PATH;
 	}
 
 	private String getDateStamp() {
-		return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(Instant.now());
+		return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(Instant.now().atZone(ZoneId.systemDefault()));
 	}
 
 	private void addNeo4jDatabaseConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
