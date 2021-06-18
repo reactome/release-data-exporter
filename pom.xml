@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.reactome.release</groupId>
 	<artifactId>data-exporter</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>data-exporter</name>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Data exports for submission to NCBI, UCSC, and Europe PMC</description>
-	<url>https://reactome.org</url>
+	<url>https://github.com/reactome/release-data-exporter</url>
+
+	<organization>
+		<name>The Ontario Institute for Cancer Research</name>
+		<url>https://www.oicr.on.ca</url>
+	</organization>
+
 	<licenses>
 		<license>
-			<name>GNU AFFERO GENERAL PUBLIC LICENSE</name>
-			<url>https://www.gnu.org/licenses/agpl-3.0.txt</url>
+			<name>The Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
 
@@ -34,13 +42,40 @@
 	</scm>
 
 	<properties>
+		<!-- dependencies -->
+		<commons.net.version>3.6</commons.net.version>
+		<commons.lang.version>3.9</commons.lang.version>
+		<hamcrest.version>2.2</hamcrest.version>
+		<jcommander.version>1.78</jcommander.version>
+		<jetbrains.annotations.version>18.0.0</jetbrains.annotations.version>
+		<junit.version>5.5.2</junit.version>
+		<mockito.version>3.2.4</mockito.version>
+		<neo4j.driver.version>1.7.5</neo4j.driver.version>
+		<neo4j.harness>3.5.13</neo4j.harness>
+		<release.common.lib.version>1.2.0</release.common.lib.version>
+
+		<!-- build -->
+		<jdk.version>1.8</jdk.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- maven build and plugins -->
+		<maven.assembly.version>2.6</maven.assembly.version>
+		<maven.compiler.version>3.5.1</maven.compiler.version>
+		<maven.failsafe.version>2.12.4</maven.failsafe.version>
+		<maven.gpg.version>1.5</maven.gpg.version>
+		<maven.jar.version>2.6</maven.jar.version>
+		<maven.javadoc.version>2.10.3</maven.javadoc.version>
+		<maven.release.version>2.5.3</maven.release.version>
+		<maven.source.version>2.4</maven.source.version>
+		<maven.surefire.version>2.12.4</maven.surefire.version>
+		<maven.tidy.version>1.1.0</maven.tidy.version>
+		<nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
+
 		<!--
 		integration tests run by default when running the command "mvn verify"; can be overridden using the option
 		"-DskipITs=true"
 		-->
 		<skipITs>false</skipITs>
-		<junit.version>5.5.2</junit.version>
 	</properties>
 
 	<dependencies>
@@ -48,34 +83,34 @@
 		<dependency>
 			<groupId>com.beust</groupId>
 			<artifactId>jcommander</artifactId>
-			<version>1.78</version>
+			<version>${jcommander.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>3.6</version>
+			<version>${commons.net.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<version>${commons.lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j.driver</groupId>
 			<artifactId>neo4j-java-driver</artifactId>
-			<version>1.7.5</version>
+			<version>${neo4j.driver.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reactome.release</groupId>
 			<artifactId>release-common-lib</artifactId>
-			<version>1.2.0</version>
+			<version>${release.common.lib.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest</artifactId>
-			<version>2.2</version>
+			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -93,13 +128,13 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>3.2.4</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j.test</groupId>
 			<artifactId>neo4j-harness</artifactId>
-			<version>3.5.13</version>
+			<version>${neo4j.harness}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -107,41 +142,37 @@
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>18.0.0</version>
+			<version>${jetbrains.annotations.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
-	<repositories>
-		<!-- required for Reactome library SNAPSHOTS prior to release on Maven Central -->
-		<repository>
-			<id>oss.sonatype.org-snapshot</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<build>
+		<finalName>${project.artifactId}</finalName>
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+
 		<plugins>
 			<!-- sets the Java compiler version targeted by Maven -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
 
@@ -153,7 +184,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${maven.assembly.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -178,7 +209,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>${maven.failsafe.version}</version>
 				<executions>
 					<execution>
 						<id>integration-tests</id>
@@ -202,7 +233,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>${maven.surefire.version}</version>
 				<configuration>
 					<systemProperties>
 						<property>
@@ -220,7 +251,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>${maven.release.version}</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<useReleaseProfile>false</useReleaseProfile>
@@ -230,6 +261,65 @@
 				</configuration>
 			</plugin>
 
+			<!-- Nexus staging plugin for Sonatype deployment -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>${nexus-staging-maven-plugin}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+
+			<!-- Generate source jar file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Generate JavaDoc jar file -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Signs deployed jar, source jar, and JavaDoc jar with GPG -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven.gpg.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!--
 			checks the POM file has the order specified by the POM Code Convention
 			http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention
@@ -237,7 +327,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tidy-maven-plugin</artifactId>
-				<version>1.1.0</version>
+				<version>${maven.tidy.version}</version>
 				<executions>
 					<execution>
 						<id>validate</id>
@@ -250,4 +340,35 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<!-- required for Reactome library SNAPSHOTS prior to release on Maven Central -->
+		<repository>
+			<id>oss.sonatype.org-snapshot</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!-- Configures the distribution to nexus repository -->
+	<distributionManagement>
+		<!-- Sonatype Release repo -->
+		<repository>
+			<id>ossrh</id>
+			<name>Sonatype Release Repository</name>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+
+		<!-- Sonatype SNAPSHOT repo -->
+		<snapshotRepository>
+			<id>ossrh</id>
+			<name>Sonatype Snapshot Repository</name>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
