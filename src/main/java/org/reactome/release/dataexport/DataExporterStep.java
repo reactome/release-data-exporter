@@ -8,6 +8,13 @@ import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
 import org.reactome.release.common.ReleaseStep;
+import org.reactome.release.dataexport.datastructures.NCBIEntry;
+import org.reactome.release.dataexport.fileuploaders.EuropePMCFileUploader;
+import org.reactome.release.dataexport.fileuploaders.NCBIFileUploader;
+import org.reactome.release.dataexport.resources.EuropePMC;
+import org.reactome.release.dataexport.resources.NCBIGene;
+import org.reactome.release.dataexport.resources.NCBIProtein;
+import org.reactome.release.dataexport.resources.UCSC;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
