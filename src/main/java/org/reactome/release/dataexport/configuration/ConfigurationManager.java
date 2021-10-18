@@ -45,7 +45,7 @@ public class ConfigurationManager {
 	 *
 	 * @param configFilePath Name of the configuration file path to check and potentially create/overwrite
 	 */
-	ConfigurationManager(String configFilePath) {
+	public ConfigurationManager(String configFilePath) {
 		this.configFileName = configFilePath;
 	}
 
