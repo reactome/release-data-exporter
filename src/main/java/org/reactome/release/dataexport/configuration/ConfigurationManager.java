@@ -74,9 +74,10 @@ public class ConfigurationManager {
 			System.out.println("The configuration file " + getConfigFileName() + " does not exist.  Please provide " +
 				"the following property values.");
 		} else if (!configurationFileIsValid()) {
-			System.out.println("The configuration file " + getConfigFileName() + " does not have all the required " +
-				"property values.  Please provide the following property values and the configuration file will be " +
-				"recreated");
+			System.out.println("The configuration file " + getConfigFileName() + " is missing the following property " +
+				"values: " + getMissingConfigurationKeys() + System.lineSeparator() + "To recreate the configuration" +
+				"file, please respond to the following prompts.  Otherwise, terminate the program if you wish to " +
+				"edit the configuration file manually");
 		}
 
 		writeConfigurationFile();
@@ -105,8 +106,8 @@ public class ConfigurationManager {
 	 * user and group).
 	 *
 	 * @throws IOException Thrown if unable to one of the following:
-	 *  1) Delete old configuration file if it exists
-	 *  2) Write the new configuration file
+	 *  1) Write the new configuration file
+	 *  2) Overwrite the old configuration file, if it exists
 	 *  3) Change the new configuration file's permissions to 600 (read and write only for user and group)
 	 */
 	void writeConfigurationFile() throws IOException {
