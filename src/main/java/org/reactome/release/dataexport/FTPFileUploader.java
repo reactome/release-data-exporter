@@ -77,19 +77,32 @@ public abstract class FTPFileUploader {
 	 * Updates (uploads new files and deletes old files) on the FTP Server and logs the files which exist on the FTP
 	 * Server in the Reactome specific directory after the update is complete.
 	 *
+	 * NOTE: Old files are NOT deleted if any new files were not uploaded
+	 *
 	 * @throws IOException Thrown if unable to upload new Reactome files to the FTP server, delete old Reactome files
 	 * from the FTP server, provide the listing of files on the FTP Server after the update is complete
 	 */
 	public void updateFilesOnServer() throws IOException {
-		if (uploadFilesToServer()) {
-			deleteOldFilesFromServer();
-		} else {
-			logger.error("Unable to upload at least some files to the {} FTP server.  Old Files were not deleted",
-				getServerHostName());
+		boolean uploadFilesToServerSuccessful = uploadFilesToServer();
+		if (uploadFilesToServerSuccessful) {
+			logger.info("New files all successfully uploaded");
+
+			if (deleteOldFilesFromServer()) {
+				logger.info("Old files all successfully deleted from the {} FTP server", getServerHostName());
+			} else {
+				logger.warn("Unable to delete at least some old files from the {} FTP server", getServerHostName());
+			}
 		}
 
 		logListingOfReactomeFilesPresentOnServer();
 		closeFTPConnectionToServer();
+
+		if (!uploadFilesToServerSuccessful) {
+			String errorMessage = "Unable to upload at least some files to the " + getServerHostName() +
+				" FTP server.  Old Files were not deleted";
+			logger.error(errorMessage);
+			throw new IOException(errorMessage);
+		}
 	}
 
 	/**
