@@ -34,9 +34,19 @@ public class Main {
 			.build()
 			.parse(args);
 
-		main.run();
+		try {
+			main.run();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1); // Allows caller of the program to see the error exit code
+		}
 	}
 
+	/**
+	 * Runs the program after the command-line arguments have been parsed and stored for use in the main method
+	 * @throws IOException Thrown if unable to create and/or read the configuration file, create output directory
+	 * or write files
+	 */
 	private void run() throws IOException {
 		ConfigurationManager configurationManager = new ConfigurationManager(configFilePath);
 		configurationManager.validateAndPotentiallyCreateConfigurationFile(!configFilePathExists() && generateConfigFile);
