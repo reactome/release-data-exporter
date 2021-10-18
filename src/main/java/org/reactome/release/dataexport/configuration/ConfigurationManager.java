@@ -6,12 +6,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 
 import java.nio.file.attribute.PosixFilePermission;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -27,6 +28,7 @@ import static java.nio.file.attribute.PosixFilePermission.*;
  */
 public class ConfigurationManager {
 	private static final String DEFAULT_CONFIGURATION_FILE_NAME = "config.properties";
+	private static Path TEMPORARY_CONFIGURATION_FILE_PATH;
 
 	private String configFileName;
 	private ConfigurationEntryCollection configurationEntryCollection;
@@ -35,7 +37,7 @@ public class ConfigurationManager {
 	 * Creates a ConfigurationManager object using the default configuration file name of "config.properties".
 	 */
 	public ConfigurationManager() {
-		this(DEFAULT_CONFIGURATION_FILE_NAME);
+		this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
 	}
 
 	/**
@@ -43,12 +45,8 @@ public class ConfigurationManager {
 	 *
 	 * @param configFilePath Name of the configuration file path to check and potentially create/overwrite
 	 */
-	public ConfigurationManager(String configFilePath) {
-		if (configFilePath != null && !configFilePath.isEmpty()) {
-			this.configFileName = configFilePath;
-		} else {
-			this.configFileName = DEFAULT_CONFIGURATION_FILE_NAME;
-		}
+	ConfigurationManager(String configFilePath) {
+		this.configFileName = configFilePath;
 	}
 
 	/**
@@ -112,12 +110,12 @@ public class ConfigurationManager {
 	 *  3) Change the new configuration file's permissions to 600 (read and write only for user and group)
 	 */
 	void writeConfigurationFile() throws IOException {
-		Files.deleteIfExists(getConfigFilePath());
 		Files.write(
-			getConfigFilePath(),
+			getTemporaryConfigFilePath(),
 			getConfigurationEntryCollection().getConfigurationEntriesJoinedByNewLines().getBytes(),
 			StandardOpenOption.CREATE
 		);
+		Files.move(getTemporaryConfigFilePath(), getConfigFilePath(), StandardCopyOption.REPLACE_EXISTING);
 
 		makeFileReadAndWriteForUserAndGroupOnly();
 	}
@@ -135,6 +133,17 @@ public class ConfigurationManager {
 	 * called)
 	 */
 	boolean configurationFileIsValid() throws IOException {
+		return getMissingConfigurationKeys().isEmpty();
+	}
+
+	/** Checks and returns any required configuration key names which are missing from an existing configuration file.
+	 * Returns an empty list if there are no missing configuration keys.
+	 *
+	 * @return List of required configuration key names which are not if the existing configuration file
+	 * @throws IOException Thrown if unable to read the configuration file (which should exist when this method is
+	 * called)
+	 */
+	List<String> getMissingConfigurationKeys() throws IOException {
 		List<String> requiredConfigurationKeys = getConfigurationEntryCollection().getConfigurationEntryKeys();
 		List<String> existingFileConfigurationKeys =
 			Files.readAllLines(getConfigFilePath())
@@ -142,7 +151,13 @@ public class ConfigurationManager {
 				.map(this::getConfigurationKeyFromConfigurationEntry)
 				.collect(Collectors.toList());
 
-		return existingFileConfigurationKeys.containsAll(requiredConfigurationKeys);
+		List<String> missingConfigurationKeys = new ArrayList<>();
+		for (String requiredConfigurationKey : requiredConfigurationKeys) {
+			if (!existingFileConfigurationKeys.contains(requiredConfigurationKey)) {
+				missingConfigurationKeys.add(requiredConfigurationKey);
+			}
+		}
+		return missingConfigurationKeys;
 	}
 
 	/**
@@ -177,6 +192,20 @@ public class ConfigurationManager {
 
 	private Path getConfigFilePath() {
 		return Paths.get(getConfigFileName());
+	}
+
+	private Path getTemporaryConfigFilePath() {
+		if (TEMPORARY_CONFIGURATION_FILE_PATH == null) {
+			Path configFileDirectory = getConfigFilePath().getParent();
+			String tempConfigFileName = getConfigFilePath().getFileName().toString() + getDateStamp();
+
+			TEMPORARY_CONFIGURATION_FILE_PATH = configFileDirectory.resolve(tempConfigFileName);
+		}
+		return TEMPORARY_CONFIGURATION_FILE_PATH;
+	}
+
+	private String getDateStamp() {
+		return DateTimeFormatter.ofPattern("dd-MM-yyyy").format(Instant.now().atZone(ZoneId.systemDefault()));
 	}
 
 	private void addNeo4jDatabaseConfigurationEntries(ConfigurationEntryCollection configurationEntryCollection) {
