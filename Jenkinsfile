@@ -15,15 +15,17 @@ pipeline
 			{
 				script
 				{
-					withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
-					{
-						writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
-						sh "./runDataExporter.sh --config_file config.properties"
-						sh "rm config.properties"
+					dir("${env.ABS_RELEASE_PATH}/release-data-exporter/") {
+						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
+						{
+							writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
+							sh "./runDataExporter.sh --config_file config.properties"
+							sh "rm config.properties"
+						}
+						sh "ln -sf output/ archive"
+						// clean up old jars
+						sh "mvn clean"
 					}
-					sh "ln -sf output/ archive"
-					// clean up old jars
-					sh "mvn clean"
 				}
 			}
 		}
