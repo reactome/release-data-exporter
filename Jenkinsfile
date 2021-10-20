@@ -46,10 +46,9 @@ pipeline
 			steps{
 				script{
 					// Shared library maintained at 'release-jenkins-utils' repository.
-					def utils = new Utilities()
 					def currentRelease = utils.getReleaseVersion()
 					def s3Path = "${env.S3_RELEASE_DIRECTORY_URL}/${currentRelease}/data-exporter"
-					def dataExporterPath = "${env.ABS_RELEASE_PATH}/data-exporter"
+					def dataExporterPath = "${env.ABS_RELEASE_PATH}/data-exporter/release-data-exporter"
 					sh "mkdir -p data/ logs/"
 					sh "mv ${dataExporterPath}/output/* data/"
 					sh "mv ${dataExporterPath}/logs/* logs/"
