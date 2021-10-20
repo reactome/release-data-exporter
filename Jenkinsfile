@@ -9,18 +9,6 @@ pipeline
 
 	stages
 	{
-		// This stage builds the jar file using Maven.
-		stage('Setup: Build jar file')
-		{
-			steps
-			{
-				script
-				{
-					sh "mvn -DskipTests clean package"
-				}
-			}
-		}
-
 		stage('Main: Run Data-Exporter')
 		{
 			steps
@@ -30,8 +18,7 @@ pipeline
 					withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 					{
 						writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
-						// sh "cp config.properties target/config.properties"
-						sh "java -Xmx${env.JAVA_MEM_MAX}m -jar target/data-exporter*-jar-with-dependencies.jar -c config.properties"
+						sh "./runDataExporter.sh --config_file config.properties"
 						sh "rm config.properties"
 					}
 					sh "ln -sf output/ archive"
@@ -49,7 +36,7 @@ pipeline
 					def currentRelease = utils.getReleaseVersion()
 					def s3Path = "${env.S3_RELEASE_DIRECTORY_URL}/${currentRelease}/data-exporter"
 					def dataExporterPath = "${env.ABS_RELEASE_PATH}/data-exporter"
-					sh "mkdir -p databases/ data/ logs/"
+					sh "mkdir -p data/ logs/"
 					sh "mv ${dataExporterPath}/output/* data/"
 					sh "mv ${dataExporterPath}/logs/* logs/"
 					sh "gzip data/* logs/*"
