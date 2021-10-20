@@ -130,6 +130,7 @@ public abstract class FTPFileUploader {
 
 		for (String fileToUpload : filesToUpload) {
 			if (!uploadFileToServer(fileToUpload)) {
+				logger.error("Unable to upload file '{}' to the server {}", fileToUpload, getServerHostName());
 				return false; // File failed to upload - indicates not all files were uploaded successfully
 			}
 		}
@@ -262,8 +263,7 @@ public abstract class FTPFileUploader {
 
 	protected List<String> getListingOfReactomeFilesPresentOnServer() throws IOException {
 		return Arrays
-			.stream(getFtpClientToServer()
-			.listFiles())
+			.stream(getFtpClientToServer().listFiles())
 			.map(FTPFile::toFormattedString).collect(Collectors.toList());
 	}
 
