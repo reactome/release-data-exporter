@@ -11,32 +11,20 @@ pipeline
 
 	stages
 	{
-		stage('Setup: Clone release-data-exporter repo and build jar file') {
-			steps{
-				script{
-					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
-						utils.cloneOrUpdateLocalRepo("release-data-exporter")
-					}
-				}
-			}
-		}
-
 		stage('Main: Run Data-Exporter')
 		{
 			steps
 			{
 				script
 				{
-					dir("${env.ABS_RELEASE_PATH}/data-exporter/release-data-exporter/") {
-						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
-						{
-							writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
-							sh "./runDataExporter.sh --config_file config.properties --build_jar"
-							sh "rm config.properties"
-						}
-						// clean up old jars
-						sh "mvn clean"
+					withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
+					{
+						writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
+						sh "./runDataExporter.sh --config_file config.properties --build_jar"
+						sh "rm config.properties"
 					}
+					// clean up old jars
+					sh "mvn clean"
 				}
 			}
 		}
