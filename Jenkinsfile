@@ -34,7 +34,6 @@ pipeline
 							sh "./runDataExporter.sh --config_file config.properties --build_jar"
 							sh "rm config.properties"
 						}
-						sh "ln -sf output/ archive"
 						// clean up old jars
 						sh "mvn clean"
 					}
@@ -52,7 +51,8 @@ pipeline
 					sh "mkdir -p data/ logs/"
 					sh "mv ${dataExporterPath}/output/* data/"
 					sh "mv ${dataExporterPath}/logs/* logs/"
-					sh "gzip data/* logs/*"
+					sh "find data/ -type f ! -name \"*.gz\" -exec gzip -f {} ';'"
+					sh "find logs/ -type f ! -name \"*.gz\" -exec gzip -f {} ';'"
 					sh "aws s3 --no-progress --recursive cp logs/ $s3Path/logs/"
 					sh "aws s3 --no-progress --recursive cp data/ $s3Path/data/"
 					sh "rm -r logs data"
