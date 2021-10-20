@@ -14,7 +14,7 @@ pipeline
 		stage('Setup: Clone release-data-exporter repo and build jar file') {
 			steps{
 				script{
-					dir("${env.ABS_RELEASE_PATH}/release-data-exporter/"){
+					dir("${env.ABS_RELEASE_PATH}/data-exporter/"){
 						utils.cloneOrUpdateLocalRepo("release-data-exporter")
 					}
 				}
@@ -27,7 +27,7 @@ pipeline
 			{
 				script
 				{
-					dir("${env.ABS_RELEASE_PATH}/release-data-exporter/") {
+					dir("${env.ABS_RELEASE_PATH}/data-exporter/release-data-exporter/") {
 						withCredentials([file(credentialsId: 'Config', variable: 'CONFIG_FILE')])
 						{
 							writeFile file: 'config.properties', text: readFile(CONFIG_FILE)
