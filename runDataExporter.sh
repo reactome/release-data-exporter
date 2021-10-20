@@ -87,8 +87,8 @@ EOF
 fi
 
 ## Make sure the repo is up to date
-echo "Updating data-release-pipeline repository from GitHub"
-git pull
+echo "Updating release-data-exporter repository from GitHub"
+git pull develop
 
 original_config_file=src/main/resources/sample_config.properties
 # Stop git tracking on original/sample configuration file to prevent committing and pushing if any sensitive
