@@ -35,10 +35,9 @@ pipeline
 					// Shared library maintained at 'release-jenkins-utils' repository.
 					def currentRelease = utils.getReleaseVersion()
 					def s3Path = "${env.S3_RELEASE_DIRECTORY_URL}/${currentRelease}/data-exporter"
-					def dataExporterPath = "${env.ABS_RELEASE_PATH}/data-exporter/release-data-exporter"
 					sh "mkdir -p data/ logs/"
-					sh "mv ${dataExporterPath}/output/* data/"
-					sh "mv ${dataExporterPath}/logs/* logs/"
+					sh "mv output/* data/"
+					sh "mv logs/* logs/"
 					sh "find data/ -type f ! -name \"*.gz\" -exec gzip -f {} ';'"
 					sh "find logs/ -type f ! -name \"*.gz\" -exec gzip -f {} ';'"
 					sh "aws s3 --no-progress --recursive cp logs/ $s3Path/logs/"
