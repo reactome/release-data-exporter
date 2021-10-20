@@ -421,16 +421,19 @@ public abstract class FTPFileUploader {
 	}
 
 	boolean uploadFileToServer(String fileToUpload) throws IOException {
-		logger.info("Uploading file '{}' to server {}", fileToUpload, getServerHostName());
+		String fileUploadName = Paths.get(fileToUpload).getFileName().toString();
+
+		logger.info("Uploading file '{}' as {} to server {}", fileToUpload, fileUploadName, getServerHostName());
 
 		boolean isUploadSuccessful;
 		try(InputStream fileToUploadInputStream = new FileInputStream(fileToUpload)) {
-			if (getFtpClientToServer().storeFile(fileToUpload, fileToUploadInputStream)) {
-				logger.info("Successfully uploaded '{}' to server {}", fileToUpload, getServerHostName());
+			if (getFtpClientToServer().storeFile(fileUploadName, fileToUploadInputStream)) {
+				logger.info("Successfully uploaded '{}' as {} to server {}",
+					fileToUpload, fileUploadName, getServerHostName());
 				isUploadSuccessful = true;
 			} else {
-				logger.error("Unable to upload '{}' to the server {}.  FTP client reply message was: {}",
-					fileToUpload, getServerHostName(), getFtpClientReplyMessage());
+				logger.error("Unable to upload '{}' as {} to the server {}.  FTP client reply message was: {}",
+					fileToUpload, fileUploadName, getServerHostName(), getFtpClientReplyMessage());
 				isUploadSuccessful = false;
 			}
 		}
