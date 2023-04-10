@@ -156,10 +156,10 @@
 				<version>3.2.0</version>
 				<configuration>
 					<archive>
-						<manifestEnteries>
+						<manifestEntries>
 							<Multi-Release>true</Multi-Release>
 							<Main-Class>org.reactome.release.dataexport.Main</Main-Class>
-						</manifestEnteries>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
