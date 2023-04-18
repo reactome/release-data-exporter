@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Result;
 import org.reactome.release.dataexport.utilities.PathwayHierarchyUtilities;
 
 import java.time.LocalTime;
@@ -382,7 +382,7 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 
 		logger.info("Computing UniProt to RLE id");
 
-		StatementResult statementResult = graphDBSession.run(
+		Result result = graphDBSession.run(
 			String.join(System.lineSeparator(),
 				"MATCH " + referenceGeneProductToReactionLikeEventPath(),
 				"MATCH (rgp)-[:referenceDatabase]->(rd:ReferenceDatabase)",
@@ -394,8 +394,8 @@ public class UniProtReactomeEntry implements Comparable<UniProtReactomeEntry> {
 		);
 
 		Map<UniProtReactomeEntry, Set<Long>> uniprotReactomeEntryToReactionLikeEventId = new HashMap<>();
-		while (statementResult.hasNext()) {
-			Record record = statementResult.next();
+		while (result.hasNext()) {
+			Record record = result.next();
 
 			long uniprotDbId = record.get("rgp.dbId").asLong();
 			String uniprotAccession = record.get("rgp_accession").asString();

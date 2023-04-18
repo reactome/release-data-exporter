@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,6 +82,20 @@ public class NCBIFileUploaderIT {
 	}
 
 	@Test
+	public void writesFilesSuccessfullyOnNCBIFTPServer() throws IOException, URISyntaxException {
+		assertThat(
+			this.ncbiFileUploader.uploadFileToServer(dummyNCBIFilePathAsString), is(equalTo(true))
+		);
+		assertThat(
+			this.ncbiFileUploader.existsOnServer(dummyNCBIFilePathAsString), is(equalTo(true))
+		);
+		assertThat(
+			this.ncbiFileUploader.deleteOldFileFromServer(dummyNCBIFilePathAsString), is(equalTo(true))
+		);
+
+	}
+
+	@Test
 	public void fileListingsFromReactomeFolderOnNCBIFTPServerAreCorrect() throws IOException, URISyntaxException {
 		final String providerInfoReactomeFile = "providerinfo.xml";
 
@@ -92,19 +107,7 @@ public class NCBIFileUploaderIT {
 				providerInfoReactomeFile
 			)
 		);
-	}
 
-	@Test
-	public void writesFilesSuccessfullyOnNCBIFTPServer() throws IOException, URISyntaxException {
-		assertThat(
-			this.ncbiFileUploader.uploadFileToServer(dummyNCBIFilePathAsString), is(equalTo(true))
-		);
-		assertThat(
-			this.ncbiFileUploader.existsOnServer(dummyNCBIFilePathAsString), is(equalTo(true))
-		);
-		assertThat(
-			this.ncbiFileUploader.deleteOldFileFromServer(dummyNCBIFilePathAsString), is(equalTo(true))
-		);
 	}
 
 	@Test

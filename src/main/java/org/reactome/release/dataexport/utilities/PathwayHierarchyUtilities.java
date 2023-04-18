@@ -2,9 +2,9 @@ package org.reactome.release.dataexport.utilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Result;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,7 +40,7 @@ public class PathwayHierarchyUtilities {
 
 		logger.info("Computing RLE id to Pathway id");
 
-		StatementResult statementResult = graphDBSession.run(
+		Result result = graphDBSession.run(
 			String.join(System.lineSeparator(),
 				"MATCH (rle:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway)",
 				"RETURN DISTINCT rle.dbId, p.dbId"
@@ -48,8 +48,8 @@ public class PathwayHierarchyUtilities {
 		);
 
 		Map<Long, Set<Long>> rleToPathwayId = new HashMap<>();
-		while (statementResult.hasNext()) {
-			Record record = statementResult.next();
+		while (result.hasNext()) {
+			Record record = result.next();
 
 			long reactionLikeEventId = record.get("rle.dbId").asLong();
 			long pathwayId = record.get("p.dbId").asLong();
@@ -85,7 +85,7 @@ public class PathwayHierarchyUtilities {
 
 		logger.info("Computing Pathway Hierarchy");
 
-		StatementResult statementResult = graphDBSession.run(
+		Result result = graphDBSession.run(
 			String.join(System.lineSeparator(),
 				"MATCH (p:Pathway)<-[:hasEvent]-(pp:Pathway)",
 				"RETURN DISTINCT p.dbId, pp.dbId"
@@ -93,8 +93,8 @@ public class PathwayHierarchyUtilities {
 		);
 
 		Map<Long, Set<Long>> pathwayHierarchy = new HashMap<>();
-		while (statementResult.hasNext()) {
-			Record record = statementResult.next();
+		while (result.hasNext()) {
+			Record record = result.next();
 
 			long pathwayId = record.get("p.dbId").asLong();
 			long parentPathwayId = record.get("pp.dbId").asLong();
