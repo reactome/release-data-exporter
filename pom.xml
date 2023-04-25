@@ -35,18 +35,25 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+		<!--
+		integration tests run by default when running the command "mvn verify"; can be overridden using the option
+		"-DskipITs=true"
+		-->
+		<skipITs>false</skipITs>
 		<junit.version>5.5.2</junit.version>
 	</properties>
 
 	<dependencies>
 		<!-- Main dependencies -->
-
-		<!-- required for javax.annotation.Nonnull -->
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.78</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -56,7 +63,7 @@
 		<dependency>
 			<groupId>org.neo4j.driver</groupId>
 			<artifactId>neo4j-java-driver</artifactId>
-			<version>1.7.5</version>
+			<version>4.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.reactome.release</groupId>
@@ -149,9 +156,10 @@
 				<version>3.2.0</version>
 				<configuration>
 					<archive>
-						<manifest>
-							<mainClass>org.reactome.release.dataexport.Main</mainClass>
-						</manifest>
+						<manifestEntries>
+							<Multi-Release>true</Multi-Release>
+							<Main-Class>org.reactome.release.dataexport.Main</Main-Class>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -164,6 +172,29 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.22.2</version>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<!--
+							Default value is defined in the <properties> section and will be applied to integration
+							tests when running the command "mvn verify", but can be overwritten to either skip
+							or run integration tests with the command "mvn verify -DskipITs=[true|false]"
+							-->
+							<skipTests>${skipITs}</skipTests>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
