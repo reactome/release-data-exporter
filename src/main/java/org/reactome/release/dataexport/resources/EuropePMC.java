@@ -2,7 +2,7 @@ package org.reactome.release.dataexport.resources;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.Session;
 import org.reactome.release.dataexport.utilities.ReactomeURLConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
