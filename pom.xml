@@ -50,7 +50,7 @@
 		<jetbrains.annotations.version>18.0.0</jetbrains.annotations.version>
 		<junit.version>5.5.2</junit.version>
 		<mockito.version>3.2.4</mockito.version>
-		<neo4j.driver.version>1.7.5</neo4j.driver.version>
+		<neo4j.driver.version>4.0.0</neo4j.driver.version>
 		<neo4j.harness>3.5.13</neo4j.harness>
 		<reactome.release.common.lib.version>1.2.0</reactome.release.common.lib.version>
 
