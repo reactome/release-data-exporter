@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 #CMD ["java", "-jar", "target/data-export-exec.jar"]
 
