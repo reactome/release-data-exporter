@@ -1,12 +1,20 @@
 package org.reactome.release.dataexport;
 
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.GraphDatabase;
+import org.neo4j.driver.Session;
 import org.reactome.release.common.ReleaseStep;
+import org.reactome.release.dataexport.datastructures.NCBIEntry;
+import org.reactome.release.dataexport.fileuploaders.EuropePMCFileUploader;
+import org.reactome.release.dataexport.fileuploaders.NCBIFileUploader;
+import org.reactome.release.dataexport.resources.EuropePMC;
+import org.reactome.release.dataexport.resources.NCBIGene;
+import org.reactome.release.dataexport.resources.NCBIProtein;
+import org.reactome.release.dataexport.resources.UCSC;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,34 +48,41 @@ public class DataExporterStep extends ReleaseStep {
 	 * Europe PMC Link File
 	 *     "Link" XML nodes describing Reactome Pathways connected to PubMed literature references
 	 * @param props Configuration options for connecting to the graph database and writing output files
-	 * @throws Exception Thrown if creation of the output directory
+	 * @throws IOException Thrown if unable to create the output directory or write files
 	 */
 	@Override
-	public void executeStep(Properties props) throws Exception {
+	public void executeStep(Properties props) throws IOException {
 		logger.info("Beginning NCBI, UCSC, and Europe PMC export step...");
 
-		int version = Integer.parseInt(props.getProperty("reactomeVersion"));
+		int reactomeReleaseNumber = Integer.parseInt(props.getProperty("releaseNumber"));
 		String outputDir = props.getProperty("outputDir", "output");
 		Files.createDirectories(Paths.get(outputDir));
-		logger.info("Files for Reactome version " + version + " will be output to the directory " + outputDir);
+		logger.info("Files for Reactome Release Number {} will be output to the directory {}",
+			reactomeReleaseNumber, outputDir);
 
 		try (Driver graphDBDriver = getGraphDBDriver(props); Session graphDBSession = graphDBDriver.session()) {
 			List<NCBIEntry> ncbiEntries = NCBIEntry.getUniProtToNCBIGeneEntries(graphDBSession);
 
 			// Write NCBI Gene related Protein File
-			NCBIGene.getInstance(ncbiEntries, outputDir, version).writeProteinFile();
+			NCBIGene.getInstance(ncbiEntries, outputDir, reactomeReleaseNumber).writeProteinFile();
 
 			// Write NCBI Gene Files (split into multiple files to conform with 15MB upload maximum)
-			NCBIGene.getInstance(ncbiEntries, outputDir, version).writeGeneXMLFiles(graphDBSession);
+			NCBIGene.getInstance(ncbiEntries, outputDir, reactomeReleaseNumber).writeGeneXMLFiles(graphDBSession);
 
 			// Write NCBI Protein File
-			NCBIProtein.getInstance(ncbiEntries, outputDir, version).writeNCBIProteinFile();
+			NCBIProtein.getInstance(ncbiEntries, outputDir, reactomeReleaseNumber).writeNCBIProteinFile();
 
 			// Write UCSC Entity and Event Files
-			UCSC.getInstance(outputDir, version).writeUCSCFiles(graphDBSession);
+			UCSC.getInstance(outputDir, reactomeReleaseNumber).writeUCSCFiles(graphDBSession);
 			// Write Europe PMC Profile and Link Files
-			EuropePMC.getInstance(outputDir, version).writeEuropePMCFiles(graphDBSession);
+			EuropePMC.getInstance(outputDir, reactomeReleaseNumber).writeEuropePMCFiles(graphDBSession);
 		}
+
+		// Upload Europe PMC Profile and Link Files (and delete previous release Europe PMC Profile and Link Files)
+		EuropePMCFileUploader.getInstance(props).updateFilesOnServer();
+
+		// Upload NCBI Gene and Protein Files (and delete previous release NCBI Gene and Protein Files)
+		NCBIFileUploader.getInstance(props).updateFilesOnServer();
 
 		logger.info("Finished NCBI, UCSC, and Europe PMC export step");
 	}
@@ -78,10 +93,10 @@ public class DataExporterStep extends ReleaseStep {
 	 * @return Driver for the graph database being run by the Neo4J server
 	 */
 	private static Driver getGraphDBDriver(Properties props) {
-		String host = props.getProperty("host","localhost");
-		String port = props.getProperty("port", Integer.toString(7687));
-		String user = props.getProperty("user", "neo4j");
-		String password = props.getProperty("password", "root");
+		String host = props.getProperty("neo4jHostName","localhost");
+		String port = props.getProperty("neo4jPort", Integer.toString(7687));
+		String user = props.getProperty("neo4jUserName", "neo4j");
+		String password = props.getProperty("neo4jPassword", "root");
 
 		return GraphDatabase.driver("bolt://" + host + ":" + port, AuthTokens.basic(user, password));
 	}
