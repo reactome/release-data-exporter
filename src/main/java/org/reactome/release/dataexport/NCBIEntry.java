@@ -82,6 +82,12 @@ public class NCBIEntry implements Comparable<NCBIEntry> {
 			String uniprotAccession = record.get("rgp_accession").asString();
 			String ncbiGeneID = record.get("rds.identifier").asString();
 
+			if (uniprotAccession.contains("PRO")) {
+				logger.error(String.format("UniProt Accession %s (dbId %d) contains PRO identifier",
+					uniprotAccession, uniprotDbId));
+				continue;
+			}
+
 			UniProtReactomeEntry uniprot = UniProtReactomeEntry.get(uniprotDbId, uniprotAccession, uniprotDisplayName);
 			Set<String> ncbiGeneIDs = uniprotToNCBIGene.computeIfAbsent(uniprot, k -> new HashSet<>());
 			ncbiGeneIDs.add(ncbiGeneID);
